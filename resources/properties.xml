@@ -1,0 +1,36 @@
+<!-- -*- mode:xml; tab-width:2; c-basic-offset:2; intent-tabs-mode:nil; -*- ex: set tabstop=2 expandtab: -->
+<properties>
+  <!-- User preferences -->
+  <!-- ... altimeter -->
+  <property id="userAltimeterCalibrationQNH" type="float">101325.0</property>
+  <property id="userAltimeterCorrectionAbsolute" type="float">0.0</property>
+  <property id="userAltimeterCorrectionRelative" type="float">1.0</property>
+  <property id="userAltimeterAlert" type="float">1000.0</property>
+  <!-- ... temperature -->
+  <property id="userTemperatureISAOffset" type="float">0.0</property>
+  <property id="userTemperatureAuto" type="boolean">false</property>
+  <property id="userTemperatureAlert" type="float">298.15</property>
+  <!-- ... wind -->
+  <property id="userWindDirection" type="float">0.0</property>
+  <property id="userWindSpeed" type="float">0.0</property>
+  <!-- ... timer -->
+  <property id="userTimerAutoLog" type="boolean">false</property>
+  <property id="userTimerThresholdGround" type="number">30</property>
+  <property id="userTimerThresholdAirborne" type="number">60</property>
+  <!-- ... notifications -->
+  <property id="userNotificationsAltimeter" type="boolean">false</property>
+  <property id="userNotificationsTemperature" type="boolean">false</property>
+  <property id="userNotificationsFuel" type="boolean">false</property>
+  <!-- ... general -->
+  <property id="userGeneralBackgroundColor" type="number">0</property>
+  <!-- ... units -->
+  <property id="userUnitDistance" type="number">-1</property>
+  <property id="userUnitElevation" type="number">-1</property>
+  <property id="userUnitWeight" type="number">-1</property>
+  <property id="userUnitFuel" type="number">-1</property>
+  <property id="userUnitPressure" type="number">-1</property>
+  <property id="userUnitTemperature" type="number">-1</property>
+  <property id="userUnitTimeUTC" type="boolean">false</property>
+  <!-- ... storage -->
+  <property id="userStorageRepositoryURL" type="string">https://github.com/cedric-dufour/connectiq-app-towplanesk/raw/master/data</property>
+</properties>

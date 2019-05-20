@@ -1,0 +1,206 @@
+{
+    "towplanes": {
+        "11": {
+            "callsign": "RT",
+            "comment": "PA-18 SuperCub 180ch",
+            "weightEmpty": 530.0,
+            "weightPayload": 80.0,
+            "weightMaxTakeoff": 793.79,
+            "weightMaxTowing": 720.0,
+            "weightMaxTowed": 650.0,
+            "fuelQuantity": 0.135,
+            "fuelDensity": 721.0,
+            "fuelFlowGround": 0.000001389,
+            "fuelFlowAirborne": 0.000009722,
+            "fuelFlowTowing": 0.000011111,
+            "fuelAlert": 0.055,
+            "speedOffBlock": 1.39,
+            "speedTakeoff": 20.92,
+            "speedLanding": 19.14,
+            "speedMaxTowing": 41.67
+        },
+        "12": {
+            "callsign": "IQ",
+            "comment": "Maule MX-7 235ch",
+            "weightEmpty": 710.0,
+            "weightPayload": 80.0,
+            "weightMaxTakeoff": 1133.98,
+            "weightMaxTowing": 1133.98,
+            "weightMaxTowed": 750.0,
+            "fuelQuantity": 0.160,
+            "fuelDensity": 721.0,
+            "fuelFlowGround": 0.000001389,
+            "fuelFlowAirborne": 0.000013889,
+            "fuelFlowTowing": 0.000016667,
+            "fuelAlert": 0.060,
+            "speedOffBlock": 1.39,
+            "speedTakeoff": 29.32,
+            "speedLanding": 23.66,
+            "speedMaxTowing": 41.67
+        }
+    },
+    "gliders": {
+        "11": {
+            "callsign": "1B",
+            "comment": "ASK21",
+            "weightEmpty": 360.0,
+            "weightPayload": 160.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 600.0,
+            "speedTowing": 31.94
+        },
+        "12": {
+            "callsign": "2B",
+            "comment": "LS4",
+            "weightEmpty": 235.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 472.0,
+            "speedTowing": 30.55
+        },
+        "13": {
+            "callsign": "3B",
+            "comment": "LS4",
+            "weightEmpty": 235.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 472.0,
+            "speedTowing": 30.55
+        },
+        "14": {
+            "callsign": "4B",
+            "comment": "LS8",
+            "weightEmpty": 250.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 525.0,
+            "speedTowing": 30.55
+        },
+        "15": {
+            "callsign": "5B",
+            "comment": "ASK21",
+            "weightEmpty": 360.0,
+            "weightPayload": 160.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 600.0,
+            "speedTowing": 31.94
+        },
+        "16": {
+            "callsign": "6B",
+            "comment": "LS8",
+            "weightEmpty": 250.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 525.0,
+            "speedTowing": 30.55
+        },
+        "17": {
+            "callsign": "7B",
+            "comment": "DuoDiscus",
+            "weightEmpty": 420.0,
+            "weightPayload": 160.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 700.0,
+            "speedTowing": 33.33
+        },
+        "19": {
+            "callsign": "9B",
+            "comment": "DuoDiscus",
+            "weightEmpty": 420.0,
+            "weightPayload": 160.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 700.0,
+            "speedTowing": 33.33
+        },
+        "21": {
+            "callsign": "A1",
+            "comment": "Ventus-2 CM",
+            "weightEmpty": 350.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 525.0,
+            "speedTowing": 31.94
+        },
+        "22": {
+            "callsign": "CN",
+            "comment": "ASW27",
+            "weightEmpty": 245.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 500.0,
+            "speedTowing": 30.55
+        },
+        "23": {
+            "callsign": "EY",
+            "comment": "LS8",
+            "weightEmpty": 250.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 525.0,
+            "speedTowing": 30.55
+        },
+        "24": {
+            "callsign": "J5",
+            "comment": "ASW20",
+            "weightEmpty": 260.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 525.0,
+            "speedTowing": 30.55
+        },
+        "25": {
+            "callsign": "JC",
+            "comment": "Discus B",
+            "weightEmpty": 235.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 525.0,
+            "speedTowing": 30.55
+        },
+        "26": {
+            "callsign": "MZ",
+            "comment": "Ventus-2 C(M)",
+            "weightEmpty": 265.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 525.0,
+            "speedTowing": 31.94
+        },
+        "27": {
+            "callsign": "TS",
+            "comment": "LS3-a",
+            "weightEmpty": 250.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 472.0,
+            "speedTowing": 30.55
+        },
+        "28": {
+            "callsign": "TW",
+            "comment": "Ventus CM",
+            "weightEmpty": 300.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 430.0,
+            "speedTowing": 30.55
+        },
+        "29": {
+            "callsign": "WE",
+            "comment": "LS4",
+            "weightEmpty": 235.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 472.0,
+            "speedTowing": 30.55
+        },
+        "30": {
+            "callsign": "ZX",
+            "comment": "ASW27",
+            "weightEmpty": 245.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 500.0,
+            "speedTowing": 30.55
+        }
+    }
+}

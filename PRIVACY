@@ -1,0 +1,21 @@
+TowplaneSK (Garmin ConnectIQ) App
+===============================
+Privacy information
+
+TowplaneSK does not collect and transmit any data to any 3rd-party, save for the
+Activity files you record and upload to Garmin (Connect) when synchronizing
+your device.
+
+The permissions required by TowplaneSK are:
+ - "Sensor" permission:
+   for barometric pressure (elevation) and temperature data
+ - "Positioning" permission:
+   for speed and heading data
+ - "Fit" permission:
+   for recording your Activity (to FIT file)
+ - "FitContributor" permission:
+   to add barometric altitude, vertical speed, airspeed and
+   timer data in your recorded Activity (FIT file)
+ - "Communications" permission:
+   to import data from the web into your destinations memory
+   (see the Storage Data section in the USAGE file)

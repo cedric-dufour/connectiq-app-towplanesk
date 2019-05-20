@@ -1,0 +1,32 @@
+{
+    "towplanes": {
+        "01": {
+            "callsign": "P18",
+            "weightEmpty": 525.0,
+            "weightPayload": 80.0,
+            "weightMaxTakeoff": 793.79,
+            "weightMaxTowing": 720.0,
+            "weightMaxTowed": 650.0,
+            "fuelQuantity": 0.135,
+            "fuelDensity": 721.0,
+            "fuelFlowGround": 0.000001389,
+            "fuelFlowAirborne": 0.000009722,
+            "fuelFlowTowing": 0.000011111,
+            "fuelAlert": 0.055,
+            "speedOffBlock": 1.39,
+            "speedTakeoff": 20.92,
+            "speedLanding": 19.14,
+            "speedMaxTowing": 41.67
+        }
+    },
+    "gliders": {
+        "01": {
+            "callsign": "A21",
+            "weightEmpty": 360.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 600.0,
+            "speedTowing": 31.94
+        }
+    }
+}

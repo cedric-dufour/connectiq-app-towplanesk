@@ -1,0 +1,469 @@
+TowplaneSK (Garmin ConnectIQ) App
+=================================
+Usage instructions
+
+
+   !!! WARNING !!! DISCLAIMER !!! WARNING !!! DISCLAIMER !!! WARNING !!!
+
+   THIS APPLICATION IS NOT TO BE USED AS A MEAN TO INSURE FLIGHT SAFETY.
+
+  Always follow official or recommended procedures to insure flight safety,
+         *independently* from the help this application can offer.
+
+  In particular, this application relies on barometric pressure to derive
+  the altitude and MUST NOT BE USED IN A PRESSURIZED AIRCRAFT.
+
+   !!! WARNING !!! DISCLAIMER !!! WARNING !!! DISCLAIMER !!! WARNING !!!
+
+
+Foreword
+--------
+
+TowplaneSK relies on your device's raw barometric sensor to compute the altitude,
+using the ad-hoc International Civil Aviation Organization (ICAO) formulas and
+according to the International Standard Atmosphere (ISA).
+
+Consequently, you MUST calibrate TowplaneSK internal altimeter - using either
+the known QNH or elevation (see Settings below) - to obtain an accurate
+altitude reading (the device's "native" altimeter/barometer settings are
+ignored).
+
+
+Timer View
+----------
+
+The Timer view tracks your current flight times:
+ - Top-Left:
+   Off-Block time
+ - Top-Right:
+   Takeoff time
+ - Left:
+   Block time (elapsed)
+ - Center:
+   <-> Towplane callsign
+   <-> Glider callsign
+   <-> Cycles (landings/touch-'n-go) count
+ - Right:
+   Flight time (elapsed)
+ - Bottom-Left:
+   On-Block time
+ - Bottom-Right:
+   Landing time
+
+The BACK button allows you to control the Timer (depending on the flight phase):
+ - Reset
+ - Save (add Log entry and Activity lap)
+ - Discard
+ - Add Cycle
+ - Undo Cycle
+ - Exit (the application)
+
+
+Altimeter View
+--------------
+
+The Altimeter view displays current:
+ - Top-Left:
+   Density Altitude
+ - Top-Right:
+   Temperature
+ - Left:
+   Altitude
+ - Center:
+   Offset to standard (ISA) temperature
+ - Right:
+   QNH (standard pressure at sea level)
+ - Bottom-Left:
+   Pressure Altitude (flight level)
+ - Bottom-Right:
+   QFE (ambient pressure)
+
+The Left/Center/Right fields will turn (bright) RED - along vibrate and sound
+alarm - in case the current Temperature is above the configured threshold (see
+Settings -> Temperature -> Alert below).
+
+Otherwise, it will turn ORANGE - also along vibrate and sound alarm - in case
+the current Altitude is above the configured threshold (see Settings -> Altimeter
+-> Alert below).
+
+
+Speed View
+----------
+
+The Speed view shows the current:
+ - Top-Left:
+   Ground Speed
+ - Top-Right:
+   Heading
+ - Left:
+   Air Speed
+ - Center:
+   <-> Towplane callsign
+   <-> Glider callsign
+   <-> optimal Tow Speed
+ - Right:
+   Vertical Speed
+ - Bottom-Left:
+   Wind Speed
+ - Bottom-Right:
+   Wind Direction
+
+The Left/Center/Right fields will turn:
+ - (bright) RED if the current Air Speed is more than 15% off
+ - ORANGE if it is between 5% and 15%
+ - (dark) GREEN if it is within 5% of the optimal Tow Speed
+
+Please bear in mind Air Speed is *estimated* based on the user-configured Wind
+Speed and Direction (see Settings -> Wind below).
+
+
+Towplane View
+--------------
+
+The Towplane view displays the chosen airplane characteristics:
+ - Top-Left:
+   Empty Weight
+ - Top-Right:
+   Payload (weight)
+ - Left:
+   Total Weight
+ - Center:
+   Callsign
+ - Right:
+   Maximum Takeoff Weight (MTOW)
+   (depending on wether a Glider is being towed)
+ - Bottom-Left:
+   current Fuel Quantity
+   (decreasing according to the configured Fuel Flow)
+ - Bottom-Right:
+   current Fuel Flow
+
+The entire background will turn (dark) RED, across all "live" views - along
+virbrate and sound alarm - in case the Fuel Quantity is below the configured
+Fuel threshold (see Fuel -> Alert below).
+
+The Left/Center/Right fields will turn:
+ - (bright) RED in case the current Total Weight is greater that the Maximum Takeoff
+   Weight (MTOW)
+ - ORANGE if it is within 5% of the MTOW
+ - (dark) GREEN otherwiser
+
+You can Edit/Load/Save Towplanes from/to the 100-slots internal library by
+pressing the MENU button. The following parameters can be configured for each
+one:
+
+* Callsign
+  used to identify the Towplane
+
+* Weight
+  - Empty
+    empty weight (incl. fixed equipments, engine oil, etc.)
+  - Payload
+    weight of pilot, passengers, parachutes, luggages, etc.
+  - Max. Takeoff
+    maximum takeoff weight (MTOW) when *not* towing
+  - Max. Towing
+    maximum takeoff weight (MTOW) when towing a Glider
+  - Max. Towed
+    maximum takeoff weight (MTOW) of the towed Glider
+
+* Fuel
+  - Quantity
+    current fuel quantity
+  - Density
+    fuel density (used to compute the fuel weight)
+  * Flow
+    - Ground
+      fuel flow (consumption) when on ground (idle, taxi)
+    - Airborne
+      fuel flow (consumption) when in flight (but *not* towing)
+    - Towing
+      fuel flow (consumption) when towing a Glider
+
+* Speed
+  - Off-Block
+    speed used to determine Off-Block/On-Block time
+  - Takeoff
+    speed used to determine the aicraft Takeoff time
+    (ca. stall speed with no flaps, lower end of the green sector)
+  - Landing
+    speed used to determine the aicraft Landing time
+    (ca. stall speed with full flaps, lower end of the white sector)
+  - Max. Towing
+    speed above which to consider the towed Glider has been freed
+    (used to differentiate Towing <-> Airborne Fuel Flow)
+
+
+Glider View
+-----------
+
+The Glider view display the chosen glider characteristics:
+ - Top-Left:
+   Empty Weight
+ - Top-Right:
+   Payload (weight)
+ - Left:
+   Total Weight
+ - Center:
+   Callsign
+ - Right:
+   Maximum Takeoff Weight (MTOW)
+ - Bottom-Left:
+   Ballast (weight)
+ - Bottom-Right:
+   optimal Tow Speed
+
+The Left/Center/Right fields will turn:
+ - (bright) RED in case the current Total Weight is greater that the Maximum Takeoff
+   Weight (MTOW)
+ - ORANGE if it is within 5% of the MTOW
+ - (dark) GREEN otherwiser
+
+You can Edit/Load/Save Gliders from/to the 100-slots internal library by
+pressing the MENU button. The following parameters can be configured for each
+one:
+
+* Callsign
+  used to identify the Glider
+
+* Weight
+  - Empty
+    empty weight
+  - Payload
+    weight of pilot, passengers, parachutes, luggages, etc.
+  - Ballast
+    water ballast weight
+  - Max. Takeoff
+    maximum takeoff weight (MTOW)
+
+* Speed
+  - Towing
+    optimal towing speed
+
+
+Log View
+--------
+
+The log view allows you to browse - using the SELECT and BACK buttons - through
+the last 100 saved timers.
+
+
+Activity Recording
+------------------
+
+You can record your flight Activity (start, pause, resume, save, discard) thanks
+to the SELECT button.
+
+TowplaneSK adds the following custom fields to the recorded FIT file:
+ - Barometric Altitude
+ - Vertical Speed
+ - Air Speed
+(which will be plotted in Garmin Connect *if* your installed the application
+ through the Garmin ConnectIQ store)
+
+For each lap (flight), Garmin Connect will also show the following details:
+ - Towplane (callsign)
+ - Glider (callsign)
+ - Off-Block Time
+ - Takeoff Time
+ - Takeoff Altitude
+ - Top-of-Climb Time
+ - Top-of-Climb Altitude
+ - Landing Time
+ - Landing Altitude
+ - On-Block Time
+ - Elapsed Flight Time
+ - Elapsed Block Time
+
+For each recording session, Garmin Connect will also include:
+ - Total Flight Time
+ - Total Block Time
+
+
+Settings
+--------
+
+The Settings menu is entered by pressing the MENU button (long-pressing the UP
+button).
+
+The following settings are available:
+
+* Altimeter
+  > Calibration
+    - QNH:
+      calibrate the altimeter using the current known QNH
+    - Elevation:
+      calibrate the altimeter using the current known elevation
+      (QNH shall be adjusted accordingly)
+  > Correction
+    - Absolute:
+      set the absolute device's sensor error correction
+    - Relative:
+      set the relative device's sensor error correction
+  - Alert:
+    altitude above which to display/vibrate/sound an alarm
+    (see the Altimeter View above)
+
+* Temperature
+  - Calibration
+    set the current external temperature for Density Altitude calculation
+    (the offset to the standard ISA temperature shall be saved internally)
+  - Temperature Source
+    whether to use the temperature "set" by the user or that "auto"-matically
+    obtained from the device; REQUIRES AN EXTERNAL SENSOR (e.g. Garmin Tempe)
+  - Alert
+    temperature above which to display/vibrate/sound an alarm
+    (see the Altimeter View above)
+
+* Wind
+  - Speed
+    set the current wind speed
+  - Direction
+    set the current wind direction
+  (both being used to *estimate* the current Air Speed)
+
+* Notifications
+  - Altimeter
+    whether to vibrate and sound an alarm if the current Altitude gets above
+    the configured Alert threshold (see Altitude -> Alert above)
+  - Temperature
+    whether to vibrate and sound an alarm if the current Temperature gets above
+    the configured Alert threshold (see Temperature -> Alert above)
+  - Fuel
+    whether to vibrate and sound an alarm if the current Fuel Quantity gets below
+    the current Towplane Alert threshold (see Towplane -> Fuel -> Alert above)
+
+* Timer
+  - Auto Log:
+    whether to automatically save a completed flight to the Log (and add
+    a corresponding Activity lap); if not enabled, you *must* Save your
+    flight manually (see Timer -> View above)
+  > Threshold
+    - Ground
+      time used to delay any Timer decision when on ground
+      (in particular: how long to wait before Auto Log-ging a flight)
+    - Airborne
+      time used to delay any Timer decision when airborne
+      (in particular: detection of aborted take-off or bouncing landing)
+
+* General
+  - Background Color:
+    the background color (black or white)
+
+* Units
+  - Distance:
+    preferred units for displaying distance (and horizontal speed) values
+  - Elevation:
+    preferred units for displaying elevation (and vertical speed) values
+  - Weight:
+    preferred units for displaying weight values
+  - Fuel:
+    preferred units for displaying fuel (and fuel flow) values
+  - Pressure:
+    preferred unit for displaying pressure values
+  - Temperature:
+    preferred unit for displaying temperature values
+  - Timezone:
+    display Local Time (LT) or Universal Time Coordinates (UTC/Z)
+
+* Storage
+  - Import Data:
+    import data from the specified (JSON) file (see Storage Data below)
+  - Delete All:
+    delete all storage data (Towplanes and Gliders library)
+
+
+About Data Filtering
+--------------------
+
+TowplaneSK uses 5-second median filtering to smooth out the sensors jitter.
+
+This induces a 5-second "warm-up" time before any flight data are displayed
+after GPS signal is (re-)acquired.
+
+This also means the various sensor readings (speed, altitude, etc.) will have
+a 2-second *average* delay.
+
+
+Importing Storage Data
+----------------------
+
+TowplaneSK allows you to import data into the application storage space - iow.
+Towplanes or Gliders library - from the web; to do so:
+
+1. connect your device to Garmin Connect Mobile (GCM) via Bluetooth
+
+2. [optional] use GCM to edit the Repository URL (TowplaneSK application) setting;
+   by default:
+
+     https://github.com/cedric-dufour/connectiq-app-towplanesk/raw/master/data
+
+3. use the Import Data setting (see Setting above) to specify the JSON data file
+   name to download from the repository, without the .json suffix; example given:
+
+     SAMPLE
+
+   WARNING! Make sure your GCM phone/tablet doesn't go to sleep while performing
+   this step or it won't allow GCM to relay the data to your watch.
+
+The destination slot(s) will then be updated (overwritten!) based on the data
+contained in the file.
+
+The format of a JSON destination data file is straight-forward; example given:
+
+     https://github.com/cedric-dufour/connectiq-app-towplanesk/raw/master/data/SAMPLE.json
+
+Provided you have some web service where to store them, you can write your own
+data file(s). Just edit the Repository URL correspondingly (see point 2. above).
+WARNING: If using HTTPS (SSL), make sure the website's certificate is from a
+well-known Certification Authority (CA) or GCM will refuse to download the data.
+
+
+Calibrating the Device Sensor
+-----------------------------
+
+TowplaneSK allows you to calibrate/correct your device's barometric sensor using
+the following formulas:
+
+   QFEcalibrated = QFEsensor * Crel + Cabs
+
+If you suspect your device's sensor is inaccurate, you shall:
+
+1. install the PilotAltimeter widget to access the device's *QFE* readings
+   (unfortunately, this falls out of TowplaneSK scope/purpose)
+
+2. take down multiple QFE readings, at different altitude, using your device's
+   *raw* QFE and a reliable, calibrated, reference barometer
+
+3. import those readings in a LibreOffice Calc (or Microsoft Excel) spreadsheet
+   and obtain the Crel and Cabs coefficients by performing a linear regression:
+
+     https://help.libreoffice.org/Calc/Regression_Analysis
+     where Crel = Slope and Cabs = Intercept
+
+   (curve-fitting for dummies: https://xkcd.com/2048/)
+
+4. set Altimeter -> Correction -> Relative/Absolute values to the calculated
+   coefficients
+
+Not an easy feat. But if you must...
+
+
+WARNING!!! GOTCHAS!!!
+---------------------
+
+When using GPS devices, you should be aware that:
+ - GPS is very accurate for location (latitude/longitude) information; even
+   more so when coupled with GLONASS/GALILEO (at the cost of battery usage).
+ - (Garmin) UltraTrac feature is very cool to save battery but does NOT
+   refresh location information frequently enough for TowplaneSK purpose.
+
+      !!! DO NOT USE ULTRATRAC WITH TOWPLANESK !!!
+
+The ConnectIQ framework does NOT allow applications - like TowplaneSK - to
+control the location source (GPS, GLONASS and/or UltraTrac). The only way
+to circumvent that limitation is to
+
+      !!! USE A NATIVE GARMIN APPLICATION BEFOREHANDS !!!
+
+The ConnectIQ application launched afterwards will then retain those settings.
