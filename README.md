@@ -12,7 +12,7 @@ Application that features:
    time, along elapsed block and flight time
  - an Altimeter view, showing your current altitude and QNH (using its
    own barometric altimeter), along temperature and density altitude
-   as well as standard altitude (flight level)
+   as well as pressure altitude (flight level)
  - a Speed view, displaying your current ground speed, heading and
    vertical speed, along the estimated air speed (based on the user-
    configured wind speed and direction)
