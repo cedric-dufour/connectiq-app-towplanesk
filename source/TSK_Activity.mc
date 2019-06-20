@@ -137,6 +137,7 @@ class TSK_Activity {
     self.oFitField_TimeOnBlock = self.oSession.createField("TimeOnBlock", TSK_Activity.FITFIELD_TIMEONBLOCK, FC.DATA_TYPE_STRING, { :mesgType=>FC.MESG_TYPE_LAP, :count=>9, :units=>$.TSK_oSettings.sUnitTime });
     self.oFitField_FlightTime = self.oSession.createField("FlightTime", TSK_Activity.FITFIELD_FLIGHTTIME, FC.DATA_TYPE_STRING, { :mesgType=>FC.MESG_TYPE_LAP, :count=>9 });
     self.oFitField_BlockTime = self.oSession.createField("BlockTime", TSK_Activity.FITFIELD_BLOCKTIME, FC.DATA_TYPE_STRING, { :mesgType=>FC.MESG_TYPE_LAP, :count=>9 });
+    self.resetLapFields();
 
     // ... session
     self.oFitField_TotalFlightTime = self.oSession.createField("TotalFlightTime", TSK_Activity.FITFIELD_TOTALFLIGHTTIME, FC.DATA_TYPE_STRING, { :mesgType=>FC.MESG_TYPE_SESSION, :count=>9 });
@@ -170,6 +171,7 @@ class TSK_Activity {
     if(Attn has :playTone) {
       Attn.playTone(Attn.TONE_LAP);
     }
+    self.resetLapFields();
   }
 
   function pause() {
@@ -248,6 +250,22 @@ class TSK_Activity {
 
   // Lap
 
+  function resetLapFields() {
+    self.setCallsignTowplane(null);
+    self.setCallsignGlider(null);
+    self.setTimeOffBlock(null);
+    self.setTimeTakeoff(null);
+    self.setAltitudeTakeoff(null);
+    self.setTimeTopOfClimb(null);
+    self.setAltitudeTopOfClimb(null);
+    self.setCountCycles(null);
+    self.setTimeLanding(null);
+    self.setAltitudeLanding(null);
+    self.setTimeOnBlock(null);
+    self.setFlightTime(null);
+    self.setBlockTime(null);
+  }
+
   function setCallsignTowplane(_sValue) {
     //Sys.println(Lang.format("DEBUG: TSK_Activity.setCallsignTowplane($1$)", [_sValue]));
     self.oFitField_CallsignTowplane.setData(_sValue != null ? _sValue.substring(0, 8) : "-");
@@ -320,6 +338,11 @@ class TSK_Activity {
       self.oDurationBlock = self.oDurationBlock.add(_oDuration);
     }
   }
+
+
+  //
+  // FUNCTIONS: self (helpers)
+  //
 
   static function formatTime(_oTime) {
     if(_oTime != null) {
