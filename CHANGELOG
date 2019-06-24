@@ -1,3 +1,6 @@
+* 1.0.20190624a:
+  - NEW: Automatic Activity recording (start/pause/resume)
+
 * 1.0.20190620a:
   - FIX: Make Activty Lap data consistent with Timer data
          (especially the final/extraneous Lap after on-block)
