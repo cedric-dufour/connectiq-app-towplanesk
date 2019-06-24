@@ -29,6 +29,7 @@
   <!-- Menu (settings:timer) -->
   <string id="titleSettingsTimer">Timer</string>
   <string id="titleTimerAutoLog">Auto Log</string>
+  <string id="titleTimerAutoActivity">Auto Activity</string>
   <string id="titleTimerThreshold">Threshold</string>
   <string id="titleTimerThresholdGround">Ground</string>
   <string id="titleTimerThresholdAirborne">Airborne</string>

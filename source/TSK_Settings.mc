@@ -42,6 +42,7 @@ class TSK_Settings {
   public var fWindDirection;
   // ... timer
   public var bTimerAutoLog;
+  public var bTimerAutoActivity;
   public var iTimerThresholdGround;
   public var iTimerThresholdAirborne;
   // ... notifications
@@ -102,6 +103,7 @@ class TSK_Settings {
     self.setWindDirection(App.Properties.getValue("userWindDirection"));
     // ... timer
     self.setTimerAutoLog(App.Properties.getValue("userTimerAutoLog"));
+    self.setTimerAutoActivity(App.Properties.getValue("userTimerAutoActivity"));
     self.setTimerThresholdGround(App.Properties.getValue("userTimerThresholdGround"));
     self.setTimerThresholdAirborne(App.Properties.getValue("userTimerThresholdAirborne"));
     // ... notifications
@@ -237,6 +239,13 @@ class TSK_Settings {
       _bTimerAutoLog = false;
     }
     self.bTimerAutoLog = _bTimerAutoLog;
+  }
+
+  function setTimerAutoActivity(_bTimerAutoActivity) {
+    if(_bTimerAutoActivity == null) {
+      _bTimerAutoActivity = false;
+    }
+    self.bTimerAutoActivity = _bTimerAutoActivity;
   }
 
   function setTimerThresholdGround(_iTimerThresholdGround) {

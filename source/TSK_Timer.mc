@@ -99,7 +99,13 @@ class TSK_Timer {
       if($.TSK_oProcessing.fGroundSpeed > $.TSK_oTowplane.fSpeedOffBlock) {
         self.oTimeOffBlock = oTimeNow;
         self.iState = self.STATE_OFFBLOCK;
-        if(Attn has :playTone) {
+        if($.TSK_oSettings.bTimerAutoActivity) {
+          if($.TSK_oActivity == null) {
+            $.TSK_oActivity = new TSK_Activity();
+          }
+          $.TSK_oActivity.resume();  // <-> Attn.playTone(Attn.TONE_START)
+        }
+        else if(Attn has :playTone) {
           Attn.playTone(Attn.TONE_KEY);
         }
       }
@@ -165,12 +171,20 @@ class TSK_Timer {
       }
     }
     else if(self.iState == self.STATE_ONBLOCK) {
-      if(self.oTimeTakeoff != null and $.TSK_oSettings.bTimerAutoLog and oTimeNow.value() - self.oTimeOnBlock.value() > $.TSK_oSettings.iTimerThresholdGround) {
-        self.log();
-      }
-      else if($.TSK_oProcessing.fGroundSpeed > $.TSK_oTowplane.fSpeedOffBlock) {
+      if($.TSK_oProcessing.fGroundSpeed > $.TSK_oTowplane.fSpeedOffBlock) {
         self.oTimeOnBlock = null;
         self.iState = self.STATE_OFFBLOCK;
+        if($.TSK_oActivity != null and $.TSK_oSettings.bTimerAutoActivity) {
+          $.TSK_oActivity.resume();  // <-> Attn.playTone(Attn.TONE_START)
+        }
+      }
+      else if(oTimeNow.value() - self.oTimeOnBlock.value() > $.TSK_oSettings.iTimerThresholdGround) {
+        if(self.oTimeTakeoff != null and $.TSK_oSettings.bTimerAutoLog) {
+          self.log();
+        }
+        if($.TSK_oActivity != null and $.TSK_oSettings.bTimerAutoActivity) {
+          $.TSK_oActivity.pause();  // <-> Attn.playTone(Attn.TONE_STOP)
+        }
       }
     }
     //Sys.println(Lang.format("DEBUG: flight state = $1$", [self.iState]));

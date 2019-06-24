@@ -75,6 +75,7 @@ class TSK_MenuGeneric extends Ui.Menu {
     else if(_menu == :menuSettingsTimer) {
       Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsTimer));
       Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerAutoLog), :menuTimerAutoLog);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerAutoActivity), :menuTimerAutoActivity);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerThreshold), :menuTimerThreshold);
     }
     else if(_menu == :menuTimerThreshold) {
@@ -327,6 +328,9 @@ class TSK_MenuGenericDelegate extends Ui.MenuInputDelegate {
     else if(self.menu == :menuSettingsTimer) {
       if(_item == :menuTimerAutoLog) {
         Ui.pushView(new TSK_PickerGenericOnOff(:contextSettings, :itemTimerAutoLog), new TSK_PickerGenericOnOffDelegate(:contextSettings, :itemTimerAutoLog), Ui.SLIDE_IMMEDIATE);
+      }
+      else if(_item == :menuTimerAutoActivity) {
+        Ui.pushView(new TSK_PickerGenericOnOff(:contextSettings, :itemTimerAutoActivity), new TSK_PickerGenericOnOffDelegate(:contextSettings, :itemTimerAutoActivity), Ui.SLIDE_IMMEDIATE);
       }
       else if(_item == :menuTimerThreshold) {
         Ui.pushView(new TSK_MenuGeneric(:menuTimerThreshold), new TSK_MenuGenericDelegate(:menuTimerThreshold), Ui.SLIDE_IMMEDIATE);

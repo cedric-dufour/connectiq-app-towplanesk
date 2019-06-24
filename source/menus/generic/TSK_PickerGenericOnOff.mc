@@ -30,6 +30,9 @@ class TSK_PickerGenericOnOff extends PickerGenericOnOff {
       if(_item == :itemTimerAutoLog) {
         PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleTimerAutoLog), App.Properties.getValue("userTimerAutoLog"));
       }
+      else if(_item == :itemTimerAutoActivity) {
+        PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleTimerAutoActivity), App.Properties.getValue("userTimerAutoActivity"));
+      }
       else if(_item == :itemNotificationsAltimeter) {
         PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleNotificationsAltimeter), App.Properties.getValue("userNotificationsAltimeter"));
       }
@@ -69,6 +72,9 @@ class TSK_PickerGenericOnOffDelegate extends Ui.PickerDelegate {
     if(self.context == :contextSettings) {
       if(self.item == :itemTimerAutoLog) {
         App.Properties.setValue("userTimerAutoLog", bValue);
+      }
+      else if(self.item == :itemTimerAutoActivity) {
+        App.Properties.setValue("userTimerAutoActivity", bValue);
       }
       else if(self.item == :itemNotificationsAltimeter) {
         App.Properties.setValue("userNotificationsAltimeter", bValue);

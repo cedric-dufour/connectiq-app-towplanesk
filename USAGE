@@ -338,6 +338,9 @@ The following settings are available:
     whether to automatically save a completed flight to the Log (and add
     a corresponding Activity lap); if not enabled, you *must* Save your
     flight manually (see Timer -> View above)
+  - Auto Activity:
+    whether to automatically start/pause/resume the Activity recording
+    throughout the flight (takeoffs/landings)
   > Threshold
     - Ground
       time used to delay any Timer decision when on ground

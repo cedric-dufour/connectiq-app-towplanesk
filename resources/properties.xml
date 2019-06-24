@@ -15,6 +15,7 @@
   <property id="userWindSpeed" type="float">0.0</property>
   <!-- ... timer -->
   <property id="userTimerAutoLog" type="boolean">false</property>
+  <property id="userTimerAutoActivity" type="boolean">false</property>
   <property id="userTimerThresholdGround" type="number">30</property>
   <property id="userTimerThresholdAirborne" type="number">60</property>
   <!-- ... notifications -->
