@@ -220,7 +220,7 @@ class TSK_ViewGlobalDelegate extends Ui.BehaviorDelegate {
 
   function onMenu() {
     //Sys.println("DEBUG: TSK_ViewGlobalDelegate.onMenu()");
-    Ui.pushView(new TSK_MenuGeneric(:menuSettings), new TSK_MenuGenericDelegate(:menuSettings), Ui.SLIDE_IMMEDIATE);
+    Ui.pushView(new TSK_MenuGeneric(:menuGlobal), new TSK_MenuGenericDelegate(:menuGlobal), Ui.SLIDE_IMMEDIATE);
     return true;
   }
 

@@ -295,6 +295,12 @@ class TSK_ViewLogDelegate extends TSK_ViewGlobalDelegate {
     TSK_ViewGlobalDelegate.initialize();
   }
 
+  function onMenu() {
+    //Sys.println("DEBUG: TSK_ViewGlobalDelegate.onMenu()");
+    Ui.pushView(new TSK_MenuGeneric(:menuSettings), new TSK_MenuGenericDelegate(:menuSettings), Ui.SLIDE_IMMEDIATE);
+    return true;
+  }
+
   function onSelect() {
     //Sys.println("DEBUG: TSK_ViewLogDelegate.onSelect()");
     if($.TSK_iViewLogIndex == null) {

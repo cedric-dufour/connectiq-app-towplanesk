@@ -27,7 +27,14 @@ class TSK_MenuGeneric extends Ui.Menu {
   function initialize(_menu) {
     Menu.initialize();
 
-    if(_menu == :menuSettings) {
+    if(_menu == :menuGlobal) {
+      Menu.setTitle(Ui.loadResource(Rez.Strings.AppName));
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettings), :menuSettings);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftTowplane), :menuTowplane);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftGlider), :menuGlider);
+    }
+
+    else if(_menu == :menuSettings) {
       Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettings));
       Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsAltimeter), :menuSettingsAltimeter);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsTemperature), :menuSettingsTemperature);
@@ -246,7 +253,19 @@ class TSK_MenuGenericDelegate extends Ui.MenuInputDelegate {
   }
 
   function onMenuItem(_item) {
-    if(self.menu == :menuSettings) {
+    if(self.menu == :menuGlobal) {
+      if(_item == :menuSettings) {
+        Ui.pushView(new TSK_MenuGeneric(:menuSettings), new TSK_MenuGenericDelegate(:menuSettings), Ui.SLIDE_IMMEDIATE);
+      }
+      else if(_item == :menuTowplane) {
+        Ui.pushView(new TSK_MenuGeneric(:menuTowplane), new TSK_MenuGenericDelegate(:menuTowplane), Ui.SLIDE_IMMEDIATE);
+      }
+      else if(_item == :menuGlider) {
+        Ui.pushView(new TSK_MenuGeneric(:menuGlider), new TSK_MenuGenericDelegate(:menuGlider), Ui.SLIDE_IMMEDIATE);
+      }
+    }
+
+    else if(self.menu == :menuSettings) {
       if(_item == :menuSettingsAltimeter) {
         Ui.pushView(new TSK_MenuGeneric(:menuSettingsAltimeter), new TSK_MenuGenericDelegate(:menuSettingsAltimeter), Ui.SLIDE_IMMEDIATE);
       }
