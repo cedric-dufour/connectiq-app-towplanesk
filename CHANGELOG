@@ -1,3 +1,6 @@
+* 1.0.20191026a:
+  - CHG: Allow to change towplane/glider from all views (except Log)
+
 * 1.0.20190624a:
   - NEW: Automatic Activity recording (start/pause/resume)
 
