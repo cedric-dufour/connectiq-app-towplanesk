@@ -126,7 +126,6 @@ class TSK_MenuGeneric extends Ui.Menu {
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageLoad), :menuTowplaneLoad);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageSave), :menuTowplaneSave);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageDelete), :menuTowplaneDelete);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettings), :menuSettings);
     }
     else if(_menu == :menuTowplaneEdit) {
       Menu.setTitle(Ui.loadResource(Rez.Strings.titleStorageEdit));
@@ -171,7 +170,6 @@ class TSK_MenuGeneric extends Ui.Menu {
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageSave), :menuGliderSave);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageDelete), :menuGliderDelete);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftClear), :menuGliderClear);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettings), :menuSettings);
     }
     else if(_menu == :menuGliderEdit) {
       Menu.setTitle(Ui.loadResource(Rez.Strings.titleStorageEdit));
@@ -428,9 +426,6 @@ class TSK_MenuGenericDelegate extends Ui.MenuInputDelegate {
       else if(_item == :menuTowplaneDelete) {
         Ui.pushView(new TSK_PickerGenericStorage(:storageTowplane, :actionDelete), new TSK_PickerGenericStorageDelegate(:storageTowplane, :actionDelete), Ui.SLIDE_IMMEDIATE);
       }
-      else if(_item == :menuSettings) {
-        Ui.pushView(new TSK_MenuGeneric(:menuSettings), new TSK_MenuGenericDelegate(:menuSettings), Ui.SLIDE_IMMEDIATE);
-      }
     }
     else if(self.menu == :menuTowplaneEdit) {
       if(_item == :menuTowplaneWeight) {
@@ -518,9 +513,6 @@ class TSK_MenuGenericDelegate extends Ui.MenuInputDelegate {
       }
       else if(_item == :menuGliderClear) {
         Ui.pushView(new TSK_MenuGenericConfirm(:contextGlider, :actionClear), new TSK_MenuGenericConfirmDelegate(:contextGlider, :actionClear, true), Ui.SLIDE_IMMEDIATE);
-      }
-      else if(_item == :menuSettings) {
-        Ui.pushView(new TSK_MenuGeneric(:menuSettings), new TSK_MenuGenericDelegate(:menuSettings), Ui.SLIDE_IMMEDIATE);
       }
     }
     else if(self.menu == :menuGliderEdit) {
