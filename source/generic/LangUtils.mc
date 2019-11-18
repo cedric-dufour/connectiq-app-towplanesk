@@ -18,8 +18,14 @@
 
 using Toybox.Lang;
 using Toybox.Math;
+using Toybox.Time;
+using Toybox.Time.Gregorian;
 
 module LangUtils {
+
+  //
+  // FUNCTIONS: data primitives
+  //
 
   // Deep-copy the given object
   function copy(_oObject) {
@@ -50,6 +56,59 @@ module LangUtils {
       oCopy = _oObject;
     }
     return oCopy;
+  }
+
+
+  //
+  // FUNCTIONS: time formatting
+  //
+
+  function formatTime(_oTime, _bUTC, _bSecond) {
+    if(_oTime != null) {
+      var oTimeInfo = _bUTC ? Gregorian.utcInfo(_oTime, Time.FORMAT_SHORT) : Gregorian.info(_oTime, Time.FORMAT_SHORT);
+      if(_bSecond) {
+        return Lang.format("$1$:$2$:$3$", [oTimeInfo.hour.format("%02d"), oTimeInfo.min.format("%02d"), oTimeInfo.sec.format("%02d")]);
+      }
+      else {
+        return Lang.format("$1$:$2$", [oTimeInfo.hour.format("%02d"), oTimeInfo.min.format("%02d")]);
+      }
+    }
+    else {
+      return _bSecond ? "--:--:--" : "--:--";
+    }
+  }
+
+  function formatElapsedTime(_oTimeFrom, _oTimeTo, _bSecond) {
+    if(_oTimeFrom != null and _oTimeTo != null) {
+      if(_bSecond) {
+        var oTimeInfo = Gregorian.utcInfo(new Time.Moment(_oTimeTo.subtract(_oTimeFrom).value()), Time.FORMAT_SHORT);
+        return Lang.format("$1$:$2$:$3$", [oTimeInfo.hour.format("%01d"), oTimeInfo.min.format("%02d"), oTimeInfo.sec.format("%02d")]);
+      }
+      else {
+        var oTimeInfo_from = Gregorian.utcInfo(_oTimeFrom, Time.FORMAT_SHORT);
+        var oTimeInfo_to = Gregorian.utcInfo(_oTimeTo, Time.FORMAT_SHORT);
+        var oTimeInfo = Gregorian.utcInfo(new Time.Moment((3600*oTimeInfo_to.hour+60*oTimeInfo_to.min) - (3600*oTimeInfo_from.hour+60*oTimeInfo_from.min)), Time.FORMAT_SHORT);
+        return Lang.format("$1$:$2$", [oTimeInfo.hour.format("%01d"), oTimeInfo.min.format("%02d")]);
+      }
+    }
+    else {
+      return _bSecond ? "-:--:--" : "-:--";
+    }
+  }
+
+  function formatElapsedDuration(_oDuration, _bSecond) {
+    if(_oDuration != null and _oDuration.value() > 0) {
+      var oDurationInfo = Gregorian.utcInfo(new Time.Moment(_oDuration.value()), Time.FORMAT_SHORT);
+      if(_bSecond) {
+        return Lang.format("$1$:$2$:$3$", [oDurationInfo.hour.format("%01d"), oDurationInfo.min.format("%02d"), oDurationInfo.sec.format("%02d")]);
+      }
+      else {
+        return Lang.format("$1$:$2$", [oDurationInfo.hour.format("%01d"), oDurationInfo.min.format("%02d")]);
+      }
+    }
+    else {
+      return _bSecond ? "-:--:--" : "-:--";
+    }
   }
 
 }

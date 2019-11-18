@@ -244,7 +244,7 @@ class TSK_ViewLog extends TSK_ViewGlobal {
     // ... takeoff time
     if(d.get("timeTakeoff") != null) {
       oTimeTakeoff = new Time.Moment(d["timeTakeoff"]);
-      d["timeTakeoff"] = TSK_Timer.formatTime(oTimeTakeoff);
+      d["timeTakeoff"] = LangUtils.formatTime(oTimeTakeoff, $.TSK_oSettings.bUnitTimeUTC, false);
     } else {
       d["timeTakeoff"] = $.TSK_NOVALUE_LEN3;
     }
@@ -257,27 +257,27 @@ class TSK_ViewLog extends TSK_ViewGlobal {
     // landing time
     if(d.get("timeLanding") != null) {
       oTimeLanding = new Time.Moment(d["timeLanding"]);
-      d["timeLanding"] = TSK_Timer.formatTime(oTimeLanding);
+      d["timeLanding"] = LangUtils.formatTime(oTimeLanding, $.TSK_oSettings.bUnitTimeUTC, false);
     } else {
       d["timeLanding"] = $.TSK_NOVALUE_LEN3;
     }
     // on-block time
     if(d.get("timeOnBlock") != null) {
       oTimeOnBlock = new Time.Moment(d["timeOnBlock"]);
-      d["timeOnBlock"] = TSK_Timer.formatTime(oTimeOnBlock);
+      d["timeOnBlock"] = LangUtils.formatTime(oTimeOnBlock, $.TSK_oSettings.bUnitTimeUTC, false);
     } else {
       d["timeOnBlock"] = $.TSK_NOVALUE_LEN3;
     }
     // flight time (elapsed)
     if(oTimeTakeoff != null and oTimeLanding != null) {
-      d["elapsedFlight"] = TSK_Timer.formatElapsedTime(oTimeTakeoff, oTimeLanding);
+      d["elapsedFlight"] = LangUtils.formatElapsedTime(oTimeTakeoff, oTimeLanding, false);
     }
     else {
       d["elapsedFlight"] = $.TSK_NOVALUE_LEN3;
     }
     // block time (elapsed)
     if(oTimeOffBlock != null and oTimeOnBlock != null) {
-      d["elapsedBlock"] = TSK_Timer.formatElapsedTime(oTimeOffBlock, oTimeOnBlock);
+      d["elapsedBlock"] = LangUtils.formatElapsedTime(oTimeOffBlock, oTimeOnBlock, false);
     }
     else {
       d["elapsedBlock"] = $.TSK_NOVALUE_LEN3;

@@ -20,7 +20,6 @@ using Toybox.Application as App;
 using Toybox.Attention as Attn;
 using Toybox.Lang;
 using Toybox.Time;
-using Toybox.Time.Gregorian;
 using Toybox.System as Sys;
 
 //
@@ -270,18 +269,6 @@ class TSK_Timer {
 
     // Done
     self.reset();
-  }
-
-  static function formatTime(_oTime) {
-    var oTimeInfo = $.TSK_oSettings.bUnitTimeUTC ? Gregorian.utcInfo(_oTime, Time.FORMAT_SHORT) : Gregorian.info(_oTime, Time.FORMAT_SHORT);
-    return Lang.format("$1$:$2$", [oTimeInfo.hour.format("%02d"), oTimeInfo.min.format("%02d")]);
-  }
-
-  static function formatElapsedTime(_oTimeFrom, _oTimeTo) {  // minute-precision
-    var oTimeInfo_from = Gregorian.utcInfo(_oTimeFrom, Time.FORMAT_SHORT);
-    var oTimeInfo_to = Gregorian.utcInfo(_oTimeTo, Time.FORMAT_SHORT);
-    var oTimeInfo_elapsed = Gregorian.utcInfo(new Time.Moment((3600*oTimeInfo_to.hour+60*oTimeInfo_to.min) - (3600*oTimeInfo_from.hour+60*oTimeInfo_from.min)), Time.FORMAT_SHORT);
-    return Lang.format("$1$:$2$", [oTimeInfo_elapsed.hour.format("%01d"), oTimeInfo_elapsed.min.format("%02d")]);
   }
 
 }

@@ -122,7 +122,7 @@ class TSK_ViewTimer extends TSK_ViewGlobal {
     var sValue;
     // ... off-block time
     if($.TSK_oTimer.oTimeOffBlock != null) {
-      sValue = TSK_Timer.formatTime($.TSK_oTimer.oTimeOffBlock);
+      sValue = LangUtils.formatTime($.TSK_oTimer.oTimeOffBlock, $.TSK_oSettings.bUnitTimeUTC, false);
     }
     else {
       sValue = $.TSK_NOVALUE_LEN3;
@@ -130,7 +130,7 @@ class TSK_ViewTimer extends TSK_ViewGlobal {
     self.oRezValueTopLeft.setText(sValue);
     // ... takeoff time
     if($.TSK_oTimer.oTimeTakeoff != null) {
-      sValue = TSK_Timer.formatTime($.TSK_oTimer.oTimeTakeoff);
+      sValue = LangUtils.formatTime($.TSK_oTimer.oTimeTakeoff, $.TSK_oSettings.bUnitTimeUTC, false);
     }
     else {
       sValue = $.TSK_NOVALUE_LEN3;
@@ -139,10 +139,10 @@ class TSK_ViewTimer extends TSK_ViewGlobal {
     // ... block time (elapsed)
     if($.TSK_oTimer.oTimeOffBlock != null) {
       if($.TSK_oTimer.oTimeOnBlock != null) {
-        sValue = TSK_Timer.formatElapsedTime($.TSK_oTimer.oTimeOffBlock, $.TSK_oTimer.oTimeOnBlock);
+        sValue = LangUtils.formatElapsedTime($.TSK_oTimer.oTimeOffBlock, $.TSK_oTimer.oTimeOnBlock, false);
       }
       else {
-        sValue = TSK_Timer.formatElapsedTime($.TSK_oTimer.oTimeOffBlock, oTimeNow);
+        sValue = LangUtils.formatElapsedTime($.TSK_oTimer.oTimeOffBlock, oTimeNow, false);
       }
     }
     else {
@@ -166,10 +166,10 @@ class TSK_ViewTimer extends TSK_ViewGlobal {
     // ... time: flight (elapsed)
     if($.TSK_oTimer.oTimeTakeoff != null) {
       if($.TSK_oTimer.oTimeLanding != null) {
-        sValue = TSK_Timer.formatElapsedTime($.TSK_oTimer.oTimeTakeoff, $.TSK_oTimer.oTimeLanding);
+        sValue = LangUtils.formatElapsedTime($.TSK_oTimer.oTimeTakeoff, $.TSK_oTimer.oTimeLanding, false);
       }
       else {
-        sValue = TSK_Timer.formatElapsedTime($.TSK_oTimer.oTimeTakeoff, oTimeNow);
+        sValue = LangUtils.formatElapsedTime($.TSK_oTimer.oTimeTakeoff, oTimeNow, false);
       }
     }
     else {
@@ -178,7 +178,7 @@ class TSK_ViewTimer extends TSK_ViewGlobal {
     self.oRezValueRight.setText(sValue);
     // ... time: on-block
     if($.TSK_oTimer.oTimeOnBlock != null) {
-      sValue = TSK_Timer.formatTime($.TSK_oTimer.oTimeOnBlock);
+      sValue = LangUtils.formatTime($.TSK_oTimer.oTimeOnBlock, $.TSK_oSettings.bUnitTimeUTC, false);
     }
     else {
       sValue = $.TSK_NOVALUE_LEN3;
@@ -186,7 +186,7 @@ class TSK_ViewTimer extends TSK_ViewGlobal {
     self.oRezValueBottomLeft.setText(sValue);
     // ... time: landing
     if($.TSK_oTimer.oTimeLanding != null) {
-      sValue = TSK_Timer.formatTime($.TSK_oTimer.oTimeLanding);
+      sValue = LangUtils.formatTime($.TSK_oTimer.oTimeLanding, $.TSK_oSettings.bUnitTimeUTC, false);
     }
     else {
       sValue = $.TSK_NOVALUE_LEN3;

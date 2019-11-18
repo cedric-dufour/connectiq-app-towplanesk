@@ -21,7 +21,6 @@ using Toybox.ActivityRecording as AR;
 using Toybox.Attention as Attn;
 using Toybox.FitContributor as FC;
 using Toybox.Time;
-using Toybox.Time.Gregorian;
 
 //
 // CLASS
@@ -205,8 +204,8 @@ class TSK_Activity {
       self.oSession.stop();
     }
     if(_bSave) {
-      self.oFitField_TotalFlightTime.setData(self.formatElapsedTime(self.oDurationFlight));
-      self.oFitField_TotalBlockTime.setData(self.formatElapsedTime(self.oDurationBlock));
+      self.oFitField_TotalFlightTime.setData(LangUtils.formatElapsedDuration(self.oDurationFlight, true));
+      self.oFitField_TotalBlockTime.setData(LangUtils.formatElapsedDuration(self.oDurationBlock, true));
       self.oSession.save();
       if(Attn has :playTone) {
         Attn.playTone(Attn.TONE_STOP);
@@ -278,12 +277,12 @@ class TSK_Activity {
 
   function setTimeOffBlock(_oTime) {
     //Sys.println(Lang.format("DEBUG: TSK_Activity.setTimeOffBlock($1$)", [_oTime.value()]));
-    self.oFitField_TimeOffBlock.setData(self.formatTime(_oTime));
+    self.oFitField_TimeOffBlock.setData(LangUtils.formatTime(_oTime, $.TSK_oSettings.bUnitTimeUTC, true));
   }
 
   function setTimeTakeoff(_oTime) {
     //Sys.println(Lang.format("DEBUG: TSK_Activity.setTimeTakeoff($1$)", [_oTime.value()]));
-    self.oFitField_TimeTakeoff.setData(self.formatTime(_oTime));
+    self.oFitField_TimeTakeoff.setData(LangUtils.formatTime(_oTime, $.TSK_oSettings.bUnitTimeUTC, true));
   }
 
   function setAltitudeTakeoff(_fValue) {
@@ -293,7 +292,7 @@ class TSK_Activity {
 
   function setTimeTopOfClimb(_oTime) {
     //Sys.println(Lang.format("DEBUG: TSK_Activity.setTimeTopOfClimb($1$)", [_oTime.value()]));
-    self.oFitField_TimeTopOfClimb.setData(self.formatTime(_oTime));
+    self.oFitField_TimeTopOfClimb.setData(LangUtils.formatTime(_oTime, $.TSK_oSettings.bUnitTimeUTC, true));
   }
 
   function setAltitudeTopOfClimb(_fValue) {
@@ -310,7 +309,7 @@ class TSK_Activity {
 
   function setTimeLanding(_oTime) {
     //Sys.println(Lang.format("DEBUG: TSK_Activity.setTimeLanding($1$)", [_oTime.value()]));
-    self.oFitField_TimeLanding.setData(self.formatTime(_oTime));
+    self.oFitField_TimeLanding.setData(LangUtils.formatTime(_oTime, $.TSK_oSettings.bUnitTimeUTC, true));
   }
 
   function setAltitudeLanding(_fValue) {
@@ -320,12 +319,12 @@ class TSK_Activity {
 
   function setTimeOnBlock(_oTime) {
     //Sys.println(Lang.format("DEBUG: TSK_Activity.setTimeOnBlock($1$)", [_oTime.value()]));
-    self.oFitField_TimeOnBlock.setData(self.formatTime(_oTime));
+    self.oFitField_TimeOnBlock.setData(LangUtils.formatTime(_oTime, $.TSK_oSettings.bUnitTimeUTC, true));
   }
 
   function setFlightTime(_oDuration) {
     //Sys.println(Lang.format("DEBUG: TSK_Activity.setFlightTime($1$)", [_oDuration.value()]));
-    self.oFitField_FlightTime.setData(self.formatElapsedTime(_oDuration));
+    self.oFitField_FlightTime.setData(LangUtils.formatElapsedDuration(_oDuration, true));
     if(_oDuration != null) {
       self.oDurationFlight = self.oDurationFlight.add(_oDuration);
     }
@@ -333,34 +332,9 @@ class TSK_Activity {
 
   function setBlockTime(_oDuration) {
     //Sys.println(Lang.format("DEBUG: TSK_Activity.setBlockTime($1$)", [_oDuration.value()]));
-    self.oFitField_BlockTime.setData(self.formatElapsedTime(_oDuration));
+    self.oFitField_BlockTime.setData(LangUtils.formatElapsedDuration(_oDuration, true));
     if(_oDuration != null) {
       self.oDurationBlock = self.oDurationBlock.add(_oDuration);
-    }
-  }
-
-
-  //
-  // FUNCTIONS: self (helpers)
-  //
-
-  static function formatTime(_oTime) {
-    if(_oTime != null) {
-      var oTimeInfo = self.bUnitCoefficient_TimeUTC ? Gregorian.utcInfo(_oTime, Time.FORMAT_SHORT) : Gregorian.info(_oTime, Time.FORMAT_SHORT);
-      return Lang.format("$1$:$2$:$3$", [oTimeInfo.hour.format("%02d"), oTimeInfo.min.format("%02d"), oTimeInfo.sec.format("%02d")]);
-    }
-    else {
-      return "--:--";
-    }
-  }
-
-  static function formatElapsedTime(_oDuration) {
-    if(_oDuration != null and _oDuration.value() > 0) {
-      var oDurationInfo = Gregorian.utcInfo(_oDuration.add(new Time.Moment(0)), Time.FORMAT_SHORT);
-      return Lang.format("$1$:$2$:$3$", [oDurationInfo.hour.format("%01d"), oDurationInfo.min.format("%02d"), oDurationInfo.sec.format("%02d")]);
-    }
-    else {
-      return "-:--";
     }
   }
 
