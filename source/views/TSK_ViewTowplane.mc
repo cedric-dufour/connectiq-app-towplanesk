@@ -184,7 +184,7 @@ class TSK_ViewTowplaneDelegate extends TSK_ViewGlobalDelegate {
 
   function onPreviousPage() {
     //Sys.println("DEBUG: TSK_ViewTowplaneDelegate.onPreviousPage()");
-    Ui.switchToView(new TSK_ViewSpeed(), new TSK_ViewSpeedDelegate(), Ui.SLIDE_IMMEDIATE);
+    Ui.switchToView(new TSK_ViewAltimeter(), new TSK_ViewAltimeterDelegate(), Ui.SLIDE_IMMEDIATE);
     return true;
   }
 

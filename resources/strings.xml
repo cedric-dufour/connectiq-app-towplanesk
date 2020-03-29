@@ -127,12 +127,10 @@
   <string id="labelElapsedFlight">Flight Time</string>
   <string id="labelElapsedBlock">Block Time</string>
   <string id="labelFlightCycles">Cycles</string>
-  <string id="labelWindSpeed">Wind S.</string>
-  <string id="labelWindDirection">Wind D.</string>
-  <string id="labelAirSpeed">Air S.</string>
-  <string id="labelTowSpeed">Tow S.</string>
-  <string id="labelVerticalSpeed">Vert.S.</string>
-  <string id="labelGroundSpeed">Gnd.S.</string>
+  <string id="labelAirSpeed">Air Spd</string>
+  <string id="labelTowSpeed">Tow Sp.</string>
+  <string id="labelVerticalSpeed">Vert.Spd</string>
+  <string id="labelGroundSpeed">Gnd.Spd</string>
   <string id="labelHeading">Heading</string>
   <string id="labelAltitude">Altitude</string>
   <string id="labelPressureQNH">QNH</string>
@@ -163,8 +161,6 @@
   <string id="unitBarometricAltitude">m|ft</string>
   <string id="titleVerticalSpeed">Vertical Speed</string>
   <string id="unitVerticalSpeed">m/s|ft/m</string>
-  <string id="titleAirSpeed">Air Speed</string>
-  <string id="unitAirSpeed">kt|km/h|mph</string>
   <string id="unitTime">hh:mm:ss</string>
   <string id="unitNone">-</string>
 </strings>

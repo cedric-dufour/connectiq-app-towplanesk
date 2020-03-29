@@ -36,7 +36,6 @@ class TSK_Activity {
   // ... record
   public const FITFIELD_BAROMETRICALTITUDE = 0;
   public const FITFIELD_VERTICALSPEED = 1;
-  public const FITFIELD_AIRSPEED = 2;
   // ... lap
   public const FITFIELD_CALLSIGNTOWPLANE = 10;
   public const FITFIELD_CALLSIGNGLIDER = 11;
@@ -75,7 +74,6 @@ class TSK_Activity {
   // ... record
   private var oFitField_BarometricAltitude = null;
   private var oFitField_VerticalSpeed = null;
-  private var oFitField_AirSpeed = null;
   // ... lap
   private var oFitField_CallsignTowplane = null;
   private var oFitField_CallsignGlider = null;
@@ -120,7 +118,6 @@ class TSK_Activity {
     // ... record
     self.oFitField_BarometricAltitude = self.oSession.createField("BarometricAltitude", TSK_Activity.FITFIELD_BAROMETRICALTITUDE, FC.DATA_TYPE_FLOAT, { :mesgType=>FC.MESG_TYPE_RECORD, :units=>$.TSK_oSettings.sUnitElevation });
     self.oFitField_VerticalSpeed = self.oSession.createField("VerticalSpeed", TSK_Activity.FITFIELD_VERTICALSPEED, FC.DATA_TYPE_FLOAT, { :mesgType=>FC.MESG_TYPE_RECORD, :units=>$.TSK_oSettings.sUnitVerticalSpeed });
-    self.oFitField_AirSpeed = self.oSession.createField("AirSpeed", TSK_Activity.FITFIELD_AIRSPEED, FC.DATA_TYPE_FLOAT, { :mesgType=>FC.MESG_TYPE_RECORD, :units=>$.TSK_oSettings.sUnitHorizontalSpeed });
 
     // ... lap
     self.oFitField_CallsignTowplane = self.oSession.createField("CallsignTowplane", TSK_Activity.FITFIELD_CALLSIGNTOWPLANE, FC.DATA_TYPE_STRING, { :mesgType=>FC.MESG_TYPE_LAP, :count=>9 });
@@ -237,13 +234,6 @@ class TSK_Activity {
     //Sys.println(Lang.format("DEBUG: TSK_Activity.setVerticalSpeed($1$)", [_fValue]));
     if(_fValue != null) {
       self.oFitField_VerticalSpeed.setData(_fValue * self.fUnitCoefficient_VerticalSpeed);
-    }
-  }
-
-  function setAirSpeed(_fValue) {
-    //Sys.println(Lang.format("DEBUG: TSK_Activity.setAirSpeed($1$)", [_fValue]));
-    if(_fValue != null) {
-      self.oFitField_AirSpeed.setData(_fValue * self.fUnitCoefficient_HorizontalSpeed);
     }
   }
 

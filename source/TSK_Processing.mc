@@ -222,7 +222,10 @@ class TSK_Processing {
     }
     else {
       //Sys.println("WARNING: No ground speed and/or heading available");
-      self.fAirSpeed = self.fGroundSpeed;
+      // NOTE: assume we're static; furthermore, air speed:
+      // - is displayed on when on-block
+      // - is used only to detect take-off and landing (when the above condition is true)
+      self.fAirSpeed = $.TSK_oSettings.fWindSpeed;
     }
     //Sys.println(Lang.format("DEBUG: (Calculated) air speed = $1$", [self.fAirSpeed]));
 

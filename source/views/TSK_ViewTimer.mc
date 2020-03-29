@@ -216,7 +216,7 @@ class TSK_ViewTimerDelegate extends TSK_ViewGlobalDelegate {
 
   function onNextPage() {
     //Sys.println("DEBUG: TSK_ViewTimerDelegate.onNextPage()");
-    Ui.switchToView(new TSK_ViewAltimeter(), new TSK_ViewAltimeterDelegate(), Ui.SLIDE_IMMEDIATE);
+    Ui.switchToView(new TSK_ViewSpeed(), new TSK_ViewSpeedDelegate(), Ui.SLIDE_IMMEDIATE);
     return true;
   }
 

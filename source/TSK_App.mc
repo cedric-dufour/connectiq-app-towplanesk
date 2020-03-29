@@ -296,11 +296,6 @@ class TSK_App extends App.AppBase {
 
     // UI update
     self.updateUi(iEpoch);
-
-    // Save FIT fields
-    if($.TSK_oActivity != null) {
-      $.TSK_oActivity.setAirSpeed($.TSK_oProcessing.fAirSpeed);
-    }
   }
 
   function onUpdateTimer_init() {

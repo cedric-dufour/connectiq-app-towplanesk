@@ -59,6 +59,40 @@ The BACK button allows you to control the Timer (depending on the flight phase):
  - Exit (the application)
 
 
+Speed View
+----------
+
+The Speed view shows the current:
+ - Top-Left:
+   optimal Tow Speed
+ - Top-Right:
+   Flight Time
+ - Left:
+   Vertical Speed
+ - Center:
+   <-> Towplane callsign
+   <-> Glider callsign
+ - Right:
+   Altitude
+ - Bottom-Left:
+   <-> Ground Speed
+   <-> Air Speed
+ - Bottom-Right:
+   Heading
+
+The Left/Center/Right fields will turn (bright) RED - along vibrate and sound
+alarm - in case the current Temperature is above the configured threshold (see
+Settings -> Temperature -> Alert below).
+
+Otherwise, it will turn ORANGE - also along vibrate and sound alarm - in case
+the current Altitude is above the configured threshold (see Settings -> Altimeter
+-> Alert below).
+
+Note the *estimated* Air Speed is displayed only when On-Block and used only
+to detect Take-Off and Landing more acurately based on configured wind
+conditions (see Settings -> Wind below).
+
+
 Altimeter View
 --------------
 
@@ -85,36 +119,6 @@ Settings -> Temperature -> Alert below).
 Otherwise, it will turn ORANGE - also along vibrate and sound alarm - in case
 the current Altitude is above the configured threshold (see Settings -> Altimeter
 -> Alert below).
-
-
-Speed View
-----------
-
-The Speed view shows the current:
- - Top-Left:
-   Ground Speed
- - Top-Right:
-   Heading
- - Left:
-   Air Speed
- - Center:
-   <-> Towplane callsign
-   <-> Glider callsign
-   <-> optimal Tow Speed
- - Right:
-   Vertical Speed
- - Bottom-Left:
-   Wind Speed
- - Bottom-Right:
-   Wind Direction
-
-The Left/Center/Right fields will turn:
- - (bright) RED if the current Air Speed is more than 15% off
- - ORANGE if it is between 5% and 15%
- - (dark) GREEN if it is within 5% of the optimal Tow Speed
-
-Please bear in mind Air Speed is *estimated* based on the user-configured Wind
-Speed and Direction (see Settings -> Wind below).
 
 
 Towplane View
@@ -257,7 +261,6 @@ to the SELECT button.
 TowplaneSK adds the following custom fields to the recorded FIT file:
  - Barometric Altitude
  - Vertical Speed
- - Air Speed
 (which will be plotted in Garmin Connect *if* your installed the application
  through the Garmin ConnectIQ store)
 
@@ -320,7 +323,7 @@ The following settings are available:
     set the current wind speed
   - Direction
     set the current wind direction
-  (both being used to *estimate* the current Air Speed)
+  (both being used to *estimate* the Air Speed)
 
 * Notifications
   - Altimeter

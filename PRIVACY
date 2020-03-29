@@ -14,8 +14,8 @@ The permissions required by TowplaneSK are:
  - "Fit" permission:
    for recording your Activity (to FIT file)
  - "FitContributor" permission:
-   to add barometric altitude, vertical speed, airspeed and
-   timer data in your recorded Activity (FIT file)
+   to add barometric altitude, vertical speed and timer data in your
+   recorded Activity (FIT file)
  - "Communications" permission:
    to import data from the web into your destinations memory
    (see the Storage Data section in the USAGE file)

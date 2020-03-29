@@ -209,13 +209,13 @@ class TSK_ViewAltimeterDelegate extends TSK_ViewGlobalDelegate {
 
   function onPreviousPage() {
     //Sys.println("DEBUG: TSK_ViewAltimeterDelegate.onPreviousPage()");
-    Ui.switchToView(new TSK_ViewTimer(), new TSK_ViewTimerDelegate(), Ui.SLIDE_IMMEDIATE);
+    Ui.switchToView(new TSK_ViewSpeed(), new TSK_ViewSpeedDelegate(), Ui.SLIDE_IMMEDIATE);
     return true;
   }
 
   function onNextPage() {
     //Sys.println("DEBUG: TSK_ViewAltimeterDelegate.onNextPage()");
-    Ui.switchToView(new TSK_ViewSpeed(), new TSK_ViewSpeedDelegate(), Ui.SLIDE_IMMEDIATE);
+    Ui.switchToView(new TSK_ViewTowplane(), new TSK_ViewTowplaneDelegate(), Ui.SLIDE_IMMEDIATE);
     return true;
   }
 

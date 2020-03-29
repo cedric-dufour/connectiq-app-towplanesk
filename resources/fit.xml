@@ -18,14 +18,6 @@
             dataLabel="@Strings.labelVerticalSpeed"
             unitLabel="@Strings.unitVerticalSpeed"
             fillColor="#FF0000" />
-  <fitField id="2"
-            displayInChart="true"
-            sortOrder="2"
-            precision="1"
-            chartTitle="@Strings.titleAirSpeed"
-            dataLabel="@Strings.labelAirSpeed"
-            unitLabel="@Strings.unitAirSpeed"
-            fillColor="#FF00FF" />
 
   <!-- lap -->
   <fitField id="10"

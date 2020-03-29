@@ -32,10 +32,13 @@ class TSK_ViewSpeed extends TSK_ViewGlobal {
   //
 
   // Resources
+  // ... fields (labels)
+  protected var oRezLabelBottomLeft;
   // ... strings (cache)
   private var sLabelCallsignTowplane;
   private var sLabelCallsignGlider;
-  private var sLabelTowSpeed;
+  private var sLabelGroundSpeed;
+  private var sLabelAirSpeed;
 
   // Internals
   // ... fields
@@ -63,36 +66,38 @@ class TSK_ViewSpeed extends TSK_ViewGlobal {
     TSK_ViewGlobal.prepare();
 
     // Load resources
+    // ... fields (labels)
+    self.oRezLabelBottomLeft = View.findDrawableById("labelBottomLeft");
     // ... strings
     self.sLabelCallsignTowplane = Ui.loadResource(Rez.Strings.labelCallsignTowplane);
     self.sLabelCallsignGlider = Ui.loadResource(Rez.Strings.labelCallsignGlider);
-    self.sLabelTowSpeed = Ui.loadResource(Rez.Strings.labelTowSpeed);
+    self.sLabelGroundSpeed = Ui.loadResource(Rez.Strings.labelGroundSpeed);
+    self.sLabelAirSpeed = Ui.loadResource(Rez.Strings.labelAirSpeed);
 
     // Set labels, units and color
-    // ... ground speed
-    View.findDrawableById("labelTopLeft").setText(Ui.loadResource(Rez.Strings.labelGroundSpeed));
+    // ... tow speed
+    View.findDrawableById("labelTopLeft").setText(Ui.loadResource(Rez.Strings.labelTowSpeed));
     View.findDrawableById("unitTopLeft").setText(Lang.format("[$1$]", [$.TSK_oSettings.sUnitHorizontalSpeed]));
     self.oRezValueTopLeft.setColor(self.iColorText);
-    // ... heading
-    View.findDrawableById("labelTopRight").setText(Ui.loadResource(Rez.Strings.labelHeading));
-    View.findDrawableById("unitTopRight").setText("[°]");
+    // ... flight time
+    View.findDrawableById("labelTopRight").setText(Ui.loadResource(Rez.Strings.labelElapsedFlight));
+    View.findDrawableById("unitTopRight").setText($.TSK_NOVALUE_BLANK);
     self.oRezValueTopRight.setColor(self.iColorText);
-    // ... air speed
-    View.findDrawableById("labelLeft").setText(Ui.loadResource(Rez.Strings.labelAirSpeed));
-    View.findDrawableById("unitLeft").setText(Lang.format("[$1$]", [$.TSK_oSettings.sUnitHorizontalSpeed]));
-    self.oRezValueLeft.setColor(self.iColorText);
-    // ... callsign / tow speed (dynamic label)
-    self.oRezValueCenter.setColor(self.iColorText);
     // ... vertical speed
-    View.findDrawableById("labelRight").setText(Ui.loadResource(Rez.Strings.labelVerticalSpeed));
-    View.findDrawableById("unitRight").setText(Lang.format("[$1$]", [$.TSK_oSettings.sUnitVerticalSpeed]));
+    View.findDrawableById("labelLeft").setText(Ui.loadResource(Rez.Strings.labelVerticalSpeed));
+    View.findDrawableById("unitLeft").setText(Lang.format("[$1$]", [$.TSK_oSettings.sUnitVerticalSpeed]));
+    self.oRezValueLeft.setColor(self.iColorText);
+    // ... callsign (dynamic label)
+    self.oRezValueCenter.setColor(self.iColorText);
+    // ... altitude
+    View.findDrawableById("labelRight").setText(Ui.loadResource(Rez.Strings.labelAltitude));
+    View.findDrawableById("unitRight").setText(Lang.format("[$1$]", [$.TSK_oSettings.sUnitElevation]));
     self.oRezValueRight.setColor(self.iColorText);
-    // ... wind speed
-    View.findDrawableById("labelBottomLeft").setText(Ui.loadResource(Rez.Strings.labelWindSpeed));
+    // ... ground speed / air speed (dynamic label)
     View.findDrawableById("unitBottomLeft").setText(Lang.format("[$1$]", [$.TSK_oSettings.sUnitHorizontalSpeed]));
     self.oRezValueBottomLeft.setColor(self.iColorText);
-    // ... wind direction
-    View.findDrawableById("labelBottomRight").setText(Ui.loadResource(Rez.Strings.labelWindDirection));
+    // ... heading
+    View.findDrawableById("labelBottomRight").setText(Ui.loadResource(Rez.Strings.labelHeading));
     View.findDrawableById("unitBottomRight").setText("[°]");
     self.oRezValueBottomRight.setColor(self.iColorText);
     // ... title
@@ -109,10 +114,11 @@ class TSK_ViewSpeed extends TSK_ViewGlobal {
     TSK_ViewGlobal.updateLayout(!self.bTitleShow);
 
     // Fields
-    var iEpochNow = Time.now().value();
+    var oTimeNow = Time.now();
+    var iEpochNow = oTimeNow.value();
     if(iEpochNow - self.iFieldEpoch >= 2) {
       self.bTitleShow = false;
-      self.iFieldIndex = (self.iFieldIndex + 1) % 3;
+      self.iFieldIndex = (self.iFieldIndex + 1) % 2;
       self.iFieldEpoch = iEpochNow;
     }
 
@@ -122,85 +128,44 @@ class TSK_ViewSpeed extends TSK_ViewGlobal {
     // ... alert fields
     var iColorFieldBackground = Gfx.COLOR_TRANSPARENT;
     var iColorFieldText = Gfx.COLOR_DK_GRAY;
-    if($.TSK_oGlider != null and $.TSK_oProcessing.fAirSpeed != null and $.TSK_oProcessing.fAirSpeed < $.TSK_oTowplane.fSpeedMaxTowing) {
-      var fSpeedDelta = ($.TSK_oProcessing.fAirSpeed - $.TSK_oGlider.fSpeedTowing) / $.TSK_oGlider.fSpeedTowing;
-      if(fSpeedDelta < 0.0f) {
-        fSpeedDelta = -fSpeedDelta;
-      }
-      if(fSpeedDelta > 0.15f) {  // more than 15%
-        iColorFieldBackground = Gfx.COLOR_RED;
-        iColorFieldText = self.iColorText;
-      }
-      else if(fSpeedDelta > 0.05f) {  // more than 5%
-        iColorFieldBackground = Gfx.COLOR_ORANGE;
-        iColorFieldText = self.iColorText;
-      }
-      else {  // within tolerance
-        iColorFieldBackground = Gfx.COLOR_DK_GREEN;
-        iColorFieldText = self.iColorText;
-      }
+    if($.TSK_oProcessing.bAlertTemperature) {
+      iColorFieldBackground = Gfx.COLOR_RED;
+      iColorFieldText = self.iColorText;
+    }
+    else if($.TSK_oProcessing.bAlertAltitude) {
+      iColorFieldBackground = Gfx.COLOR_ORANGE;
+      iColorFieldText = self.iColorText;
     }
 
     // Set values
     var fValue;
     var sValue;
-    // ... ground speed
-    if($.TSK_oProcessing.fGroundSpeed != null) {
-      fValue = $.TSK_oProcessing.fGroundSpeed * $.TSK_oSettings.fUnitHorizontalSpeedCoefficient;
+    // ... tow speed
+    if($.TSK_oGlider != null and $.TSK_oGlider.fSpeedTowing != null) {
+      fValue = $.TSK_oGlider.fSpeedTowing * $.TSK_oSettings.fUnitHorizontalSpeedCoefficient;
       sValue = fValue.format("%.0f");
     }
     else {
-      sValue = $.TSK_NOVALUE_LEN3;
+      sValue = $.TSK_NOVALUE_LEN2;
     }
     self.oRezValueTopLeft.setText(sValue);
-    // ... heading
-    if($.TSK_oProcessing.fHeading != null) {
-      //fValue = (($.TSK_oProcessing.fHeading * 180.0f/Math.PI).toNumber()) % 360;
-      fValue = (($.TSK_oProcessing.fHeading * 57.2957795131f).toNumber()) % 360;
-      sValue = fValue.format("%d");
+    // ... flight time
+    if($.TSK_oTimer.oTimeTakeoff != null) {
+      if($.TSK_oTimer.oTimeLanding != null) {
+        sValue = LangUtils.formatElapsedTime($.TSK_oTimer.oTimeTakeoff, $.TSK_oTimer.oTimeLanding, false);
+      }
+      else {
+        sValue = LangUtils.formatElapsedTime($.TSK_oTimer.oTimeTakeoff, oTimeNow, false);
+      }
     }
     else {
       sValue = $.TSK_NOVALUE_LEN3;
     }
     self.oRezValueTopRight.setText(sValue);
-    // ... air speed
+    // ... vertical speed
     self.oRezDrawableGlobal.setColorAlertLeft(iColorFieldBackground);
     self.oRezLabelLeft.setColor(iColorFieldText);
     self.oRezUnitLeft.setColor(iColorFieldText);
-    if($.TSK_oProcessing.fAirSpeed != null) {
-      fValue = $.TSK_oProcessing.fAirSpeed * $.TSK_oSettings.fUnitHorizontalSpeedCoefficient;
-      sValue = fValue.format("%.0f");
-    }
-    else {
-      sValue = $.TSK_NOVALUE_LEN3;
-    }
-    self.oRezValueLeft.setText(sValue);
-    // ... callsign / tow speed
-    self.oRezDrawableGlobal.setColorAlertCenter(iColorFieldBackground);
-    self.oRezLabelCenter.setColor(iColorFieldText);
-    if(self.iFieldIndex == 0) {  // ... callsign (towplane)
-      self.oRezLabelCenter.setText(self.sLabelCallsignTowplane);
-      sValue = $.TSK_oTowplane.sCallsign;
-    }
-    else if(self.iFieldIndex == 1) {  // ... callsign (glider)
-      self.oRezLabelCenter.setText(self.sLabelCallsignGlider);
-      sValue = $.TSK_oGlider != null ? $.TSK_oGlider.sCallsign : $.TSK_NOVALUE_LEN2;
-    }
-    else {  // ... tow speed
-      self.oRezLabelCenter.setText(self.sLabelTowSpeed);
-      if($.TSK_oGlider != null and $.TSK_oGlider.fSpeedTowing != null) {
-        fValue = $.TSK_oGlider.fSpeedTowing * $.TSK_oSettings.fUnitHorizontalSpeedCoefficient;
-        sValue = fValue.format("%.0f");
-      }
-      else {
-        sValue = $.TSK_NOVALUE_LEN2;
-      }
-    }
-    self.oRezValueCenter.setText(sValue);
-    // ... vertical speed
-    self.oRezDrawableGlobal.setColorAlertRight(iColorFieldBackground);
-    self.oRezLabelRight.setColor(iColorFieldText);
-    self.oRezUnitRight.setColor(iColorFieldText);
     if($.TSK_oProcessing.fVerticalSpeed != null) {
       fValue = $.TSK_oProcessing.fVerticalSpeed * $.TSK_oSettings.fUnitVerticalSpeedCoefficient;
       if($.TSK_oSettings.fUnitVerticalSpeedCoefficient < 100.0f) {
@@ -213,20 +178,57 @@ class TSK_ViewSpeed extends TSK_ViewGlobal {
     else {
       sValue = $.TSK_NOVALUE_LEN3;
     }
-    self.oRezValueRight.setText(sValue);
-    // ... wind speed
-    if($.TSK_oSettings.fWindSpeed != null) {
-      fValue = $.TSK_oSettings.fWindSpeed * $.TSK_oSettings.fUnitHorizontalSpeedCoefficient;
+    self.oRezValueLeft.setText(sValue);
+    // ... callsign
+    self.oRezDrawableGlobal.setColorAlertCenter(iColorFieldBackground);
+    self.oRezLabelCenter.setColor(iColorFieldText);
+    if(self.iFieldIndex == 0) {  // ... callsign (towplane)
+      self.oRezLabelCenter.setText(self.sLabelCallsignTowplane);
+      sValue = $.TSK_oTowplane.sCallsign;
+    }
+    else {  // ... callsign (glider)
+      self.oRezLabelCenter.setText(self.sLabelCallsignGlider);
+      sValue = $.TSK_oGlider != null ? $.TSK_oGlider.sCallsign : $.TSK_NOVALUE_LEN2;
+    }
+    self.oRezValueCenter.setText(sValue);
+    // ... altitude
+    self.oRezDrawableGlobal.setColorAlertRight(iColorFieldBackground);
+    self.oRezLabelRight.setColor(iColorFieldText);
+    self.oRezUnitRight.setColor(iColorFieldText);
+    if($.TSK_oAltimeter.fAltitudeActual != null) {
+      fValue = $.TSK_oAltimeter.fAltitudeActual * $.TSK_oSettings.fUnitElevationCoefficient;
       sValue = fValue.format("%.0f");
     }
     else {
       sValue = $.TSK_NOVALUE_LEN3;
     }
+    self.oRezValueRight.setText(sValue);
+    // ground speed / air speed
+    if(self.iFieldIndex == 1 and $.TSK_oProcessing.fGroundSpeed != null and $.TSK_oProcessing.fGroundSpeed < $.TSK_oTowplane.fSpeedOffBlock) {  // ... air speed
+      self.oRezLabelBottomLeft.setText(self.sLabelAirSpeed);
+      if($.TSK_oProcessing.fAirSpeed != null) {
+        fValue = $.TSK_oProcessing.fAirSpeed * $.TSK_oSettings.fUnitHorizontalSpeedCoefficient;
+        sValue = fValue.format("%.0f");
+      }
+      else {
+        sValue = $.TSK_NOVALUE_LEN3;
+      }
+    }
+    else {  // ... ground speed
+      self.oRezLabelBottomLeft.setText(self.sLabelGroundSpeed);
+      if($.TSK_oProcessing.fGroundSpeed != null) {
+        fValue = $.TSK_oProcessing.fGroundSpeed * $.TSK_oSettings.fUnitHorizontalSpeedCoefficient;
+        sValue = fValue.format("%.0f");
+      }
+      else {
+        sValue = $.TSK_NOVALUE_LEN3;
+      }
+    }
     self.oRezValueBottomLeft.setText(sValue);
-    // ... wind direction
-    if($.TSK_oSettings.fWindDirection != null) {
-      //fValue = (($.TSK_oSettings.fWindDirection * 180.0f/Math.PI).toNumber()) % 360;
-      fValue = (($.TSK_oSettings.fWindDirection * 57.2957795131f).toNumber()) % 360;
+    // ... heading
+    if($.TSK_oProcessing.fHeading != null) {
+      //fValue = (($.TSK_oProcessing.fHeading * 180.0f/Math.PI).toNumber()) % 360;
+      fValue = (($.TSK_oProcessing.fHeading * 57.2957795131f).toNumber()) % 360;
       sValue = fValue.format("%d");
     }
     else {
@@ -245,13 +247,13 @@ class TSK_ViewSpeedDelegate extends TSK_ViewGlobalDelegate {
 
   function onPreviousPage() {
     //Sys.println("DEBUG: TSK_ViewSpeedDelegate.onPreviousPage()");
-    Ui.switchToView(new TSK_ViewAltimeter(), new TSK_ViewAltimeterDelegate(), Ui.SLIDE_IMMEDIATE);
+    Ui.switchToView(new TSK_ViewTimer(), new TSK_ViewTimerDelegate(), Ui.SLIDE_IMMEDIATE);
     return true;
   }
 
   function onNextPage() {
     //Sys.println("DEBUG: TSK_ViewSpeedDelegate.onNextPage()");
-    Ui.switchToView(new TSK_ViewTowplane(), new TSK_ViewTowplaneDelegate(), Ui.SLIDE_IMMEDIATE);
+    Ui.switchToView(new TSK_ViewAltimeter(), new TSK_ViewAltimeterDelegate(), Ui.SLIDE_IMMEDIATE);
     return true;
   }
 
