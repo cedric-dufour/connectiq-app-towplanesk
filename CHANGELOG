@@ -1,3 +1,7 @@
+* 1.1.20200329a:
+  - CHG: Revamp Speed view (use Air Speed only for Take-off/Landing detection)
+  - NEW: Support for fenix6 (pro) serie
+
 * 1.0.20191120a:
   - CHG: Remove Settings access from Towplane/Glider (sub-)menus
 
