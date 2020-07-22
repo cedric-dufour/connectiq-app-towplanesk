@@ -1,3 +1,7 @@
+* 1.1.20200722a:
+  - CHG: Allow Back button to exit immediately when timer is idle
+  - CHG: Optimize menus (order)
+
 * 1.1.20200329a:
   - CHG: Revamp Speed view (use Air Speed only for Take-off/Landing detection)
   - NEW: Support for fenix6 (pro) serie
