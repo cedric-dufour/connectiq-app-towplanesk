@@ -204,8 +204,14 @@ class TSK_ViewTimerDelegate extends TSK_ViewGlobalDelegate {
 
   function onBack() {
     //Sys.println("DEBUG: TSK_ViewTimerDelegate.onBack()");
-    Ui.pushView(new TSK_MenuGeneric(:menuTimer), new TSK_MenuGenericDelegate(:menuTimer), Ui.SLIDE_IMMEDIATE);
-    return true;
+    if($.TSK_oTimer.iState > TSK_Timer.STATE_STANDBY) {
+      Ui.pushView(new TSK_MenuGeneric(:menuTimer), new TSK_MenuGenericDelegate(:menuTimer), Ui.SLIDE_IMMEDIATE);
+      return true;
+    }
+    else if($.TSK_oActivity != null) {  // prevent activity data loss
+      return true;
+    }
+    return false;
   }
 
   function onPreviousPage() {
