@@ -29,9 +29,9 @@ class TSK_MenuGeneric extends Ui.Menu {
 
     if(_menu == :menuGlobal) {
       Menu.setTitle(Ui.loadResource(Rez.Strings.AppName));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettings), :menuSettings);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftTowplane), :menuTowplane);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftGlider), :menuGlider);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftTowplane), :menuTowplane);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettings), :menuSettings);
     }
 
     else if(_menu == :menuSettings) {
@@ -122,25 +122,17 @@ class TSK_MenuGeneric extends Ui.Menu {
 
     else if(_menu == :menuTowplane) {
       Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftTowplane));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageEdit), :menuTowplaneEdit);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageLoad), :menuTowplaneLoad);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageEdit), :menuTowplaneEdit);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageSave), :menuTowplaneSave);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageDelete), :menuTowplaneDelete);
     }
     else if(_menu == :menuTowplaneEdit) {
       Menu.setTitle(Ui.loadResource(Rez.Strings.titleStorageEdit));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeight), :menuTowplaneWeight);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuel), :menuTowplaneFuel);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeight), :menuTowplaneWeight);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeed), :menuTowplaneSpeed);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftCallsign), :menuTowplaneCallsign);
-    }
-    else if(_menu == :menuTowplaneWeight) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftWeight));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightPayload), :menuTowplaneWeightPayload);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightEmpty), :menuTowplaneWeightEmpty);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTakeoff), :menuTowplaneWeightMaxTakeoff);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowing), :menuTowplaneWeightMaxTowing);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowed), :menuTowplaneWeightMaxTowed);
     }
     else if(_menu == :menuTowplaneFuel) {
       Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftFuel));
@@ -155,6 +147,14 @@ class TSK_MenuGeneric extends Ui.Menu {
       Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowAirborne), :menuTowplaneFuelFlowAirborne);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowTowing), :menuTowplaneFuelFlowTowing);
     }
+    else if(_menu == :menuTowplaneWeight) {
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftWeight));
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightPayload), :menuTowplaneWeightPayload);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightEmpty), :menuTowplaneWeightEmpty);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTakeoff), :menuTowplaneWeightMaxTakeoff);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowing), :menuTowplaneWeightMaxTowing);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowed), :menuTowplaneWeightMaxTowed);
+    }
     else if(_menu == :menuTowplaneSpeed) {
       Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftSpeed));
       Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeedOffBlock), :menuTowplaneSpeedOffBlock);
@@ -165,8 +165,8 @@ class TSK_MenuGeneric extends Ui.Menu {
 
     else if(_menu == :menuGlider) {
       Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftGlider));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageEdit), :menuGliderEdit);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageLoad), :menuGliderLoad);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageEdit), :menuGliderEdit);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageSave), :menuGliderSave);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageDelete), :menuGliderDelete);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftClear), :menuGliderClear);
@@ -414,11 +414,11 @@ class TSK_MenuGenericDelegate extends Ui.MenuInputDelegate {
     }
 
     else if(self.menu == :menuTowplane) {
-      if(_item == :menuTowplaneEdit) {
-        Ui.pushView(new TSK_MenuGeneric(:menuTowplaneEdit), new TSK_MenuGenericDelegate(:menuTowplaneEdit), Ui.SLIDE_IMMEDIATE);
-      }
-      else if(_item == :menuTowplaneLoad) {
+      if(_item == :menuTowplaneLoad) {
         Ui.pushView(new TSK_PickerGenericStorage(:storageTowplane, :actionLoad), new TSK_PickerGenericStorageDelegate(:storageTowplane, :actionLoad), Ui.SLIDE_IMMEDIATE);
+      }
+      else if(_item == :menuTowplaneEdit) {
+        Ui.pushView(new TSK_MenuGeneric(:menuTowplaneEdit), new TSK_MenuGenericDelegate(:menuTowplaneEdit), Ui.SLIDE_IMMEDIATE);
       }
       else if(_item == :menuTowplaneSave) {
         Ui.pushView(new TSK_PickerGenericStorage(:storageTowplane, :actionSave), new TSK_PickerGenericStorageDelegate(:storageTowplane, :actionSave), Ui.SLIDE_IMMEDIATE);
@@ -428,11 +428,11 @@ class TSK_MenuGenericDelegate extends Ui.MenuInputDelegate {
       }
     }
     else if(self.menu == :menuTowplaneEdit) {
-      if(_item == :menuTowplaneWeight) {
-        Ui.pushView(new TSK_MenuGeneric(:menuTowplaneWeight), new TSK_MenuGenericDelegate(:menuTowplaneWeight), Ui.SLIDE_IMMEDIATE);
-      }
-      else if(_item == :menuTowplaneFuel) {
+      if(_item == :menuTowplaneFuel) {
         Ui.pushView(new TSK_MenuGeneric(:menuTowplaneFuel), new TSK_MenuGenericDelegate(:menuTowplaneFuel), Ui.SLIDE_IMMEDIATE);
+      }
+      else if(_item == :menuTowplaneWeight) {
+        Ui.pushView(new TSK_MenuGeneric(:menuTowplaneWeight), new TSK_MenuGenericDelegate(:menuTowplaneWeight), Ui.SLIDE_IMMEDIATE);
       }
       else if(_item == :menuTowplaneSpeed) {
         Ui.pushView(new TSK_MenuGeneric(:menuTowplaneSpeed), new TSK_MenuGenericDelegate(:menuTowplaneSpeed), Ui.SLIDE_IMMEDIATE);
@@ -499,11 +499,11 @@ class TSK_MenuGenericDelegate extends Ui.MenuInputDelegate {
     }
 
     else if(self.menu == :menuGlider) {
-      if(_item == :menuGliderEdit) {
-        Ui.pushView(new TSK_MenuGeneric(:menuGliderEdit), new TSK_MenuGenericDelegate(:menuGliderEdit), Ui.SLIDE_IMMEDIATE);
-      }
-      else if(_item == :menuGliderLoad) {
+      if(_item == :menuGliderLoad) {
         Ui.pushView(new TSK_PickerGenericStorage(:storageGlider, :actionLoad), new TSK_PickerGenericStorageDelegate(:storageGlider, :actionLoad), Ui.SLIDE_IMMEDIATE);
+      }
+      else if(_item == :menuGliderEdit) {
+        Ui.pushView(new TSK_MenuGeneric(:menuGliderEdit), new TSK_MenuGenericDelegate(:menuGliderEdit), Ui.SLIDE_IMMEDIATE);
       }
       else if(_item == :menuGliderSave) {
         Ui.pushView(new TSK_PickerGenericStorage(:storageGlider, :actionSave), new TSK_PickerGenericStorageDelegate(:storageGlider, :actionSave), Ui.SLIDE_IMMEDIATE);
