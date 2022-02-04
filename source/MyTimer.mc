@@ -226,6 +226,7 @@ class MyTimer {
     $.iMyLogIndex = ($.iMyLogIndex + 1) % $.MY_STORAGE_SLOTS;
     var s = $.iMyLogIndex.format("%02d");
     App.Storage.setValue(format("storLog$1$", [s]), dictLog as App.PropertyValueType);
+    App.Storage.setValue("storLogIndex", $.iMyLogIndex as App.PropertyValueType);
 
     // Add activity lap
     if($.oMyActivity != null) {
