@@ -142,6 +142,7 @@ class MyPickerGenericStorageDelegate extends Ui.PickerDelegate {
           if(d != null) {
             $.oMyTowplane.load(d);
           }
+          Ui.popView(Ui.SLIDE_IMMEDIATE);  // one less button press to go back to main view
         }
         else if(self.action == :actionDelete) {
           App.Storage.deleteValue(format("stor$1$$2$", [sStorageName, s]));
@@ -163,6 +164,7 @@ class MyPickerGenericStorageDelegate extends Ui.PickerDelegate {
             }
             ($.oMyGlider as MyGlider).load(d);
           }
+          Ui.popView(Ui.SLIDE_IMMEDIATE);  // one less button press to go back to main view
         }
         else if(self.action == :actionDelete) {
           App.Storage.deleteValue(format("stor$1$$2$", [sStorageName, s]));
