@@ -16,78 +16,61 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Graphics as Gfx;
 using Toybox.Time;
 using Toybox.System as Sys;
 using Toybox.WatchUi as Ui;
 
-class MyViewAltimeter extends MyViewGlobal {
+class MyViewAltimeter extends MyView {
 
   //
-  // VARIABLES
-  //
-
-  // Internals
-  // ... fields
-  private var bTitleShow;
-  private var iFieldEpoch;
-
-
-  //
-  // FUNCTIONS: MyViewGlobal (override/implement)
+  // FUNCTIONS: MyView (override/implement)
   //
 
   function initialize() {
-    MyViewGlobal.initialize();
-
-    // Internals
-    // ... fields
-    self.bTitleShow = true;
-    self.iFieldEpoch = Time.now().value();
+    MyView.initialize();
   }
 
   function prepare() {
     //Sys.println("DEBUG: MyViewAltimeter.prepare()");
-    MyViewGlobal.prepare();
+    MyView.prepare();
 
     // Set labels, units and colors
     // ... density altitude (dynamic color)
-    View.findDrawableById("labelTopLeft").setText(Ui.loadResource(Rez.Strings.labelAltitudeDensity));
-    View.findDrawableById("unitTopLeft").setText(Lang.format("[$1$]", [$.oMySettings.sUnitElevation]));
+    (View.findDrawableById("labelTopLeft") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelAltitudeDensity) as String);
+    (View.findDrawableById("unitTopLeft") as Ui.Text).setText(format("[$1$]", [$.oMySettings.sUnitElevation]));
     // ... temperature (dynamic color)
-    View.findDrawableById("labelTopRight").setText(Ui.loadResource(Rez.Strings.labelTemperature));
-    View.findDrawableById("unitTopRight").setText(Lang.format("[$1$]", [$.oMySettings.sUnitTemperature]));
+    (View.findDrawableById("labelTopRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelTemperature) as String);
+    (View.findDrawableById("unitTopRight") as Ui.Text).setText(format("[$1$]", [$.oMySettings.sUnitTemperature]));
     // ... altitude
-    View.findDrawableById("labelLeft").setText(Ui.loadResource(Rez.Strings.labelAltitude));
-    View.findDrawableById("unitLeft").setText(Lang.format("[$1$]", [$.oMySettings.sUnitElevation]));
-    self.oRezValueLeft.setColor(self.iColorText);
+    (View.findDrawableById("labelLeft") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelAltitude) as String);
+    (View.findDrawableById("unitLeft") as Ui.Text).setText(format("[$1$]", [$.oMySettings.sUnitElevation]));
+    (self.oRezValueLeft as Ui.Text).setColor(self.iColorText);
     // ... ISA temperature offset
-    View.findDrawableById("labelCenter").setText(Ui.loadResource(Rez.Strings.labelTemperatureISAOffset));
-    self.oRezValueCenter.setColor(self.iColorText);
+    (View.findDrawableById("labelCenter") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelTemperatureISAOffset) as String);
+    (self.oRezValueCenter as Ui.Text).setColor(self.iColorText);
     // ... QNH
-    View.findDrawableById("labelRight").setText(Ui.loadResource(Rez.Strings.labelPressureQNH));
-    View.findDrawableById("unitRight").setText(Lang.format("[$1$]", [$.oMySettings.sUnitPressure]));
-    self.oRezValueRight.setColor(self.iColorText);
+    (View.findDrawableById("labelRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelPressureQNH) as String);
+    (View.findDrawableById("unitRight") as Ui.Text).setText(format("[$1$]", [$.oMySettings.sUnitPressure]));
+    (self.oRezValueRight as Ui.Text).setColor(self.iColorText);
     // ... pressure altitude (FL)
-    View.findDrawableById("labelBottomLeft").setText(Ui.loadResource(Rez.Strings.labelAltitudeISA));
-    View.findDrawableById("unitBottomLeft").setText(Lang.format("[$1$]", [$.oMySettings.sUnitElevation]));
-    self.oRezValueBottomLeft.setColor(self.iColorText);
+    (View.findDrawableById("labelBottomLeft") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelAltitudeISA) as String);
+    (View.findDrawableById("unitBottomLeft") as Ui.Text).setText(format("[$1$]", [$.oMySettings.sUnitElevation]));
+    (self.oRezValueBottomLeft as Ui.Text).setColor(self.iColorText);
     // ... QFE
-    View.findDrawableById("labelBottomRight").setText(Ui.loadResource(Rez.Strings.labelPressureQFE));
-    View.findDrawableById("unitBottomRight").setText(Lang.format("[$1$]", [$.oMySettings.sUnitPressure]));
-    self.oRezValueBottomRight.setColor(self.iColorText);
+    (View.findDrawableById("labelBottomRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelPressureQFE) as String);
+    (View.findDrawableById("unitBottomRight") as Ui.Text).setText(format("[$1$]", [$.oMySettings.sUnitPressure]));
+    (self.oRezValueBottomRight as Ui.Text).setColor(self.iColorText);
     // ... title
     self.bTitleShow = true;
-    self.oRezValueFooter.setColor(Gfx.COLOR_DK_GRAY);
-    self.oRezValueFooter.setText(Ui.loadResource(Rez.Strings.titleViewAltimeter));
-
-    // Done
-    return true;
+    (self.oRezValueFooter as Ui.Text).setColor(Gfx.COLOR_DK_GRAY);
+    (self.oRezValueFooter as Ui.Text).setText(Ui.loadResource(Rez.Strings.titleViewAltimeter) as String);
   }
 
-  function updateLayout() {
+  function updateLayout(_b) {
     //Sys.println("DEBUG: MyViewAltimeter.updateLayout()");
-    MyViewGlobal.updateLayout(!self.bTitleShow);
+    MyView.updateLayout(!self.bTitleShow);
 
     // Fields
     var iEpochNow = Time.now().value();
@@ -98,7 +81,7 @@ class MyViewAltimeter extends MyViewGlobal {
 
     // Colors
     // ... background
-    self.oRezDrawableGlobal.setColorFieldsBackground($.oMyProcessing.bAlertFuel ? Gfx.COLOR_DK_RED : Gfx.COLOR_TRANSPARENT);
+    (self.oRezDrawableGlobal as MyDrawableGlobal).setColorFieldsBackground($.oMyProcessing.bAlertFuel ? Gfx.COLOR_DK_RED : Gfx.COLOR_TRANSPARENT);
     // ... alert fields
     var iColorFieldBackground = Gfx.COLOR_TRANSPARENT;
     var iColorFieldText = Gfx.COLOR_DK_GRAY;
@@ -115,53 +98,53 @@ class MyViewAltimeter extends MyViewGlobal {
     var fValue;
     var sValue;
     // ... density altitude
-    self.oRezValueTopLeft.setColor(!$.oMyProcessing.bAlertFuel and $.oMyProcessing.bAlertTemperature ? Gfx.COLOR_RED : self.iColorText);
-    if($.oMyAltimeter.fAltitudeDensity != null) {
+    (self.oRezValueTopLeft as Ui.Text).setColor(!$.oMyProcessing.bAlertFuel and $.oMyProcessing.bAlertTemperature ? Gfx.COLOR_RED : self.iColorText);
+    if(LangUtils.notNaN($.oMyAltimeter.fAltitudeDensity)) {
       fValue = $.oMyAltimeter.fAltitudeDensity * $.oMySettings.fUnitElevationCoefficient;
       sValue = fValue.format("%.0f");
     }
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueTopLeft.setText(sValue);
+    (self.oRezValueTopLeft as Ui.Text).setText(sValue);
     // ... temperature
-    self.oRezValueTopRight.setColor(!$.oMyProcessing.bAlertFuel and $.oMyProcessing.bAlertTemperature ? Gfx.COLOR_RED : self.iColorText);
-    if($.oMyAltimeter.fTemperatureActual != null) {
+    (self.oRezValueTopRight as Ui.Text).setColor(!$.oMyProcessing.bAlertFuel and $.oMyProcessing.bAlertTemperature ? Gfx.COLOR_RED : self.iColorText);
+    if(LangUtils.notNaN($.oMyAltimeter.fTemperatureActual)) {
       fValue = $.oMyAltimeter.fTemperatureActual * $.oMySettings.fUnitTemperatureCoefficient + $.oMySettings.fUnitTemperatureOffset;
       sValue = fValue.format("%.0f");
     }
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueTopRight.setText(sValue);
+    (self.oRezValueTopRight as Ui.Text).setText(sValue);
     // ... altitude
-    self.oRezDrawableGlobal.setColorAlertLeft(iColorFieldBackground);
-    self.oRezLabelLeft.setColor(iColorFieldText);
-    self.oRezUnitLeft.setColor(iColorFieldText);
-    if($.oMyAltimeter.fAltitudeActual != null) {
+    (self.oRezDrawableGlobal as MyDrawableGlobal).setColorAlertLeft(iColorFieldBackground);
+    (self.oRezLabelLeft as Ui.Text).setColor(iColorFieldText);
+    (self.oRezUnitLeft as Ui.Text).setColor(iColorFieldText);
+    if(LangUtils.notNaN($.oMyAltimeter.fAltitudeActual)) {
       fValue = $.oMyAltimeter.fAltitudeActual * $.oMySettings.fUnitElevationCoefficient;
       sValue = fValue.format("%.0f");
     }
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueLeft.setText(sValue);
+    (self.oRezValueLeft as Ui.Text).setText(sValue);
     // ... ISA temperature offset
-    self.oRezDrawableGlobal.setColorAlertCenter(iColorFieldBackground);
-    self.oRezLabelCenter.setColor(iColorFieldText);
-    if($.oMyAltimeter.fTemperatureActual != null and $.oMyAltimeter.fTemperatureISA != null) {
+    (self.oRezDrawableGlobal as MyDrawableGlobal).setColorAlertCenter(iColorFieldBackground);
+    (self.oRezLabelCenter as Ui.Text).setColor(iColorFieldText);
+    if(LangUtils.notNaN($.oMyAltimeter.fTemperatureActual) and LangUtils.notNaN($.oMyAltimeter.fTemperatureISA)) {
       fValue = ($.oMyAltimeter.fTemperatureActual-$.oMyAltimeter.fTemperatureISA) * $.oMySettings.fUnitTemperatureCoefficient;
       sValue = fValue.format("%+.0f");
     }
     else {
       sValue = $.MY_NOVALUE_LEN2;
     }
-    self.oRezValueCenter.setText(sValue);
+    (self.oRezValueCenter as Ui.Text).setText(sValue);
     // ... QNH
-    self.oRezDrawableGlobal.setColorAlertRight(iColorFieldBackground);
-    self.oRezLabelRight.setColor(iColorFieldText);
-    self.oRezUnitRight.setColor(iColorFieldText);
-    if($.oMyAltimeter.fQNH != null) {
+    (self.oRezDrawableGlobal as MyDrawableGlobal).setColorAlertRight(iColorFieldBackground);
+    (self.oRezLabelRight as Ui.Text).setColor(iColorFieldText);
+    (self.oRezUnitRight as Ui.Text).setColor(iColorFieldText);
+    if(LangUtils.notNaN($.oMyAltimeter.fQNH)) {
       fValue = $.oMyAltimeter.fQNH * $.oMySettings.fUnitPressureCoefficient;
       if(fValue < 100.0f) {
         sValue = fValue.format("%.2f");
@@ -173,18 +156,18 @@ class MyViewAltimeter extends MyViewGlobal {
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueRight.setText(sValue);
+    (self.oRezValueRight as Ui.Text).setText(sValue);
     // ... pressure altitude
-    if($.oMyAltimeter.fAltitudeISA != null) {
+    if(LangUtils.notNaN($.oMyAltimeter.fAltitudeISA)) {
       fValue = $.oMyAltimeter.fAltitudeISA * $.oMySettings.fUnitElevationCoefficient;
       sValue = fValue.format("%.0f");
     }
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueBottomLeft.setText(sValue);
+    (self.oRezValueBottomLeft as Ui.Text).setText(sValue);
     // ... QFE
-    if($.oMyAltimeter.fQFE != null) {
+    if(LangUtils.notNaN($.oMyAltimeter.fQFE)) {
       fValue = $.oMyAltimeter.fQFE * $.oMySettings.fUnitPressureCoefficient;
       if(fValue < 100.0f) {
         sValue = fValue.format("%.2f");
@@ -196,15 +179,15 @@ class MyViewAltimeter extends MyViewGlobal {
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueBottomRight.setText(sValue);
+    (self.oRezValueBottomRight as Ui.Text).setText(sValue);
   }
 
 }
 
-class MyViewAltimeterDelegate extends MyViewGlobalDelegate {
+class MyViewAltimeterDelegate extends MyViewDelegate {
 
   function initialize() {
-    MyViewGlobalDelegate.initialize();
+    MyViewDelegate.initialize();
   }
 
   function onPreviousPage() {

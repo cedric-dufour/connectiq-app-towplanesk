@@ -1,7 +1,7 @@
 // -*- mode:java; tab-width:2; c-basic-offset:2; intent-tabs-mode:nil; -*- ex: set tabstop=2 expandtab:
 
 // Generic ConnectIQ Helpers/Resources (CIQ Helpers)
-// Copyright (C) 2017-2018 Cedric Dufour <http://cedric.dufour.name>
+// Copyright (C) 2017-2022 Cedric Dufour <http://cedric.dufour.name>
 //
 // Generic ConnectIQ Helpers/Resources (CIQ Helpers) is free software:
 // you can redistribute it and/or modify it under the terms of the GNU General
@@ -16,7 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
-using Toybox.Lang;
+import Toybox.Lang;
 using Toybox.Math;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
@@ -27,30 +27,38 @@ module LangUtils {
   // FUNCTIONS: data primitives
   //
 
+  // NaN
+  function isNaN(_nValue as Numeric?) as Boolean {
+    return _nValue == null or _nValue != _nValue;
+  }
+  function notNaN(_nValue as Numeric?) as Boolean {
+    return _nValue != null and _nValue == _nValue;
+  }
+
   // Deep-copy the given object
-  function copy(_oObject) {
+  function copy(_oObject as Object) as Object {
     var oCopy = null;
     if(_oObject instanceof Lang.Array) {
       var iSize = _oObject.size();
-      oCopy = new [iSize];
+      oCopy = new Array<Object>[iSize];
       for(var i=0; i<iSize; i++) {
-        oCopy[i] = LangUtils.copy(_oObject[i]);
+        oCopy[i] = LangUtils.copy(_oObject[i] as Object);
       }
     }
     else if(_oObject instanceof Lang.Dictionary) {
       var amKeys = _oObject.keys();
       var iSize = amKeys.size();
-      oCopy = {};
+      oCopy = {} as Dictionary<Object, Object>;
       for(var i=0; i<iSize; i++) {
         var mKey = amKeys[i];
-        oCopy.put(mKey, LangUtils.copy(_oObject.get(mKey)));
+        oCopy.put(mKey, LangUtils.copy(_oObject.get(mKey) as Object));
       }
     }
     else if(_oObject instanceof Lang.Exception) {
-      throw new Lang.UnexpectedTypeException();
+      throw new Lang.UnexpectedTypeException("Exception may not be deep-copied", null, null);
     }
     else if(_oObject instanceof Lang.Method) {
-      throw new Lang.UnexpectedTypeException();
+      throw new Lang.UnexpectedTypeException("Method may not be deep-copied", null, null);
     }
     else {
       oCopy = _oObject;
@@ -63,7 +71,17 @@ module LangUtils {
   // FUNCTIONS: time formatting
   //
 
-  function formatTime(_oTime, _bUTC, _bSecond) {
+  function formatDate(_oTime as Time.Moment?, _bUTC as Boolean) as String {
+    if(_oTime != null) {
+      var oTimeInfo = _bUTC ? Gregorian.utcInfo(_oTime, Time.FORMAT_MEDIUM) : Gregorian.info(_oTime, Time.FORMAT_MEDIUM);
+      return Lang.format("$1$ $2$", [oTimeInfo.month, oTimeInfo.day.format("%01d")]);
+    }
+    else {
+      return "----";
+    }
+  }
+
+  function formatTime(_oTime as Time.Moment?, _bUTC as Boolean, _bSecond as Boolean) as String {
     if(_oTime != null) {
       var oTimeInfo = _bUTC ? Gregorian.utcInfo(_oTime, Time.FORMAT_SHORT) : Gregorian.info(_oTime, Time.FORMAT_SHORT);
       if(_bSecond) {
@@ -78,7 +96,7 @@ module LangUtils {
     }
   }
 
-  function formatElapsedTime(_oTimeFrom, _oTimeTo, _bSecond) {
+  function formatElapsedTime(_oTimeFrom as Time.Moment?, _oTimeTo as Time.Moment?, _bSecond as Boolean) as String {
     if(_oTimeFrom != null and _oTimeTo != null) {
       if(_bSecond) {
         var oTimeInfo = Gregorian.utcInfo(new Time.Moment(_oTimeTo.subtract(_oTimeFrom).value()), Time.FORMAT_SHORT);
@@ -96,8 +114,8 @@ module LangUtils {
     }
   }
 
-  function formatElapsedDuration(_oDuration, _bSecond) {
-    if(_oDuration != null and _oDuration.value() > 0) {
+  function formatElapsedDuration(_oDuration as Time.Duration?, _bSecond as Boolean) as String {
+    if(_oDuration != null and (_oDuration as Time.Duration).value() > 0) {
       var oDurationInfo = Gregorian.utcInfo(new Time.Moment(_oDuration.value()), Time.FORMAT_SHORT);
       if(_bSecond) {
         return Lang.format("$1$:$2$:$3$", [oDurationInfo.hour.format("%01d"), oDurationInfo.min.format("%02d"), oDurationInfo.sec.format("%02d")]);

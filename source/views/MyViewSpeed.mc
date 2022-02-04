@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Graphics as Gfx;
 using Toybox.Time;
 using Toybox.System as Sys;
@@ -25,7 +26,7 @@ using Toybox.WatchUi as Ui;
 // CLASS
 //
 
-class MyViewSpeed extends MyViewGlobal {
+class MyViewSpeed extends MyView {
 
   //
   // VARIABLES
@@ -33,85 +34,66 @@ class MyViewSpeed extends MyViewGlobal {
 
   // Resources
   // ... fields (labels)
-  protected var oRezLabelBottomLeft;
+  protected var oRezLabelBottomLeft as Ui.Text?;
   // ... strings (cache)
-  private var sLabelCallsignTowplane;
-  private var sLabelCallsignGlider;
-  private var sLabelGroundSpeed;
-  private var sLabelAirSpeed;
-
-  // Internals
-  // ... fields
-  private var bTitleShow;
-  private var iFieldIndex;
-  private var iFieldEpoch;
+  private var sLabelGroundSpeed as String = "Gnd.Spd";
+  private var sLabelAirSpeed as String = "Air Spd";
 
 
   //
-  // FUNCTIONS: MyViewGlobal (override/implement)
+  // FUNCTIONS: MyView (override/implement)
   //
 
   function initialize() {
-    MyViewGlobal.initialize();
-
-    // Internals
-    // ... fields
-    self.bTitleShow = true;
-    self.iFieldIndex = 0;
-    self.iFieldEpoch = Time.now().value();
+    MyView.initialize();
   }
 
   function prepare() {
     //Sys.println("DEBUG: MyViewSpeed.prepare()");
-    MyViewGlobal.prepare();
+    MyView.prepare();
 
     // Load resources
     // ... fields (labels)
-    self.oRezLabelBottomLeft = View.findDrawableById("labelBottomLeft");
+    self.oRezLabelBottomLeft = View.findDrawableById("labelBottomLeft") as Ui.Text;
     // ... strings
-    self.sLabelCallsignTowplane = Ui.loadResource(Rez.Strings.labelCallsignTowplane);
-    self.sLabelCallsignGlider = Ui.loadResource(Rez.Strings.labelCallsignGlider);
-    self.sLabelGroundSpeed = Ui.loadResource(Rez.Strings.labelGroundSpeed);
-    self.sLabelAirSpeed = Ui.loadResource(Rez.Strings.labelAirSpeed);
+    self.sLabelGroundSpeed = Ui.loadResource(Rez.Strings.labelGroundSpeed) as String;
+    self.sLabelAirSpeed = Ui.loadResource(Rez.Strings.labelAirSpeed) as String;
 
     // Set labels, units and color
     // ... tow speed
-    View.findDrawableById("labelTopLeft").setText(Ui.loadResource(Rez.Strings.labelTowSpeed));
-    View.findDrawableById("unitTopLeft").setText(Lang.format("[$1$]", [$.oMySettings.sUnitHorizontalSpeed]));
-    self.oRezValueTopLeft.setColor(self.iColorText);
+    (View.findDrawableById("labelTopLeft") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelTowSpeed) as String);
+    (View.findDrawableById("unitTopLeft") as Ui.Text).setText(format("[$1$]", [$.oMySettings.sUnitHorizontalSpeed]));
+    (self.oRezValueTopLeft as Ui.Text).setColor(self.iColorText);
     // ... flight time
-    View.findDrawableById("labelTopRight").setText(Ui.loadResource(Rez.Strings.labelElapsedFlight));
-    View.findDrawableById("unitTopRight").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueTopRight.setColor(self.iColorText);
+    (View.findDrawableById("labelTopRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelElapsedFlight) as String);
+    (View.findDrawableById("unitTopRight") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueTopRight as Ui.Text).setColor(self.iColorText);
     // ... vertical speed
-    View.findDrawableById("labelLeft").setText(Ui.loadResource(Rez.Strings.labelVerticalSpeed));
-    View.findDrawableById("unitLeft").setText(Lang.format("[$1$]", [$.oMySettings.sUnitVerticalSpeed]));
-    self.oRezValueLeft.setColor(self.iColorText);
+    (View.findDrawableById("labelLeft") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelVerticalSpeed) as String);
+    (View.findDrawableById("unitLeft") as Ui.Text).setText(format("[$1$]", [$.oMySettings.sUnitVerticalSpeed]));
+    (self.oRezValueLeft as Ui.Text).setColor(self.iColorText);
     // ... callsign (dynamic label)
-    self.oRezValueCenter.setColor(self.iColorText);
+    (self.oRezValueCenter as Ui.Text).setColor(self.iColorText);
     // ... altitude
-    View.findDrawableById("labelRight").setText(Ui.loadResource(Rez.Strings.labelAltitude));
-    View.findDrawableById("unitRight").setText(Lang.format("[$1$]", [$.oMySettings.sUnitElevation]));
-    self.oRezValueRight.setColor(self.iColorText);
+    (View.findDrawableById("labelRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelAltitude) as String);
+    (View.findDrawableById("unitRight") as Ui.Text).setText(format("[$1$]", [$.oMySettings.sUnitElevation]));
+    (self.oRezValueRight as Ui.Text).setColor(self.iColorText);
     // ... ground speed / air speed (dynamic label)
-    View.findDrawableById("unitBottomLeft").setText(Lang.format("[$1$]", [$.oMySettings.sUnitHorizontalSpeed]));
-    self.oRezValueBottomLeft.setColor(self.iColorText);
+    (View.findDrawableById("unitBottomLeft") as Ui.Text).setText(format("[$1$]", [$.oMySettings.sUnitHorizontalSpeed]));
+    (self.oRezValueBottomLeft as Ui.Text).setColor(self.iColorText);
     // ... heading
-    View.findDrawableById("labelBottomRight").setText(Ui.loadResource(Rez.Strings.labelHeading));
-    View.findDrawableById("unitBottomRight").setText("[°]");
-    self.oRezValueBottomRight.setColor(self.iColorText);
+    (View.findDrawableById("labelBottomRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelHeading) as String);
+    (View.findDrawableById("unitBottomRight") as Ui.Text).setText("[°]");
+    (self.oRezValueBottomRight as Ui.Text).setColor(self.iColorText);
     // ... title
     self.bTitleShow = true;
-    self.oRezValueFooter.setColor(Gfx.COLOR_DK_GRAY);
-    self.oRezValueFooter.setText(Ui.loadResource(Rez.Strings.titleViewSpeed));
-
-    // Done
-    return true;
+    (self.oRezValueFooter as Ui.Text).setColor(Gfx.COLOR_DK_GRAY);
+    (self.oRezValueFooter as Ui.Text).setText(Ui.loadResource(Rez.Strings.titleViewSpeed) as String);
   }
 
-  function updateLayout() {
+  function updateLayout(_b) {
     //Sys.println("DEBUG: MyViewSpeed.updateLayout()");
-    MyViewGlobal.updateLayout(!self.bTitleShow);
+    MyView.updateLayout(!self.bTitleShow);
 
     // Fields
     var oTimeNow = Time.now();
@@ -124,7 +106,7 @@ class MyViewSpeed extends MyViewGlobal {
 
     // Colors
     // ... background
-    self.oRezDrawableGlobal.setColorFieldsBackground($.oMyProcessing.bAlertFuel ? Gfx.COLOR_DK_RED : Gfx.COLOR_TRANSPARENT);
+    (self.oRezDrawableGlobal as MyDrawableGlobal).setColorFieldsBackground($.oMyProcessing.bAlertFuel ? Gfx.COLOR_DK_RED : Gfx.COLOR_TRANSPARENT);
     // ... alert fields
     var iColorFieldBackground = Gfx.COLOR_TRANSPARENT;
     var iColorFieldText = Gfx.COLOR_DK_GRAY;
@@ -141,14 +123,14 @@ class MyViewSpeed extends MyViewGlobal {
     var fValue;
     var sValue;
     // ... tow speed
-    if($.oMyGlider != null and $.oMyGlider.fSpeedTowing != null) {
-      fValue = $.oMyGlider.fSpeedTowing * $.oMySettings.fUnitHorizontalSpeedCoefficient;
+    if($.oMyGlider != null and LangUtils.notNaN(($.oMyGlider as MyGlider).fSpeedTowing)) {
+      fValue = ($.oMyGlider as MyGlider).fSpeedTowing * $.oMySettings.fUnitHorizontalSpeedCoefficient;
       sValue = fValue.format("%.0f");
     }
     else {
       sValue = $.MY_NOVALUE_LEN2;
     }
-    self.oRezValueTopLeft.setText(sValue);
+    (self.oRezValueTopLeft as Ui.Text).setText(sValue);
     // ... flight time
     if($.oMyTimer.oTimeTakeoff != null) {
       if($.oMyTimer.oTimeLanding != null) {
@@ -161,12 +143,12 @@ class MyViewSpeed extends MyViewGlobal {
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueTopRight.setText(sValue);
+    (self.oRezValueTopRight as Ui.Text).setText(sValue);
     // ... vertical speed
-    self.oRezDrawableGlobal.setColorAlertLeft(iColorFieldBackground);
-    self.oRezLabelLeft.setColor(iColorFieldText);
-    self.oRezUnitLeft.setColor(iColorFieldText);
-    if($.oMyProcessing.fVerticalSpeed != null) {
+    (self.oRezDrawableGlobal as MyDrawableGlobal).setColorAlertLeft(iColorFieldBackground);
+    (self.oRezLabelLeft as Ui.Text).setColor(iColorFieldText);
+    (self.oRezUnitLeft as Ui.Text).setColor(iColorFieldText);
+    if(LangUtils.notNaN($.oMyProcessing.fVerticalSpeed)) {
       fValue = $.oMyProcessing.fVerticalSpeed * $.oMySettings.fUnitVerticalSpeedCoefficient;
       if($.oMySettings.fUnitVerticalSpeedCoefficient < 100.0f) {
         sValue = fValue.format("%+.1f");
@@ -178,35 +160,35 @@ class MyViewSpeed extends MyViewGlobal {
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueLeft.setText(sValue);
+    (self.oRezValueLeft as Ui.Text).setText(sValue);
     // ... callsign
-    self.oRezDrawableGlobal.setColorAlertCenter(iColorFieldBackground);
-    self.oRezLabelCenter.setColor(iColorFieldText);
+    (self.oRezDrawableGlobal as MyDrawableGlobal).setColorAlertCenter(iColorFieldBackground);
+    (self.oRezLabelCenter as Ui.Text).setColor(iColorFieldText);
     if(self.iFieldIndex == 0) {  // ... callsign (towplane)
-      self.oRezLabelCenter.setText(self.sLabelCallsignTowplane);
+      (self.oRezLabelCenter as Ui.Text).setText(self.sLabelCallsignTowplane);
       sValue = $.oMyTowplane.sCallsign;
     }
     else {  // ... callsign (glider)
-      self.oRezLabelCenter.setText(self.sLabelCallsignGlider);
-      sValue = $.oMyGlider != null ? $.oMyGlider.sCallsign : $.MY_NOVALUE_LEN2;
+      (self.oRezLabelCenter as Ui.Text).setText(self.sLabelCallsignGlider);
+      sValue = $.oMyGlider != null ? ($.oMyGlider as MyGlider).sCallsign : $.MY_NOVALUE_LEN2;
     }
-    self.oRezValueCenter.setText(sValue);
+    (self.oRezValueCenter as Ui.Text).setText(sValue);
     // ... altitude
-    self.oRezDrawableGlobal.setColorAlertRight(iColorFieldBackground);
-    self.oRezLabelRight.setColor(iColorFieldText);
-    self.oRezUnitRight.setColor(iColorFieldText);
-    if($.oMyAltimeter.fAltitudeActual != null) {
+    (self.oRezDrawableGlobal as MyDrawableGlobal).setColorAlertRight(iColorFieldBackground);
+    (self.oRezLabelRight as Ui.Text).setColor(iColorFieldText);
+    (self.oRezUnitRight as Ui.Text).setColor(iColorFieldText);
+    if(LangUtils.notNaN($.oMyAltimeter.fAltitudeActual)) {
       fValue = $.oMyAltimeter.fAltitudeActual * $.oMySettings.fUnitElevationCoefficient;
       sValue = fValue.format("%.0f");
     }
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueRight.setText(sValue);
+    (self.oRezValueRight as Ui.Text).setText(sValue);
     // ground speed / air speed
-    if(self.iFieldIndex == 1 and $.oMyProcessing.fGroundSpeed != null and $.oMyProcessing.fGroundSpeed < $.oMyTowplane.fSpeedOffBlock) {  // ... air speed
-      self.oRezLabelBottomLeft.setText(self.sLabelAirSpeed);
-      if($.oMyProcessing.fAirSpeed != null) {
+    if(self.iFieldIndex == 1 and LangUtils.notNaN($.oMyProcessing.fGroundSpeed) and $.oMyProcessing.fGroundSpeed < $.oMyTowplane.fSpeedOffBlock) {  // ... air speed
+      (self.oRezLabelBottomLeft as Ui.Text).setText(self.sLabelAirSpeed);
+      if(LangUtils.notNaN($.oMyProcessing.fAirSpeed)) {
         fValue = $.oMyProcessing.fAirSpeed * $.oMySettings.fUnitHorizontalSpeedCoefficient;
         sValue = fValue.format("%.0f");
       }
@@ -215,8 +197,8 @@ class MyViewSpeed extends MyViewGlobal {
       }
     }
     else {  // ... ground speed
-      self.oRezLabelBottomLeft.setText(self.sLabelGroundSpeed);
-      if($.oMyProcessing.fGroundSpeed != null) {
+      (self.oRezLabelBottomLeft as Ui.Text).setText(self.sLabelGroundSpeed);
+      if(LangUtils.notNaN($.oMyProcessing.fGroundSpeed)) {
         fValue = $.oMyProcessing.fGroundSpeed * $.oMySettings.fUnitHorizontalSpeedCoefficient;
         sValue = fValue.format("%.0f");
       }
@@ -224,9 +206,9 @@ class MyViewSpeed extends MyViewGlobal {
         sValue = $.MY_NOVALUE_LEN3;
       }
     }
-    self.oRezValueBottomLeft.setText(sValue);
+    (self.oRezValueBottomLeft as Ui.Text).setText(sValue);
     // ... heading
-    if($.oMyProcessing.fHeading != null) {
+    if(LangUtils.notNaN($.oMyProcessing.fHeading)) {
       //fValue = (($.oMyProcessing.fHeading * 180.0f/Math.PI).toNumber()) % 360;
       fValue = (($.oMyProcessing.fHeading * 57.2957795131f).toNumber()) % 360;
       sValue = fValue.format("%d");
@@ -234,15 +216,15 @@ class MyViewSpeed extends MyViewGlobal {
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueBottomRight.setText(sValue);
+    (self.oRezValueBottomRight as Ui.Text).setText(sValue);
   }
 
 }
 
-class MyViewSpeedDelegate extends MyViewGlobalDelegate {
+class MyViewSpeedDelegate extends MyViewDelegate {
 
   function initialize() {
-    MyViewGlobalDelegate.initialize();
+    MyViewDelegate.initialize();
   }
 
   function onPreviousPage() {

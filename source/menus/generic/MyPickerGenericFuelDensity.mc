@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.WatchUi as Ui;
 
 class MyPickerGenericFuelDensity extends PickerGenericFuelDensity {
@@ -24,15 +25,16 @@ class MyPickerGenericFuelDensity extends PickerGenericFuelDensity {
   // FUNCTIONS: PickerGenericFuelDensity (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     if(_context == :contextTowplane) {
-      var oTowplane = $.oMyTowplane != null ? $.oMyTowplane : new MyTowplane({});
+
       if(_item == :itemFuelDensity) {
-        PickerGenericFuelDensity.initialize(Ui.loadResource(Rez.Strings.titleAircraftFuelDensity),
-                                            oTowplane.fFuelDensity,
+        PickerGenericFuelDensity.initialize(Ui.loadResource(Rez.Strings.titleAircraftFuelDensity) as String,
+                                            $.oMyTowplane.fFuelDensity,
                                             $.oMySettings.iUnitFuel,
                                             false);
       }
+
     }
   }
 
@@ -44,15 +46,15 @@ class MyPickerGenericFuelDensityDelegate extends Ui.PickerDelegate {
   // VARIABLES
   //
 
-  private var context;
-  private var item;
+  private var context as Symbol = :contextNone;
+  private var item as Symbol = :itemNone;
 
 
   //
   // FUNCTIONS: Ui.PickerDelegate (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     PickerDelegate.initialize();
     self.context = _context;
     self.item = _item;
@@ -61,19 +63,20 @@ class MyPickerGenericFuelDensityDelegate extends Ui.PickerDelegate {
   function onAccept(_amValues) {
     var fValue = PickerGenericFuelDensity.getValue(_amValues, $.oMySettings.iUnitFuel);
     if(self.context == :contextTowplane) {
-      if($.oMyTowplane == null) {
-        $.oMyTowplane = new MyTowplane({});
-      }
+
       if(self.item == :itemFuelDensity) {
         $.oMyTowplane.setFuelDensity(fValue);
       }
+
     }
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
   function onCancel() {
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
 }

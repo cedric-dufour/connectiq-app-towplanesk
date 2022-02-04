@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.WatchUi as Ui;
 
 class MyMenuGeneric extends Ui.Menu {
@@ -24,207 +25,207 @@ class MyMenuGeneric extends Ui.Menu {
   // FUNCTIONS: Ui.Menu (override/implement)
   //
 
-  function initialize(_menu) {
+  function initialize(_menu as Symbol) {
     Menu.initialize();
 
     if(_menu == :menuGlobal) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.AppName));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftGlider), :menuGlider);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftTowplane), :menuTowplane);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettings), :menuSettings);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.AppName) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftGlider) as String, :menuGlider);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftTowplane) as String, :menuTowplane);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettings) as String, :menuSettings);
     }
 
     else if(_menu == :menuSettings) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettings));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsAltimeter), :menuSettingsAltimeter);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsTemperature), :menuSettingsTemperature);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsWind), :menuSettingsWind);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsTimer), :menuSettingsTimer);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsNotifications), :menuSettingsNotifications);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsGeneral), :menuSettingsGeneral);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsUnits), :menuSettingsUnits);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorage), :menuStorage);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAbout), :menuAbout);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettings) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsAltimeter) as String, :menuSettingsAltimeter);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsTemperature) as String, :menuSettingsTemperature);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsWind) as String, :menuSettingsWind);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsTimer) as String, :menuSettingsTimer);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsNotifications) as String, :menuSettingsNotifications);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsGeneral) as String, :menuSettingsGeneral);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleSettingsUnits) as String, :menuSettingsUnits);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorage) as String, :menuStorage);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAbout) as String, :menuAbout);
     }
 
     else if(_menu == :menuSettingsAltimeter) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsAltimeter));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCalibration), :menuAltimeterCalibration);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterAlert), :menuAltimeterAlert);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCorrection), :menuAltimeterCorrection);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsAltimeter) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCalibration) as String, :menuAltimeterCalibration);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterAlert) as String, :menuAltimeterAlert);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCorrection) as String, :menuAltimeterCorrection);
     }
     else if(_menu == :menuAltimeterCalibration) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAltimeterCalibration));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCalibrationQNH), :menuAltimeterCalibrationQNH);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAltimeterCalibration) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCalibrationQNH) as String, :menuAltimeterCalibrationQNH);
       if($.oMyAltimeter.fAltitudeActual != null) {
-        Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCalibrationElevation), :menuAltimeterCalibrationElevation);
+        Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCalibrationElevation) as String, :menuAltimeterCalibrationElevation);
       }
     }
     else if(_menu == :menuAltimeterCorrection) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAltimeterCorrection));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCorrectionAbsolute), :menuAltimeterCorrectionAbsolute);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCorrectionRelative), :menuAltimeterCorrectionRelative);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAltimeterCorrection) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCorrectionAbsolute) as String, :menuAltimeterCorrectionAbsolute);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAltimeterCorrectionRelative) as String, :menuAltimeterCorrectionRelative);
     }
 
     else if(_menu == :menuSettingsTemperature) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsTemperature));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleTemperatureCalibration), :menuTemperatureCalibration);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleTemperatureAlert), :menuTemperatureAlert);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleTemperatureAuto), :menuTemperatureAuto);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsTemperature) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleTemperatureCalibration) as String, :menuTemperatureCalibration);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleTemperatureAlert) as String, :menuTemperatureAlert);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleTemperatureAuto) as String, :menuTemperatureAuto);
     }
 
     else if(_menu == :menuSettingsWind) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsWind));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleWindSpeed), :menuWindSpeed);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleWindDirection), :menuWindDirection);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsWind) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleWindSpeed) as String, :menuWindSpeed);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleWindDirection) as String, :menuWindDirection);
     }
 
     else if(_menu == :menuSettingsTimer) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsTimer));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerAutoLog), :menuTimerAutoLog);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerAutoActivity), :menuTimerAutoActivity);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerThreshold), :menuTimerThreshold);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsTimer) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerAutoLog) as String, :menuTimerAutoLog);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerAutoActivity) as String, :menuTimerAutoActivity);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerThreshold) as String, :menuTimerThreshold);
     }
     else if(_menu == :menuTimerThreshold) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleTimerThreshold));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerThresholdGround), :menuTimerThresholdGround);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerThresholdAirborne), :menuTimerThresholdAirborne);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleTimerThreshold) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerThresholdGround) as String, :menuTimerThresholdGround);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerThresholdAirborne) as String, :menuTimerThresholdAirborne);
     }
 
     else if(_menu == :menuSettingsNotifications) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsNotifications));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleNotificationsAltimeter), :menuNotificationsAltimeter);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleNotificationsTemperature), :menuNotificationsTemperature);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleNotificationsFuel), :menuNotificationsFuel);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsNotifications) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleNotificationsAltimeter) as String, :menuNotificationsAltimeter);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleNotificationsTemperature) as String, :menuNotificationsTemperature);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleNotificationsFuel) as String, :menuNotificationsFuel);
     }
 
     else if(_menu == :menuSettingsGeneral) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsGeneral));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleGeneralBackgroundColor), :menuGeneralBackgroundColor);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsGeneral) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleGeneralBackgroundColor) as String, :menuGeneralBackgroundColor);
     }
 
     else if(_menu == :menuSettingsUnits) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsUnits));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitDistance), :menuUnitDistance);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitElevation), :menuUnitElevation);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitWeight), :menuUnitWeight);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitFuel), :menuUnitFuel);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitPressure), :menuUnitPressure);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitTemperature), :menuUnitTemperature);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitTimeUTC), :menuUnitTimeUTC);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleSettingsUnits) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitDistance) as String, :menuUnitDistance);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitElevation) as String, :menuUnitElevation);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitWeight) as String, :menuUnitWeight);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitFuel) as String, :menuUnitFuel);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitPressure) as String, :menuUnitPressure);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitTemperature) as String, :menuUnitTemperature);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleUnitTimeUTC) as String, :menuUnitTimeUTC);
     }
 
     else if(_menu == :menuStorage) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleStorage));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageImportData), :menuStorageImportData);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageClear), :menuStorageClear);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleStorage) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageImportData) as String, :menuStorageImportData);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageClear) as String, :menuStorageClear);
     }
 
     else if(_menu == :menuTowplane) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftTowplane));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageLoad), :menuTowplaneLoad);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageEdit), :menuTowplaneEdit);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageSave), :menuTowplaneSave);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageDelete), :menuTowplaneDelete);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftTowplane) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageLoad) as String, :menuTowplaneLoad);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageEdit) as String, :menuTowplaneEdit);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageSave) as String, :menuTowplaneSave);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageDelete) as String, :menuTowplaneDelete);
     }
     else if(_menu == :menuTowplaneEdit) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleStorageEdit));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuel), :menuTowplaneFuel);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeight), :menuTowplaneWeight);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeed), :menuTowplaneSpeed);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftCallsign), :menuTowplaneCallsign);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleStorageEdit) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuel) as String, :menuTowplaneFuel);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeight) as String, :menuTowplaneWeight);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeed) as String, :menuTowplaneSpeed);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftCallsign) as String, :menuTowplaneCallsign);
     }
     else if(_menu == :menuTowplaneFuel) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftFuel));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelQuantity), :menuTowplaneFuelQuantity);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelAlert), :menuTowplaneFuelAlert);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelFlow), :menuTowplaneFuelFlow);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelDensity), :menuTowplaneFuelDensity);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftFuel) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelQuantity) as String, :menuTowplaneFuelQuantity);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelAlert) as String, :menuTowplaneFuelAlert);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelFlow) as String, :menuTowplaneFuelFlow);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelDensity) as String, :menuTowplaneFuelDensity);
     }
     else if(_menu == :menuTowplaneFuelFlow) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftFuelFlow));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowGround), :menuTowplaneFuelFlowGround);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowAirborne), :menuTowplaneFuelFlowAirborne);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowTowing), :menuTowplaneFuelFlowTowing);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftFuelFlow) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowGround) as String, :menuTowplaneFuelFlowGround);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowAirborne) as String, :menuTowplaneFuelFlowAirborne);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowTowing) as String, :menuTowplaneFuelFlowTowing);
     }
     else if(_menu == :menuTowplaneWeight) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftWeight));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightPayload), :menuTowplaneWeightPayload);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightEmpty), :menuTowplaneWeightEmpty);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTakeoff), :menuTowplaneWeightMaxTakeoff);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowing), :menuTowplaneWeightMaxTowing);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowed), :menuTowplaneWeightMaxTowed);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftWeight) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightPayload) as String, :menuTowplaneWeightPayload);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightEmpty) as String, :menuTowplaneWeightEmpty);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTakeoff) as String, :menuTowplaneWeightMaxTakeoff);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowing) as String, :menuTowplaneWeightMaxTowing);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowed) as String, :menuTowplaneWeightMaxTowed);
     }
     else if(_menu == :menuTowplaneSpeed) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftSpeed));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeedOffBlock), :menuTowplaneSpeedOffBlock);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeedTakeoff), :menuTowplaneSpeedTakeoff);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeedLanding), :menuTowplaneSpeedLanding);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeedMaxTowing), :menuTowplaneSpeedMaxTowing);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftSpeed) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeedOffBlock) as String, :menuTowplaneSpeedOffBlock);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeedTakeoff) as String, :menuTowplaneSpeedTakeoff);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeedLanding) as String, :menuTowplaneSpeedLanding);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeedMaxTowing) as String, :menuTowplaneSpeedMaxTowing);
     }
 
     else if(_menu == :menuGlider) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftGlider));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageLoad), :menuGliderLoad);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageEdit), :menuGliderEdit);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageSave), :menuGliderSave);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageDelete), :menuGliderDelete);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftClear), :menuGliderClear);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftGlider) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageLoad) as String, :menuGliderLoad);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageEdit) as String, :menuGliderEdit);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageSave) as String, :menuGliderSave);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageDelete) as String, :menuGliderDelete);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftClear) as String, :menuGliderClear);
     }
     else if(_menu == :menuGliderEdit) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleStorageEdit));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeight), :menuGliderWeight);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeed), :menuGliderSpeed);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftCallsign), :menuGliderCallsign);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleStorageEdit) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeight) as String, :menuGliderWeight);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeed) as String, :menuGliderSpeed);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftCallsign) as String, :menuGliderCallsign);
     }
     else if(_menu == :menuGliderWeight) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftWeight));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightPayload), :menuGliderWeightPayload);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightBallast), :menuGliderWeightBallast);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightEmpty), :menuGliderWeightEmpty);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTakeoff), :menuGliderWeightMaxTakeoff);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftWeight) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightPayload) as String, :menuGliderWeightPayload);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightBallast) as String, :menuGliderWeightBallast);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightEmpty) as String, :menuGliderWeightEmpty);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTakeoff) as String, :menuGliderWeightMaxTakeoff);
     }
     else if(_menu == :menuGliderSpeed) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftSpeed));
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeedTowing), :menuGliderSpeedTowing);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAircraftSpeed) as String);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleAircraftSpeedTowing) as String, :menuGliderSpeedTowing);
     }
 
     else if(_menu == :menuAbout) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAbout));
-      Menu.addItem(Lang.format("$1$: $2$", [Ui.loadResource(Rez.Strings.titleVersion), Ui.loadResource(Rez.Strings.AppVersion)]), :aboutVersion);
-      Menu.addItem(Lang.format("$1$: GPL 3.0", [Ui.loadResource(Rez.Strings.titleLicense)]), :aboutLicense);
-      Menu.addItem(Lang.format("$1$: Cédric Dufour", [Ui.loadResource(Rez.Strings.titleAuthor)]), :aboutAuthor);
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleAbout) as String);
+      Menu.addItem(format("$1$: $2$", [Ui.loadResource(Rez.Strings.titleVersion), Ui.loadResource(Rez.Strings.AppVersion)]), :aboutVersion);
+      Menu.addItem(format("$1$: GPL 3.0", [Ui.loadResource(Rez.Strings.titleLicense)]), :aboutLicense);
+      Menu.addItem(format("$1$: Cédric Dufour", [Ui.loadResource(Rez.Strings.titleAuthor)]), :aboutAuthor);
     }
 
     else if(_menu == :menuActivity) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleActivity));
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleActivity) as String);
       if($.oMyActivity != null) {
-        if($.oMyActivity.isRecording()) {
-          Menu.addItem(Ui.loadResource(Rez.Strings.titleActivityPause), :menuActivityPause);
+        if(($.oMyActivity as MyActivity).isRecording()) {
+          Menu.addItem(Ui.loadResource(Rez.Strings.titleActivityPause) as String, :menuActivityPause);
         }
         else {
-          Menu.addItem(Ui.loadResource(Rez.Strings.titleActivityResume), :menuActivityResume);
+          Menu.addItem(Ui.loadResource(Rez.Strings.titleActivityResume) as String, :menuActivityResume);
         }
-        Menu.addItem(Ui.loadResource(Rez.Strings.titleActivitySave), :menuActivitySave);
-        Menu.addItem(Ui.loadResource(Rez.Strings.titleActivityDiscard), :menuActivityDiscard);
+        Menu.addItem(Ui.loadResource(Rez.Strings.titleActivitySave) as String, :menuActivitySave);
+        Menu.addItem(Ui.loadResource(Rez.Strings.titleActivityDiscard) as String, :menuActivityDiscard);
       }
     }
 
     else if(_menu == :menuTimer) {
-      Menu.setTitle(Ui.loadResource(Rez.Strings.titleTimer));
+      Menu.setTitle(Ui.loadResource(Rez.Strings.titleTimer) as String);
       if($.oMyTimer.iState <= MyTimer.STATE_OFFBLOCK or ($.oMyTimer.iState == MyTimer.STATE_ONBLOCK and $.oMyTimer.oTimeTakeoff == null)) {
-        Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerReset), :menuTimerReset);
+        Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerReset) as String, :menuTimerReset);
       }
       else if($.oMyTimer.iState == MyTimer.STATE_ONBLOCK and $.oMyTimer.oTimeTakeoff != null) {
-        Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerSave), :menuTimerSave);
-        Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerDiscard), :menuTimerDiscard);
+        Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerSave) as String, :menuTimerSave);
+        Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerDiscard) as String, :menuTimerDiscard);
       }
       if($.oMyTimer.oTimeTakeoff != null) {
-        Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerAddCycle), :menuTimerAddCycle);
-        Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerUndoCycle), :menuTimerUndoCycle);
+        Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerAddCycle) as String, :menuTimerAddCycle);
+        Menu.addItem(Ui.loadResource(Rez.Strings.titleTimerUndoCycle) as String, :menuTimerUndoCycle);
       }
       if($.oMyActivity == null) {
-        Menu.addItem(Ui.loadResource(Rez.Strings.titleExit), :menuExit);
+        Menu.addItem(Ui.loadResource(Rez.Strings.titleExit) as String, :menuExit);
       }
     }
 
@@ -238,14 +239,14 @@ class MyMenuGenericDelegate extends Ui.MenuInputDelegate {
   // VARIABLES
   //
 
-  private var menu;
+  private var menu as Symbol = :menuNone;
 
 
   //
   // FUNCTIONS: Ui.MenuInputDelegate (override/implement)
   //
 
-  function initialize(_menu) {
+  function initialize(_menu as Symbol) {
     MenuInputDelegate.initialize();
     self.menu = _menu;
   }
@@ -711,12 +712,12 @@ class MyMenuGenericDelegate extends Ui.MenuInputDelegate {
     else if(self.menu == :menuActivity) {
       if(_item == :menuActivityResume) {
         if($.oMyActivity != null) {
-          $.oMyActivity.resume();
+          ($.oMyActivity as MyActivity).resume();
         }
       }
       else if(_item == :menuActivityPause) {
         if($.oMyActivity != null) {
-          $.oMyActivity.pause();
+          ($.oMyActivity as MyActivity).pause();
         }
       }
       else if(_item == :menuActivitySave) {

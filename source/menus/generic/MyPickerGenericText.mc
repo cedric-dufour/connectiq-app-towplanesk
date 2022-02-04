@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.WatchUi as Ui;
 
@@ -25,23 +26,28 @@ class MyPickerGenericText extends Ui.TextPicker {
   // FUNCTIONS: Ui.TextPicker (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     if(_context == :contextTowplane) {
-      var oTowplane = $.oMyTowplane != null ? $.oMyTowplane : new MyTowplane({});
+
       if(_item == :itemCallsign) {
-        TextPicker.initialize(oTowplane.sCallsign);
+        TextPicker.initialize($.oMyTowplane.sCallsign);
       }
+
     }
     else if(_context == :contextGlider) {
-      var oGlider = $.oMyGlider != null ? $.oMyGlider : new MyGlider({});
+
+      var oGlider = $.oMyGlider != null ? $.oMyGlider as MyGlider : new MyGlider();
       if(_item == :itemCallsign) {
         TextPicker.initialize(oGlider.sCallsign);
       }
+
     }
     else if(_context == :contextStorage) {
+
       if(_item == :itemImportData) {
         TextPicker.initialize("");
       }
+
     }
   }
 
@@ -53,15 +59,15 @@ class MyPickerGenericTextDelegate extends Ui.TextPickerDelegate {
   // VARIABLES
   //
 
-  private var context;
-  private var item;
+  private var context as Symbol = :contextNone;
+  private var item as Symbol = :itemNone;
 
 
   //
   // FUNCTIONS: Ui.TextPickerDelegate (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     TextPickerDelegate.initialize();
     self.context = _context;
     self.item = _item;
@@ -69,26 +75,30 @@ class MyPickerGenericTextDelegate extends Ui.TextPickerDelegate {
 
   function onTextEntered(_sText, _bChanged) {
     if(self.context == :contextTowplane) {
-      if($.oMyTowplane == null) {
-        $.oMyTowplane = new MyTowplane({});
-      }
+
       if(self.item == :itemCallsign) {
         $.oMyTowplane.setCallsign(_sText);
       }
+
     }
     else if(self.context == :contextGlider) {
+
       if($.oMyGlider == null) {
-        $.oMyGlider = new MyGlider({});
+        $.oMyGlider = new MyGlider();
       }
       if(self.item == :itemCallsign) {
-        $.oMyGlider.setCallsign(_sText);
+        ($.oMyGlider as MyGlider).setCallsign(_sText);
       }
+
     }
     else if(self.context == :contextStorage) {
+
       if(self.item == :itemImportData) {
-        App.getApp().importStorageData(_sText);
+        (App.getApp() as MyApp).importStorageData(_sText);
       }
+
     }
+    return true;
   }
 
 }

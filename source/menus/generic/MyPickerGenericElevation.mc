@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.WatchUi as Ui;
 
@@ -25,20 +26,22 @@ class MyPickerGenericElevation extends PickerGenericElevation {
   // FUNCTIONS: PickerGenericElevation (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     if(_context == :contextSettings) {
+
       if(_item == :itemAltimeterCalibration) {
-        PickerGenericElevation.initialize(Ui.loadResource(Rez.Strings.titleAltimeterCalibrationElevation),
+        PickerGenericElevation.initialize(Ui.loadResource(Rez.Strings.titleAltimeterCalibrationElevation) as String,
                                           $.oMyAltimeter.fAltitudeActual,
                                           $.oMySettings.iUnitElevation,
                                           false);
       }
       else if(_item == :itemAltimeterAlert) {
-        PickerGenericElevation.initialize(Ui.loadResource(Rez.Strings.titleAltimeterAlert),
-                                          App.Properties.getValue("userAltimeterAlert"),
+        PickerGenericElevation.initialize(Ui.loadResource(Rez.Strings.titleAltimeterAlert) as String,
+                                          $.oMySettings.loadAltimeterAlert(),
                                           $.oMySettings.iUnitElevation,
                                           false);
-     }
+      }
+
     }
   }
 
@@ -50,15 +53,15 @@ class MyPickerGenericElevationDelegate extends Ui.PickerDelegate {
   // VARIABLES
   //
 
-  private var context;
-  private var item;
+  private var context as Symbol = :contextNone;
+  private var item as Symbol = :itemNone;
 
 
   //
   // FUNCTIONS: Ui.PickerDelegate (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     PickerDelegate.initialize();
     self.context = _context;
     self.item = _item;
@@ -67,20 +70,24 @@ class MyPickerGenericElevationDelegate extends Ui.PickerDelegate {
   function onAccept(_amValues) {
     var fValue = PickerGenericElevation.getValue(_amValues, $.oMySettings.iUnitElevation);
     if(self.context == :contextSettings) {
+
       if(self.item == :itemAltimeterCalibration) {
         $.oMyAltimeter.setAltitudeActual(fValue);
-        App.Properties.setValue("userAltimeterCalibrationQNH", $.oMyAltimeter.fQNH);
+        $.oMySettings.saveAltimeterCalibrationQNH($.oMyAltimeter.fQNH);
       }
       else if(self.item == :itemAltimeterAlert) {
-        App.Properties.setValue("userAltimeterAlert", fValue);
+        $.oMySettings.saveAltimeterAlert(fValue);
       }
+
     }
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
   function onCancel() {
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
 }

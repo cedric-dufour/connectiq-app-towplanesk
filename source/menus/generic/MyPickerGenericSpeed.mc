@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.WatchUi as Ui;
 
@@ -25,50 +26,55 @@ class MyPickerGenericSpeed extends PickerGenericSpeed {
   // FUNCTIONS: PickerGenericSpeed (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     if(_context == :contextSettings) {
+
       if(_item == :itemWindSpeed) {
-        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleWindSpeed),
-                                      App.Properties.getValue("userWindSpeed"),
+        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleWindSpeed) as String,
+                                      $.oMySettings.loadWindSpeed(),
                                       $.oMySettings.iUnitDistance,
                                       false);
       }
+
     }
     else if(_context == :contextTowplane) {
-      var oTowplane = $.oMyTowplane != null ? $.oMyTowplane : new MyTowplane({});
+
       if(_item == :itemSpeedOffBlock) {
-        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleAircraftSpeedOffBlock),
-                                      oTowplane.fSpeedOffBlock,
+        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleAircraftSpeedOffBlock) as String,
+                                      $.oMyTowplane.fSpeedOffBlock,
                                       $.oMySettings.iUnitDistance,
                                       false);
       }
       else if(_item == :itemSpeedTakeoff) {
-        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleAircraftSpeedTakeoff),
-                                      oTowplane.fSpeedTakeoff,
+        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleAircraftSpeedTakeoff) as String,
+                                      $.oMyTowplane.fSpeedTakeoff,
                                       $.oMySettings.iUnitDistance,
                                       false);
       }
       else if(_item == :itemSpeedLanding) {
-        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleAircraftSpeedLanding),
-                                      oTowplane.fSpeedLanding,
+        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleAircraftSpeedLanding) as String,
+                                      $.oMyTowplane.fSpeedLanding,
                                       $.oMySettings.iUnitDistance,
                                       false);
       }
       else if(_item == :itemSpeedMaxTowing) {
-        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleAircraftSpeedMaxTowing),
-                                      oTowplane.fSpeedMaxTowing,
+        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleAircraftSpeedMaxTowing) as String,
+                                      $.oMyTowplane.fSpeedMaxTowing,
                                       $.oMySettings.iUnitDistance,
                                       false);
       }
+
     }
     else if(_context == :contextGlider) {
-      var oGlider = $.oMyGlider != null ? $.oMyGlider : new MyGlider({});
+
+      var oGlider = $.oMyGlider != null ? $.oMyGlider as MyGlider : new MyGlider();
       if(_item == :itemSpeedTowing) {
-        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleAircraftSpeedTowing),
+        PickerGenericSpeed.initialize(Ui.loadResource(Rez.Strings.titleAircraftSpeedTowing) as String,
                                       oGlider.fSpeedTowing,
                                       $.oMySettings.iUnitDistance,
                                       false);
       }
+
     }
   }
 
@@ -80,15 +86,15 @@ class MyPickerGenericSpeedDelegate extends Ui.PickerDelegate {
   // VARIABLES
   //
 
-  private var context;
-  private var item;
+  private var context as Symbol = :contextNone;
+  private var item as Symbol = :itemNone;
 
 
   //
   // FUNCTIONS: Ui.PickerDelegate (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     PickerDelegate.initialize();
     self.context = _context;
     self.item = _item;
@@ -97,14 +103,14 @@ class MyPickerGenericSpeedDelegate extends Ui.PickerDelegate {
   function onAccept(_amValues) {
     var fValue = PickerGenericSpeed.getValue(_amValues, $.oMySettings.iUnitDistance);
     if(self.context == :contextSettings) {
+
       if(self.item == :itemWindSpeed) {
-        App.Properties.setValue("userWindSpeed", fValue);
+        $.oMySettings.saveWindSpeed(fValue);
       }
+
     }
     else if(self.context == :contextTowplane) {
-      if($.oMyTowplane == null) {
-        $.oMyTowplane = new MyTowplane({});
-      }
+
       if(self.item == :itemSpeedOffBlock) {
         $.oMyTowplane.setSpeedOffBlock(fValue);
       }
@@ -117,21 +123,26 @@ class MyPickerGenericSpeedDelegate extends Ui.PickerDelegate {
       else if(self.item == :itemSpeedMaxTowing) {
         $.oMyTowplane.setSpeedMaxTowing(fValue);
       }
+
     }
     else if(self.context == :contextGlider) {
+
       if($.oMyGlider == null) {
-        $.oMyGlider = new MyGlider({});
+        $.oMyGlider = new MyGlider();
       }
       if(self.item == :itemSpeedTowing) {
-        $.oMyGlider.setSpeedTowing(fValue);
+        ($.oMyGlider as MyGlider).setSpeedTowing(fValue);
       }
+
     }
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
   function onCancel() {
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
 }

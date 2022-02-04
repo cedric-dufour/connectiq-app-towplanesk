@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.WatchUi as Ui;
 
@@ -25,20 +26,22 @@ class MyPickerGenericTemperature extends PickerGenericTemperature {
   // FUNCTIONS: PickerGenericTemperature (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     if(_context == :contextSettings) {
+
       if(_item == :itemTemperatureCalibration) {
-        PickerGenericTemperature.initialize(Ui.loadResource(Rez.Strings.titleTemperatureCalibration),
+        PickerGenericTemperature.initialize(Ui.loadResource(Rez.Strings.titleTemperatureCalibration) as String,
                                             $.oMyAltimeter.fTemperatureActual,
                                             $.oMySettings.iUnitTemperature,
                                             true);
       }
       else if(_item == :itemTemperatureAlert) {
-        PickerGenericTemperature.initialize(Ui.loadResource(Rez.Strings.titleTemperatureAlert),
-                                            App.Properties.getValue("userTemperatureAlert"),
+        PickerGenericTemperature.initialize(Ui.loadResource(Rez.Strings.titleTemperatureAlert) as String,
+                                            $.oMySettings.loadTemperatureAlert(),
                                             $.oMySettings.iUnitTemperature,
                                             true);
       }
+
     }
   }
 
@@ -50,15 +53,15 @@ class MyPickerGenericTemperatureDelegate extends Ui.PickerDelegate {
   // VARIABLES
   //
 
-  private var context;
-  private var item;
+  private var context as Symbol = :contextNone;
+  private var item as Symbol = :itemNone;
 
 
   //
   // FUNCTIONS: Ui.PickerDelegate (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     PickerDelegate.initialize();
     self.context = _context;
     self.item = _item;
@@ -67,20 +70,24 @@ class MyPickerGenericTemperatureDelegate extends Ui.PickerDelegate {
   function onAccept(_amValues) {
     var fValue = PickerGenericTemperature.getValue(_amValues, $.oMySettings.iUnitTemperature);
     if(self.context == :contextSettings) {
+
       if(self.item == :itemTemperatureCalibration) {
         fValue -= $.oMyAltimeter.fTemperatureISA;
-        App.Properties.setValue("userTemperatureISAOffset", fValue);
+        $.oMySettings.saveTemperatureISAOffset(fValue);
       }
       else if(self.item == :itemTemperatureAlert) {
-        App.Properties.setValue("userTemperatureAlert", fValue);
+        $.oMySettings.saveTemperatureAlert(fValue);
       }
+
     }
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
   function onCancel() {
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
 }

@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.Graphics as Gfx;
 using Toybox.WatchUi as Ui;
@@ -26,54 +27,55 @@ class MyPickerGenericStorage extends Ui.Picker {
   // FUNCTIONS: Ui.Picker (override/implement)
   //
 
-  function initialize(_storage, _action) {
+  function initialize(_storage as Symbol, _action as Symbol) {
     // Retrieve object from storage <-> Picker
     var oPickerDictionary = null;
-    var aiStorageKeys = new [$.MY_STORAGE_SLOTS];
-    var asStorageValues = new [$.MY_STORAGE_SLOTS];
+    var aiStorageKeys = new Array<Number>[$.MY_STORAGE_SLOTS];
+    var asStorageValues = new Array<String>[$.MY_STORAGE_SLOTS];
     var iStorageUsed = 0;
     // ... storage specifics
-    var sStorageName = null;
-    var sObjectName = null;
+    var sStorageName = MY_NOVALUE_BLANK;
+    var sObjectName = "callsign";
     if(_storage == :storageTowplane) {
       sStorageName = "Towplane";
-      sObjectName = "callsign";
     }
     else if(_storage == :storageGlider) {
       sStorageName = "Glider";
-      sObjectName = "callsign";
     }
     // ... action specifics
-    var sStorageAction = null;
+    var sStorageAction = MY_NOVALUE_BLANK;
     if(_action == :actionSave) {
-      sStorageAction = Ui.loadResource(Rez.Strings.titleStorageSave);
+
+      sStorageAction = Ui.loadResource(Rez.Strings.titleStorageSave) as String;
       // ... populate all slots
       for(var n=0; n<$.MY_STORAGE_SLOTS; n++) {
         var s = n.format("%02d");
-        var d = App.Storage.getValue(Lang.format("stor$1$$2$", [sStorageName, s]));
+        var d = App.Storage.getValue(format("stor$1$$2$", [sStorageName, s])) as Dictionary?;
         aiStorageKeys[n] = n;
         if(d != null) {
-          asStorageValues[n] = Lang.format("[$1$]\n$2$", [s, d.get(sObjectName)]);
+          asStorageValues[n] = format("[$1$]\n$2$", [s, d.get(sObjectName)]);
         }
         else {
-          asStorageValues[n] = Lang.format("[$1$]\n---", [s]);
+          asStorageValues[n] = format("[$1$]\n---", [s]);
         }
         iStorageUsed++;
       }
       oPickerDictionary = new PickerFactoryDictionary(aiStorageKeys, asStorageValues, {:font => Gfx.FONT_TINY});
+
     }
     else if(_action == :actionLoad or _action == :actionDelete) {
+
       sStorageAction =
         _action == :actionLoad
-        ? Ui.loadResource(Rez.Strings.titleStorageLoad)
-        : Ui.loadResource(Rez.Strings.titleStorageDelete);
+        ? Ui.loadResource(Rez.Strings.titleStorageLoad) as String
+        : Ui.loadResource(Rez.Strings.titleStorageDelete) as String;
       // ... pick existing objects/slots
       for(var n=0; n<$.MY_STORAGE_SLOTS; n++) {
         var s = n.format("%02d");
-        var d = App.Storage.getValue(Lang.format("stor$1$$2$", [sStorageName, s]));
+        var d = App.Storage.getValue(format("stor$1$$2$", [sStorageName, s])) as Dictionary?;
         if(d != null) {
           aiStorageKeys[iStorageUsed] = n;
-          asStorageValues[iStorageUsed] = Lang.format("[$1$]\n$2$", [s, d.get(sObjectName)]);
+          asStorageValues[iStorageUsed] = format("[$1$]\n$2$", [s, d.get(sObjectName)]);
           iStorageUsed++;
         }
       }
@@ -85,6 +87,7 @@ class MyPickerGenericStorage extends Ui.Picker {
       else {
         oPickerDictionary = new PickerFactoryDictionary([null], ["-"], {:color => Gfx.COLOR_DK_GRAY});
       }
+
     }
 
     // Initialize picker
@@ -108,15 +111,15 @@ class MyPickerGenericStorageDelegate extends Ui.PickerDelegate {
   // VARIABLES
   //
 
-  private var storage;
-  private var action;
+  private var storage as Symbol = :storageNone;
+  private var action as Symbol = :actionNone;
 
 
   //
   // FUNCTIONS: Ui.PickerDelegate (override/implement)
   //
 
-  function initialize(_storage, _action) {
+  function initialize(_storage as Symbol, _action as Symbol) {
     PickerDelegate.initialize();
     self.storage = _storage;
     self.action = _action;
@@ -125,50 +128,58 @@ class MyPickerGenericStorageDelegate extends Ui.PickerDelegate {
   function onAccept(_amValues) {
     // Save/load/delete object to/from storage
     if(_amValues[0] != null) {
-      var s = _amValues[0].format("%02d");
+      var s = (_amValues[0] as Number).format("%02d");
       // ... storage specifics
-      var sStorageName = null;
+      var sStorageName = MY_NOVALUE_BLANK;
       if(self.storage == :storageTowplane) {
+
         sStorageName = "Towplane";
         if(self.action == :actionSave) {
-          var o = $.oMyTowplane != null ? $.oMyTowplane : new MyTowplane({});
-          App.Storage.setValue(Lang.format("stor$1$$2$", [sStorageName, s]), o.export());
+          App.Storage.setValue(format("stor$1$$2$", [sStorageName, s]), $.oMyTowplane.export() as App.PropertyValueType);
         }
         else if(self.action == :actionLoad) {
-          if($.oMyTowplane == null) {
-            $.oMyTowplane = new MyTowplane({});
+          var d = App.Storage.getValue(format("stor$1$$2$", [sStorageName, s])) as Dictionary?;
+          if(d != null) {
+            $.oMyTowplane.load(d);
           }
-          $.oMyTowplane.import(App.Storage.getValue(Lang.format("stor$1$$2$", [sStorageName, s])));
         }
         else if(self.action == :actionDelete) {
-          App.Storage.deleteValue(Lang.format("stor$1$$2$", [sStorageName, s]));
+          App.Storage.deleteValue(format("stor$1$$2$", [sStorageName, s]));
         }
+
       }
       else if(self.storage == :storageGlider) {
+
         sStorageName = "Glider";
         if(self.action == :actionSave) {
-          var o = $.oMyGlider != null ? $.oMyGlider : new MyGlider({});
-          App.Storage.setValue(Lang.format("stor$1$$2$", [sStorageName, s]), o.export());
+          var o = $.oMyGlider != null ? $.oMyGlider as MyGlider : new MyGlider();
+          App.Storage.setValue(format("stor$1$$2$", [sStorageName, s]), o.export() as App.PropertyValueType);
         }
         else if(self.action == :actionLoad) {
-          if($.oMyGlider == null) {
-            $.oMyGlider = new MyGlider({});
+          var d = App.Storage.getValue(format("stor$1$$2$", [sStorageName, s])) as Dictionary?;
+          if(d != null) {
+            if($.oMyGlider == null) {
+              $.oMyGlider = new MyGlider();
+            }
+            ($.oMyGlider as MyGlider).load(d);
           }
-          $.oMyGlider.import(App.Storage.getValue(Lang.format("stor$1$$2$", [sStorageName, s])));
         }
         else if(self.action == :actionDelete) {
-          App.Storage.deleteValue(Lang.format("stor$1$$2$", [sStorageName, s]));
+          App.Storage.deleteValue(format("stor$1$$2$", [sStorageName, s]));
         }
+
       }
     }
 
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
   function onCancel() {
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
 }

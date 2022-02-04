@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.Graphics as Gfx;
 using Toybox.WatchUi as Ui;
@@ -26,11 +27,11 @@ class MyPickerGenericSettings extends Ui.Picker {
   // FUNCTIONS: Ui.Picker (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     if(_context == :contextTimer) {
       if(_item == :itemThresholdGround) {
 
-        var iTimerThresholdGround = App.Properties.getValue("userTimerThresholdGround");
+        var iTimerThresholdGround = $.oMySettings.loadTimerThresholdGround();
         var oFactory = new PickerFactoryDictionary([5, 10, 15, 30, 45, 60, 90, 120, 180, 300],
                                                    ["5", "10", "15", "30", "45", "60", "90", "120", "180", "300"],
                                                    null);
@@ -40,7 +41,7 @@ class MyPickerGenericSettings extends Ui.Picker {
         }
         Picker.initialize({
             :title => new Ui.Text({
-                :text => Lang.format("$1$ [s]", [Ui.loadResource(Rez.Strings.titleTimerThresholdGround)]),
+                :text => format("$1$ [s]", [Ui.loadResource(Rez.Strings.titleTimerThresholdGround)]),
                 :font => Gfx.FONT_TINY,
                 :locX => Ui.LAYOUT_HALIGN_CENTER,
                 :locY => Ui.LAYOUT_VALIGN_BOTTOM,
@@ -51,7 +52,7 @@ class MyPickerGenericSettings extends Ui.Picker {
       }
       else if(_item == :itemThresholdAirborne) {
 
-        var iTimerThresholdAirborne = App.Properties.getValue("userTimerThresholdAirborne");
+        var iTimerThresholdAirborne = $.oMySettings.loadTimerThresholdAirborne();
         var oFactory = new PickerFactoryDictionary([5, 10, 15, 30, 45, 60, 90, 120, 180, 300],
                                                    ["5", "10", "15", "30", "45", "60", "90", "120", "180", "300"],
                                                    null);
@@ -61,7 +62,7 @@ class MyPickerGenericSettings extends Ui.Picker {
         }
         Picker.initialize({
             :title => new Ui.Text({
-                :text => Lang.format("$1$ [s]", [Ui.loadResource(Rez.Strings.titleTimerThresholdAirborne)]),
+                :text => format("$1$ [s]", [Ui.loadResource(Rez.Strings.titleTimerThresholdAirborne)]),
                 :font => Gfx.FONT_TINY,
                 :locX => Ui.LAYOUT_HALIGN_CENTER,
                 :locY => Ui.LAYOUT_VALIGN_BOTTOM,
@@ -74,14 +75,14 @@ class MyPickerGenericSettings extends Ui.Picker {
     else if(_context == :contextGeneral) {
       if(_item == :itemBackgroundColor) {
 
-        var iColor = App.Properties.getValue("userGeneralBackgroundColor");
+        var iColor = $.oMySettings.loadGeneralBackgroundColor();
         var oFactory = new PickerFactoryDictionary([Gfx.COLOR_WHITE, Gfx.COLOR_BLACK],
                                                    [Ui.loadResource(Rez.Strings.valueColorWhite),
                                                     Ui.loadResource(Rez.Strings.valueColorBlack)],
                                                    null);
         Picker.initialize({
             :title => new Ui.Text({
-                :text => Ui.loadResource(Rez.Strings.titleGeneralBackgroundColor),
+                :text => Ui.loadResource(Rez.Strings.titleGeneralBackgroundColor) as String,
                 :font => Gfx.FONT_TINY,
                 :locX => Ui.LAYOUT_HALIGN_CENTER,
                 :locY => Ui.LAYOUT_VALIGN_BOTTOM,
@@ -94,13 +95,13 @@ class MyPickerGenericSettings extends Ui.Picker {
     else if(_context == :contextUnit) {
       if(_item == :itemDistance) {
 
-        var iUnitDistance = App.Properties.getValue("userUnitDistance");
+        var iUnitDistance = $.oMySettings.loadUnitDistance();
         var oFactory = new PickerFactoryDictionary([-1, 0, 1 ,2],
                                                    [Ui.loadResource(Rez.Strings.valueAuto), "km", "sm", "nm"],
                                                    null);
         Picker.initialize({
             :title => new Ui.Text({
-                :text => Ui.loadResource(Rez.Strings.titleUnitDistance),
+                :text => Ui.loadResource(Rez.Strings.titleUnitDistance) as String,
                 :font => Gfx.FONT_TINY,
                 :locX => Ui.LAYOUT_HALIGN_CENTER,
                 :locY => Ui.LAYOUT_VALIGN_BOTTOM,
@@ -111,13 +112,13 @@ class MyPickerGenericSettings extends Ui.Picker {
       }
       else if(_item == :itemElevation) {
 
-        var iUnitElevation = App.Properties.getValue("userUnitElevation");
+        var iUnitElevation = $.oMySettings.loadUnitElevation();
         var oFactory = new PickerFactoryDictionary([-1, 0, 1],
                                                    [Ui.loadResource(Rez.Strings.valueAuto), "m", "ft"],
                                                    null);
         Picker.initialize({
             :title => new Ui.Text({
-                :text => Ui.loadResource(Rez.Strings.titleUnitElevation),
+                :text => Ui.loadResource(Rez.Strings.titleUnitElevation) as String,
                 :font => Gfx.FONT_TINY,
                 :locX => Ui.LAYOUT_HALIGN_CENTER,
                 :locY => Ui.LAYOUT_VALIGN_BOTTOM,
@@ -128,13 +129,13 @@ class MyPickerGenericSettings extends Ui.Picker {
       }
       else if(_item == :itemWeight) {
 
-        var iUnitWeight = App.Properties.getValue("userUnitWeight");
+        var iUnitWeight = $.oMySettings.loadUnitWeight();
         var oFactory = new PickerFactoryDictionary([-1, 0, 1],
                                                    [Ui.loadResource(Rez.Strings.valueAuto), "kg", "lb"],
                                                    null);
         Picker.initialize({
             :title => new Ui.Text({
-                :text => Ui.loadResource(Rez.Strings.titleUnitWeight),
+                :text => Ui.loadResource(Rez.Strings.titleUnitWeight) as String,
                   :font => Gfx.FONT_TINY,
                   :locX => Ui.LAYOUT_HALIGN_CENTER,
                   :locY => Ui.LAYOUT_VALIGN_BOTTOM,
@@ -145,13 +146,13 @@ class MyPickerGenericSettings extends Ui.Picker {
       }
       else if(_item == :itemFuel) {
 
-        var iUnitFuel = App.Properties.getValue("userUnitFuel");
+        var iUnitFuel = $.oMySettings.loadUnitFuel();
         var oFactory = new PickerFactoryDictionary([-1, 0, 1 ,2],
                                                    [Ui.loadResource(Rez.Strings.valueAuto), "l", "gal", "kWh"],
                                                    null);
         Picker.initialize({
             :title => new Ui.Text({
-                :text => Ui.loadResource(Rez.Strings.titleUnitFuel),
+                :text => Ui.loadResource(Rez.Strings.titleUnitFuel) as String,
                 :font => Gfx.FONT_TINY,
                 :locX => Ui.LAYOUT_HALIGN_CENTER,
                 :locY => Ui.LAYOUT_VALIGN_BOTTOM,
@@ -162,13 +163,13 @@ class MyPickerGenericSettings extends Ui.Picker {
       }
       else if(_item == :itemPressure) {
 
-        var iUnitPressure = App.Properties.getValue("userUnitPressure");
+        var iUnitPressure = $.oMySettings.loadUnitPressure();
         var oFactory = new PickerFactoryDictionary([-1, 0, 1],
                                                    [Ui.loadResource(Rez.Strings.valueAuto), "mb", "inHg"],
                                                    null);
         Picker.initialize({
             :title => new Ui.Text({
-                :text => Ui.loadResource(Rez.Strings.titleUnitPressure),
+                :text => Ui.loadResource(Rez.Strings.titleUnitPressure) as String,
                 :font => Gfx.FONT_TINY,
                 :locX => Ui.LAYOUT_HALIGN_CENTER,
                 :locY => Ui.LAYOUT_VALIGN_BOTTOM,
@@ -179,13 +180,13 @@ class MyPickerGenericSettings extends Ui.Picker {
       }
       else if(_item == :itemTemperature) {
 
-        var iUnitTemperature = App.Properties.getValue("userUnitTemperature");
+        var iUnitTemperature = $.oMySettings.loadUnitTemperature();
         var oFactory = new PickerFactoryDictionary([-1, 0, 1],
                                                    [Ui.loadResource(Rez.Strings.valueAuto), "°C", "°F"],
                                                    null);
         Picker.initialize({
             :title => new Ui.Text({
-                :text => Ui.loadResource(Rez.Strings.titleUnitTemperature),
+                :text => Ui.loadResource(Rez.Strings.titleUnitTemperature) as String,
                 :font => Gfx.FONT_TINY,
                 :locX => Ui.LAYOUT_HALIGN_CENTER,
                 :locY => Ui.LAYOUT_VALIGN_BOTTOM,
@@ -196,14 +197,14 @@ class MyPickerGenericSettings extends Ui.Picker {
       }
       else if(_item == :itemTimeUTC) {
 
-        var bUnitTimeUTC = App.Properties.getValue("userUnitTimeUTC");
+        var bUnitTimeUTC = $.oMySettings.loadUnitTimeUTC();
         var oFactory = new PickerFactoryDictionary([false, true],
                                                    [Ui.loadResource(Rez.Strings.valueUnitTimeLT),
                                                     Ui.loadResource(Rez.Strings.valueUnitTimeUTC)],
                                                    null);
         Picker.initialize({
             :title => new Ui.Text({
-                :text => Ui.loadResource(Rez.Strings.titleUnitTimeUTC),
+                :text => Ui.loadResource(Rez.Strings.titleUnitTimeUTC) as String,
                   :font => Gfx.FONT_TINY,
                   :locX => Ui.LAYOUT_HALIGN_CENTER,
                   :locY => Ui.LAYOUT_VALIGN_BOTTOM,
@@ -223,15 +224,15 @@ class MyPickerGenericSettingsDelegate extends Ui.PickerDelegate {
   // VARIABLES
   //
 
-  private var context;
-  private var item;
+  private var context as Symbol = :contextNone;
+  private var item as Symbol = :itemNone;
 
 
   //
   // FUNCTIONS: Ui.PickerDelegate (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     PickerDelegate.initialize();
     self.context = _context;
     self.item = _item;
@@ -239,48 +240,56 @@ class MyPickerGenericSettingsDelegate extends Ui.PickerDelegate {
 
   function onAccept(_amValues) {
     if(self.context == :contextTimer) {
+
       if(self.item == :itemThresholdGround) {
-        App.Properties.setValue("userTimerThresholdGround", _amValues[0]);
+        $.oMySettings.saveTimerThresholdGround(_amValues[0] as Number);
       }
       else if(self.item == :itemThresholdAirborne) {
-        App.Properties.setValue("userTimerThresholdAirborne", _amValues[0]);
+        $.oMySettings.saveTimerThresholdAirborne(_amValues[0] as Number);
       }
+
     }
     else if(self.context == :contextGeneral) {
+
       if(self.item == :itemBackgroundColor) {
-        App.Properties.setValue("userGeneralBackgroundColor", _amValues[0]);
+        $.oMySettings.saveGeneralBackgroundColor(_amValues[0] as Number);
       }
+
     }
     else if(self.context == :contextUnit) {
+
       if(self.item == :itemDistance) {
-        App.Properties.setValue("userUnitDistance", _amValues[0]);
+        $.oMySettings.saveUnitDistance(_amValues[0] as Number);
       }
       else if(self.item == :itemElevation) {
-        App.Properties.setValue("userUnitElevation", _amValues[0]);
+        $.oMySettings.saveUnitElevation(_amValues[0] as Number);
       }
       else if(self.item == :itemWeight) {
-        App.Properties.setValue("userUnitWeight", _amValues[0]);
+        $.oMySettings.saveUnitWeight(_amValues[0] as Number);
       }
       else if(self.item == :itemFuel) {
-        App.Properties.setValue("userUnitFuel", _amValues[0]);
+        $.oMySettings.saveUnitFuel(_amValues[0] as Number);
       }
       else if(self.item == :itemPressure) {
-        App.Properties.setValue("userUnitPressure", _amValues[0]);
+        $.oMySettings.saveUnitPressure(_amValues[0] as Number);
       }
       else if(self.item == :itemTemperature) {
-        App.Properties.setValue("userUnitTemperature", _amValues[0]);
+        $.oMySettings.saveUnitTemperature(_amValues[0] as Number);
       }
       else if(self.item == :itemTimeUTC) {
-        App.Properties.setValue("userUnitTimeUTC", _amValues[0]);
+        $.oMySettings.saveUnitTimeUTC(_amValues[0] as Boolean);
       }
       $.oMySettings.load();  // ... use proper units in settings
+
     }
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
   function onCancel() {
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
 }

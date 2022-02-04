@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.WatchUi as Ui;
 
@@ -27,46 +28,54 @@ class MyMenuGenericConfirm extends Ui.Menu {
   // FUNCTIONS: Ui.Menu (override/implement)
   //
 
-  function initialize(_context, _action) {
+  function initialize(_context as Symbol, _action as Symbol) {
     Menu.initialize();
-    Menu.setTitle(Ui.loadResource(Rez.Strings.titleConfirm));
+    Menu.setTitle(Ui.loadResource(Rez.Strings.titleConfirm) as String);
     if(_context == :contextActivity) {
+
       if(_action == :actionStart) {
-        Menu.addItem(Lang.format("$1$ ?", [Ui.loadResource(Rez.Strings.titleActivityStart)]), 0);
+        Menu.addItem(format("$1$ ?", [Ui.loadResource(Rez.Strings.titleActivityStart)]), :menuNone);
       }
       else if(_action == :actionSave) {
-        Menu.addItem(Lang.format("$1$ ?", [Ui.loadResource(Rez.Strings.titleActivitySave)]), 0);
+        Menu.addItem(format("$1$ ?", [Ui.loadResource(Rez.Strings.titleActivitySave)]), :menuNone);
       }
       else if(_action == :actionDiscard) {
-        Menu.addItem(Lang.format("$1$ ?", [Ui.loadResource(Rez.Strings.titleActivityDiscard)]), 0);
+        Menu.addItem(format("$1$ ?", [Ui.loadResource(Rez.Strings.titleActivityDiscard)]), :menuNone);
       }
+
     }
     else if(_context == :contextTimer) {
+
       if(_action == :actionReset) {
-        Menu.addItem(Lang.format("$1$ ?", [Ui.loadResource(Rez.Strings.titleTimerReset)]), 0);
+        Menu.addItem(format("$1$ ?", [Ui.loadResource(Rez.Strings.titleTimerReset)]), :menuNone);
       }
       else if(_action == :actionAddCycle) {
-        Menu.addItem(Lang.format("$1$ ?", [Ui.loadResource(Rez.Strings.titleTimerAddCycle)]), 0);
+        Menu.addItem(format("$1$ ?", [Ui.loadResource(Rez.Strings.titleTimerAddCycle)]), :menuNone);
       }
       else if(_action == :actionUndoCycle) {
-        Menu.addItem(Lang.format("$1$ ?", [Ui.loadResource(Rez.Strings.titleTimerUndoCycle)]), 0);
+        Menu.addItem(format("$1$ ?", [Ui.loadResource(Rez.Strings.titleTimerUndoCycle)]), :menuNone);
       }
       else if(_action == :actionSave) {
-        Menu.addItem(Lang.format("$1$ ?", [Ui.loadResource(Rez.Strings.titleTimerSave)]), 0);
+        Menu.addItem(format("$1$ ?", [Ui.loadResource(Rez.Strings.titleTimerSave)]), :menuNone);
       }
       else if(_action == :actionDiscard) {
-        Menu.addItem(Lang.format("$1$ ?", [Ui.loadResource(Rez.Strings.titleTimerDiscard)]), 0);
+        Menu.addItem(format("$1$ ?", [Ui.loadResource(Rez.Strings.titleTimerDiscard)]), :menuNone);
       }
+
     }
     else if(_context == :contextStorage) {
+
       if(_action == :actionClear) {
-        Menu.addItem(Lang.format("$1$ ?", [Ui.loadResource(Rez.Strings.titleStorageClear)]), 0);
+        Menu.addItem(format("$1$ ?", [Ui.loadResource(Rez.Strings.titleStorageClear)]), :menuNone);
       }
+
     }
     else if(_context == :contextGlider) {
+
       if(_action == :actionClear) {
-        Menu.addItem(Lang.format("$1$ ?", [Ui.loadResource(Rez.Strings.titleAircraftClear)]), 0);
+        Menu.addItem(format("$1$ ?", [Ui.loadResource(Rez.Strings.titleAircraftClear)]), :menuNone);
       }
+
     }
   }
 
@@ -78,44 +87,47 @@ class MyMenuGenericConfirmDelegate extends Ui.MenuInputDelegate {
   // VARIABLES
   //
 
-  private var context;
-  private var action;
-  private var popout;
+  private var context as Symbol = :contextNone;
+  private var action as Symbol = :actionNone;
+  private var popout as Boolean = true;
 
 
   //
   // FUNCTIONS: Ui.MenuInputDelegate (override/implement)
   //
 
-  function initialize(_context, _action, _popout) {
+  function initialize(_context as Symbol, _action as Symbol, _popout as Boolean) {
     MenuInputDelegate.initialize();
     self.context = _context;
     self.action = _action;
     self.popout = _popout;
   }
 
-  function onMenuItem(item) {
+  function onMenuItem(_item) {
     if(self.context == :contextActivity) {
+
       if(self.action == :actionStart) {
         if($.oMyActivity == null) {
           $.oMyActivity = new MyActivity();
-          $.oMyActivity.start();
+          ($.oMyActivity as MyActivity).start();
         }
       }
       else if(self.action == :actionSave) {
         if($.oMyActivity != null) {
-          $.oMyActivity.stop(true);
+          ($.oMyActivity as MyActivity).stop(true);
           $.oMyActivity = null;
         }
       }
       else if(self.action == :actionDiscard) {
         if($.oMyActivity != null) {
-          $.oMyActivity.stop(false);
+          ($.oMyActivity as MyActivity).stop(false);
           $.oMyActivity = null;
         }
       }
+
     }
     else if(self.context == :contextTimer) {
+
       if(self.action == :actionReset) {
         $.oMyTimer.reset();
       }
@@ -131,17 +143,22 @@ class MyMenuGenericConfirmDelegate extends Ui.MenuInputDelegate {
       else if(self.action == :actionDiscard) {
         $.oMyTimer.reset();
       }
+
     }
     else if(self.context == :contextStorage) {
+
       if(self.action == :actionClear) {
-        App.getApp().clearStorageData();
+        (App.getApp() as MyApp).clearStorageData();
       }
+
     }
     else if(self.context == :contextGlider) {
+
       if(self.action == :actionClear) {
         App.Storage.deleteValue("storGliderInUse");
         $.oMyGlider = null;
       }
+
     }
     if(self.popout) {
       Ui.popView(Ui.SLIDE_IMMEDIATE);

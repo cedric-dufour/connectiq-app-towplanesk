@@ -1,7 +1,7 @@
 // -*- mode:java; tab-width:2; c-basic-offset:2; intent-tabs-mode:nil; -*- ex: set tabstop=2 expandtab:
 
 // Generic ConnectIQ Helpers/Resources (CIQ Helpers)
-// Copyright (C) 2017-2018 Cedric Dufour <http://cedric.dufour.name>
+// Copyright (C) 2017-2022 Cedric Dufour <http://cedric.dufour.name>
 //
 // Generic ConnectIQ Helpers/Resources (CIQ Helpers) is free software:
 // you can redistribute it and/or modify it under the terms of the GNU General
@@ -16,8 +16,8 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Graphics as Gfx;
-using Toybox.Lang;
 using Toybox.System as Sys;
 using Toybox.WatchUi as Ui;
 
@@ -27,89 +27,90 @@ class PickerGenericFuel extends Ui.Picker {
   // FUNCTIONS: Ui.Picker (override/implement)
   //
 
-  function initialize(_sTitle, _fValue, _iUnit, _bAllowNegative) {
+  function initialize(_sTitle as String, _fValue as Float?, _iUnit as Number?, _bAllowNegative as Boolean) {
     // Input validation
     // ... unit
-    if(_iUnit == null or _iUnit < 0 or _iUnit > 2) {
+    var iUnit = _iUnit != null ? _iUnit : -1;
+    if(iUnit < 0 or iUnit > 2) {
       var oDeviceSettings = Sys.getDeviceSettings();
       if(oDeviceSettings has :weightUnits and oDeviceSettings.weightUnits != null) {
-        _iUnit = oDeviceSettings.weightUnits;
+        iUnit = oDeviceSettings.weightUnits;
       }
       else {
-        _iUnit = Sys.UNIT_METRIC;
+        iUnit = Sys.UNIT_METRIC;
       }
     }
     // ... value
-    if(_fValue == null) {
-      _fValue = 0.0f;
-    }
+    var fValue = (_fValue != null and LangUtils.notNaN(_fValue)) ? _fValue : 0.0f;
 
     // Use user-specified fuel unit (NB: SI units are always used internally)
     // PRECISION: 0.1 (* 10)
-    var sUnit;
-    var iMaxSignificant;
-    if(_iUnit == 2) {
+    var sUnit = "l";
+    var iMaxSignificant = 9;
+    if(iUnit == 2) {
       sUnit = "kWh";
       iMaxSignificant = 9;
-      _fValue /= 360000.0f;  // J -> kWh (* 10)
-      if(_fValue > 99999.0f) {
-        _fValue = 99999.0f;
+      fValue /= 360000.0f;  // J -> kWh (* 10)
+      if(fValue > 99999.0f) {
+        fValue = 99999.0f;
       }
-      else if(_fValue < -99999.0f) {
-        _fValue = -99999.0f;
+      else if(fValue < -99999.0f) {
+        fValue = -99999.0f;
       }
     }
-    else if(_iUnit == Sys.UNIT_STATUTE) {
+    else if(iUnit == Sys.UNIT_STATUTE) {
       sUnit = "gal";
       iMaxSignificant = 3;
-      _fValue *= 2641.72052358f;  // m3 -> gal (* 10)
-      if(_fValue > 39999.0f) {
-        _fValue = 39999.0f;
+      fValue *= 2641.72052358f;  // m3 -> gal (* 10)
+      if(fValue > 39999.0f) {
+        fValue = 39999.0f;
       }
-      else if(_fValue < -39999.0f) {
-        _fValue = -39999.0f;
+      else if(fValue < -39999.0f) {
+        fValue = -39999.0f;
       }
     }
     else {
-      sUnit = "l";
-      iMaxSignificant = 9;
-      _fValue *= 10000.0f;  // m3 -> l (* 10)
-      if(_fValue > 99999.0f) {
-        _fValue = 99999.0f;
+      fValue *= 10000.0f;  // m3 -> l (* 10)
+      if(fValue > 99999.0f) {
+        fValue = 99999.0f;
       }
-      else if(_fValue < -99999.0f) {
-        _fValue = -99999.0f;
+      else if(fValue < -99999.0f) {
+        fValue = -99999.0f;
       }
     }
-    if(!_bAllowNegative and _fValue < 0.0f) {
-      _fValue = 0.0f;
+    if(!_bAllowNegative and fValue < 0.0f) {
+      fValue = 0.0f;
     }
 
     // Split components
-    var amValues = new [6];
-    amValues[0] = _fValue < 0.0f ? 0 : 1;
-    _fValue = _fValue.abs() + 0.05f;
-    amValues[5] = _fValue.toNumber() % 10;
-    _fValue = _fValue / 10.0f;
-    amValues[4] = _fValue.toNumber() % 10;
-    _fValue = _fValue / 10.0f;
-    amValues[3] = _fValue.toNumber() % 10;
-    _fValue = _fValue / 10.0f;
-    amValues[2] = _fValue.toNumber() % 10;
-    _fValue = _fValue / 10.0f;
-    amValues[1] = _fValue.toNumber();
+    var aiValues = new Array<Number>[6];
+    aiValues[0] = fValue < 0.0f ? 0 : 1;
+    fValue = fValue.abs() + 0.05f;
+    aiValues[5] = fValue.toNumber() % 10;
+    fValue = fValue / 10.0f;
+    aiValues[4] = fValue.toNumber() % 10;
+    fValue = fValue / 10.0f;
+    aiValues[3] = fValue.toNumber() % 10;
+    fValue = fValue / 10.0f;
+    aiValues[2] = fValue.toNumber() % 10;
+    fValue = fValue / 10.0f;
+    aiValues[1] = fValue.toNumber();
 
     // Initialize picker
     Picker.initialize({
-      :title => new Ui.Text({ :text => Lang.format("$1$ [$2$]", [_sTitle, sUnit]), :font => Gfx.FONT_TINY, :locX=>Ui.LAYOUT_HALIGN_CENTER, :locY=>Ui.LAYOUT_VALIGN_BOTTOM, :color => Gfx.COLOR_BLUE }),
-      :pattern => [ _bAllowNegative ? new PickerFactoryDictionary([-1, 1], ["-", "+"], null) : new Ui.Text({}),
-                    new PickerFactoryNumber(0, iMaxSignificant, { :langFormat => "$1$'" }),
-                    new PickerFactoryNumber(0, 9, null),
-                    new PickerFactoryNumber(0, 9, null),
-                    new PickerFactoryNumber(0, 9, { :langFormat => "$1$." }),
-                    new PickerFactoryNumber(0, 9, null) ],
-      :defaults => amValues
-    });
+        :title => new Ui.Text({
+            :text => format("$1$ [$2$]", [_sTitle, sUnit]),
+            :font => Gfx.FONT_TINY,
+            :locX => Ui.LAYOUT_HALIGN_CENTER,
+            :locY => Ui.LAYOUT_VALIGN_BOTTOM,
+            :color => Gfx.COLOR_BLUE}),
+        :pattern => [_bAllowNegative ? new PickerFactoryDictionary([-1, 1], ["-", "+"], null) : new Ui.Text({}),
+                     new PickerFactoryNumber(0, iMaxSignificant, {:langFormat => "$1$'"}),
+                     new PickerFactoryNumber(0, 9, null),
+                     new PickerFactoryNumber(0, 9, null),
+                     new PickerFactoryNumber(0, 9, {:langFormat => "$1$."}),
+                     new PickerFactoryNumber(0, 9, null)],
+        :defaults => aiValues});
   }
 
 
@@ -117,16 +118,17 @@ class PickerGenericFuel extends Ui.Picker {
   // FUNCTIONS: self
   //
 
-  function getValue(_amValues, _iUnit) {
+  function getValue(_amValues as Array, _iUnit as Number?) as Float {
     // Input validation
     // ... unit
-    if(_iUnit == null or _iUnit < 0 or _iUnit > 2) {
+    var iUnit = _iUnit != null ? _iUnit : -1;
+    if(iUnit < 0 or iUnit > 2) {
       var oDeviceSettings = Sys.getDeviceSettings();
       if(oDeviceSettings has :weightUnits and oDeviceSettings.weightUnits != null) {
-        _iUnit = oDeviceSettings.weightUnits;
+        iUnit = oDeviceSettings.weightUnits;
       }
       else {
-        _iUnit = Sys.UNIT_METRIC;
+        iUnit = Sys.UNIT_METRIC;
       }
     }
 
@@ -137,10 +139,10 @@ class PickerGenericFuel extends Ui.Picker {
     }
 
     // Use user-specified fuel unit (NB: SI units are always used internally)
-    if(_iUnit == 2) {
+    if(iUnit == 2) {
       fValue *= 360000.0f;  // kWh (* 10) -> J
     }
-    else if(_iUnit == Sys.UNIT_STATUTE) {
+    else if(iUnit == Sys.UNIT_STATUTE) {
       fValue /= 2641.72052358f;  // gal (* 10) -> m3
     }
     else {

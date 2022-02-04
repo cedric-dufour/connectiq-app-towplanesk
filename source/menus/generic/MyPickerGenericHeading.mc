@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.WatchUi as Ui;
 
@@ -25,14 +26,16 @@ class MyPickerGenericHeading extends PickerGenericHeading {
   // FUNCTIONS: PickerGenericHeading (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     if(_context == :contextSettings) {
+
       if(_item == :itemWindDirection) {
-        PickerGenericHeading.initialize(Ui.loadResource(Rez.Strings.titleWindDirection),
-                                        App.Properties.getValue("userWindDirection"),
+        PickerGenericHeading.initialize(Ui.loadResource(Rez.Strings.titleWindDirection) as String,
+                                        $.oMySettings.loadWindDirection(),
                                         0,
                                         false);
       }
+
     }
   }
 
@@ -44,15 +47,15 @@ class MyPickerGenericHeadingDelegate extends Ui.PickerDelegate {
   // VARIABLES
   //
 
-  private var context;
-  private var item;
+  private var context as Symbol = :contextNone;
+  private var item as Symbol = :itemNone;
 
 
   //
   // FUNCTIONS: Ui.PickerDelegate (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     PickerDelegate.initialize();
     self.context = _context;
     self.item = _item;
@@ -61,16 +64,20 @@ class MyPickerGenericHeadingDelegate extends Ui.PickerDelegate {
   function onAccept(_amValues) {
     var fValue = PickerGenericHeading.getValue(_amValues, 0);
     if(self.context == :contextSettings) {
+
       if(self.item == :itemWindDirection) {
-        App.Properties.setValue("userWindDirection", fValue);
+        $.oMySettings.saveWindDirection(fValue);
       }
+
     }
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
   function onCancel() {
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
 }

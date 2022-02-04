@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Activity;
 using Toybox.ActivityRecording as AR;
 using Toybox.Attention as Attn;
@@ -60,37 +61,37 @@ class MyActivity {
   //
 
   // Session (recording)
-  private var oSession;
+  private var oSession as AR.Session;
   // ... internals
-  private var oDurationFlight;
-  private var oDurationBlock;
+  private var oDurationFlight as Time.Duration;
+  private var oDurationBlock as Time.Duration;
 
   // FIT fields
   // ... (unit conversion) coefficients
-  private var bUnitCoefficient_TimeUTC = false;
-  private var fUnitCoefficient_Altitude = 1.0f;
-  private var fUnitCoefficient_VerticalSpeed = 1.0f;
-  private var fUnitCoefficient_HorizontalSpeed = 1.0f;
+  private var bUnitCoefficient_TimeUTC as Boolean = false;
+  private var fUnitCoefficient_Altitude as Float = 1.0f;
+  private var fUnitCoefficient_VerticalSpeed as Float = 1.0f;
+  private var fUnitCoefficient_HorizontalSpeed as Float = 1.0f;
   // ... record
-  private var oFitField_BarometricAltitude = null;
-  private var oFitField_VerticalSpeed = null;
+  private var oFitField_BarometricAltitude as FC.Field;
+  private var oFitField_VerticalSpeed as FC.Field;
   // ... lap
-  private var oFitField_CallsignTowplane = null;
-  private var oFitField_CallsignGlider = null;
-  private var oFitField_TimeOffBlock = null;
-  private var oFitField_TimeTakeoff = null;
-  private var oFitField_AltitudeTakeoff = null;
-  private var oFitField_TimeTopOfClimb = null;
-  private var oFitField_AltitudeTopOfClimb = null;
-  private var oFitField_CountCycles = null;
-  private var oFitField_TimeLanding = null;
-  private var oFitField_AltitudeLanding = null;
-  private var oFitField_TimeOnBlock = null;
-  private var oFitField_FlightTime = null;
-  private var oFitField_BlockTime = null;
+  private var oFitField_CallsignTowplane as FC.Field;
+  private var oFitField_CallsignGlider as FC.Field;
+  private var oFitField_TimeOffBlock as FC.Field;
+  private var oFitField_TimeTakeoff as FC.Field;
+  private var oFitField_AltitudeTakeoff as FC.Field;
+  private var oFitField_TimeTopOfClimb as FC.Field;
+  private var oFitField_AltitudeTopOfClimb as FC.Field;
+  private var oFitField_CountCycles as FC.Field;
+  private var oFitField_TimeLanding as FC.Field;
+  private var oFitField_AltitudeLanding as FC.Field;
+  private var oFitField_TimeOnBlock as FC.Field;
+  private var oFitField_FlightTime as FC.Field;
+  private var oFitField_BlockTime as FC.Field;
   // ... session
-  private var oFitField_TotalFlightTime = null;
-  private var oFitField_TotalBlockTime = null;
+  private var oFitField_TotalFlightTime as FC.Field;
+  private var oFitField_TotalBlockTime as FC.Field;
 
 
   //
@@ -101,111 +102,114 @@ class MyActivity {
     //Sys.println("DEBUG: MyActivity.initialize()");
 
     // Session (recording)
-    // NOTE: "Flying" activity number is 20 (cf. https://www.thisisant.com/resources/fit -> Profiles.xlsx)
-    self.oSession = AR.createSession({:name=>"TowplaneSK", :sport=>20, :subSport=>AR.SUB_SPORT_GENERIC});
+    // SPORT_FLYING = 20 (since API 3.0.10)
+    oSession = AR.createSession({
+        :name => "TowplaneSK",
+        :sport => 20 as AR.Sport2,
+        :subSport => AR.SUB_SPORT_GENERIC});
     // ... internals
-    self.oDurationFlight = new Time.Duration(0);
-    self.oDurationBlock = new Time.Duration(0);
+    oDurationFlight = new Time.Duration(0);
+    oDurationBlock = new Time.Duration(0);
 
     // FIT fields
 
     // ... (unit conversion) coefficients
-    self.bUnitCoefficient_TimeUTC = $.oMySettings.bUnitTimeUTC;
-    self.fUnitCoefficient_Altitude = $.oMySettings.fUnitElevationCoefficient;
-    self.fUnitCoefficient_VerticalSpeed = $.oMySettings.fUnitVerticalSpeedCoefficient;
-    self.fUnitCoefficient_HorizontalSpeed = $.oMySettings.fUnitHorizontalSpeedCoefficient;
+    bUnitCoefficient_TimeUTC = $.oMySettings.bUnitTimeUTC;
+    fUnitCoefficient_Altitude = $.oMySettings.fUnitElevationCoefficient;
+    fUnitCoefficient_VerticalSpeed = $.oMySettings.fUnitVerticalSpeedCoefficient;
+    fUnitCoefficient_HorizontalSpeed = $.oMySettings.fUnitHorizontalSpeedCoefficient;
 
     // ... record
-    self.oFitField_BarometricAltitude =
-      self.oSession.createField("BarometricAltitude",
-                                MyActivity.FITFIELD_BAROMETRICALTITUDE,
-                                FC.DATA_TYPE_FLOAT,
-                                {:mesgType=>FC.MESG_TYPE_RECORD, :units=>$.oMySettings.sUnitElevation});
-    self.oFitField_VerticalSpeed =
-      self.oSession.createField("VerticalSpeed",
-                                MyActivity.FITFIELD_VERTICALSPEED,
-                                FC.DATA_TYPE_FLOAT,
-                                {:mesgType=>FC.MESG_TYPE_RECORD, :units=>$.oMySettings.sUnitVerticalSpeed});
+    oFitField_BarometricAltitude =
+      oSession.createField("BarometricAltitude",
+                           MyActivity.FITFIELD_BAROMETRICALTITUDE,
+                           FC.DATA_TYPE_FLOAT,
+                           {:mesgType => FC.MESG_TYPE_RECORD, :units => $.oMySettings.sUnitElevation});
+    oFitField_VerticalSpeed =
+      oSession.createField("VerticalSpeed",
+                           MyActivity.FITFIELD_VERTICALSPEED,
+                           FC.DATA_TYPE_FLOAT,
+                           {:mesgType => FC.MESG_TYPE_RECORD, :units => $.oMySettings.sUnitVerticalSpeed});
 
     // ... lap
-    self.oFitField_CallsignTowplane =
-      self.oSession.createField("CallsignTowplane",
-                                MyActivity.FITFIELD_CALLSIGNTOWPLANE,
-                                FC.DATA_TYPE_STRING,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :count=>9});
-    self.oFitField_CallsignGlider =
-      self.oSession.createField("CallsignGlider",
-                                MyActivity.FITFIELD_CALLSIGNGLIDER,
-                                FC.DATA_TYPE_STRING,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :count=>9});
-    self.oFitField_TimeOffBlock =
-      self.oSession.createField("TimeOffBlock",
-                                MyActivity.FITFIELD_TIMEOFFBLOCK,
-                                FC.DATA_TYPE_STRING,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :count=>9, :units=>$.oMySettings.sUnitTime});
-    self.oFitField_TimeTakeoff =
-      self.oSession.createField("TimeTakeoff",
-                                MyActivity.FITFIELD_TIMETAKEOFF,
-                                FC.DATA_TYPE_STRING,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :count=>9, :units=>$.oMySettings.sUnitTime});
-    self.oFitField_AltitudeTakeoff =
-      self.oSession.createField("AltitudeTakeoff",
-                                MyActivity.FITFIELD_ALTITUDETAKEOFF,
-                                FC.DATA_TYPE_FLOAT,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :units=>$.oMySettings.sUnitElevation});
-    self.oFitField_TimeTopOfClimb =
-      self.oSession.createField("TimeTopOfClimb",
-                                MyActivity.FITFIELD_TIMETOPOFCLIMB,
-                                FC.DATA_TYPE_STRING,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :count=>9, :units=>$.oMySettings.sUnitTime});
-    self.oFitField_AltitudeTopOfClimb =
-      self.oSession.createField("AltitudeTopOfClimb",
-                                MyActivity.FITFIELD_ALTITUDETOPOFCLIMB,
-                                FC.DATA_TYPE_FLOAT,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :units=>$.oMySettings.sUnitElevation});
-    self.oFitField_CountCycles =
-      self.oSession.createField("CountCycles",
-                                MyActivity.FITFIELD_COUNTCYCLES,
-                                FC.DATA_TYPE_UINT16,
-                                {:mesgType=>FC.MESG_TYPE_LAP});
-    self.oFitField_TimeLanding =
-      self.oSession.createField("TimeLanding",
-                                MyActivity.FITFIELD_TIMELANDING,
-                                FC.DATA_TYPE_STRING,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :count=>9, :units=>$.oMySettings.sUnitTime});
-    self.oFitField_AltitudeLanding =
-      self.oSession.createField("AltitudeLanding",
-                                MyActivity.FITFIELD_ALTITUDELANDING,
-                                FC.DATA_TYPE_FLOAT,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :units=>$.oMySettings.sUnitElevation});
-    self.oFitField_TimeOnBlock =
-      self.oSession.createField("TimeOnBlock",
-                                MyActivity.FITFIELD_TIMEONBLOCK,
-                                FC.DATA_TYPE_STRING,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :count=>9, :units=>$.oMySettings.sUnitTime});
-    self.oFitField_FlightTime =
-      self.oSession.createField("FlightTime",
-                                MyActivity.FITFIELD_FLIGHTTIME,
-                                FC.DATA_TYPE_STRING,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :count=>9});
-    self.oFitField_BlockTime =
-      self.oSession.createField("BlockTime",
-                                MyActivity.FITFIELD_BLOCKTIME,
-                                FC.DATA_TYPE_STRING,
-                                {:mesgType=>FC.MESG_TYPE_LAP, :count=>9});
+    oFitField_CallsignTowplane =
+      oSession.createField("CallsignTowplane",
+                           MyActivity.FITFIELD_CALLSIGNTOWPLANE,
+                           FC.DATA_TYPE_STRING,
+                           {:mesgType => FC.MESG_TYPE_LAP, :count => 9});
+    oFitField_CallsignGlider =
+      oSession.createField("CallsignGlider",
+                           MyActivity.FITFIELD_CALLSIGNGLIDER,
+                           FC.DATA_TYPE_STRING,
+                           {:mesgType => FC.MESG_TYPE_LAP, :count => 9});
+    oFitField_TimeOffBlock =
+      oSession.createField("TimeOffBlock",
+                           MyActivity.FITFIELD_TIMEOFFBLOCK,
+                           FC.DATA_TYPE_STRING,
+                           {:mesgType => FC.MESG_TYPE_LAP, :count => 9, :units => $.oMySettings.sUnitTime});
+    oFitField_TimeTakeoff =
+      oSession.createField("TimeTakeoff",
+                           MyActivity.FITFIELD_TIMETAKEOFF,
+                           FC.DATA_TYPE_STRING,
+                           {:mesgType => FC.MESG_TYPE_LAP, :count => 9, :units => $.oMySettings.sUnitTime});
+    oFitField_AltitudeTakeoff =
+      oSession.createField("AltitudeTakeoff",
+                           MyActivity.FITFIELD_ALTITUDETAKEOFF,
+                           FC.DATA_TYPE_FLOAT,
+                           {:mesgType => FC.MESG_TYPE_LAP, :units => $.oMySettings.sUnitElevation});
+    oFitField_TimeTopOfClimb =
+      oSession.createField("TimeTopOfClimb",
+                           MyActivity.FITFIELD_TIMETOPOFCLIMB,
+                           FC.DATA_TYPE_STRING,
+                           {:mesgType => FC.MESG_TYPE_LAP, :count => 9, :units => $.oMySettings.sUnitTime});
+    oFitField_AltitudeTopOfClimb =
+      oSession.createField("AltitudeTopOfClimb",
+                           MyActivity.FITFIELD_ALTITUDETOPOFCLIMB,
+                           FC.DATA_TYPE_FLOAT,
+                           {:mesgType => FC.MESG_TYPE_LAP, :units => $.oMySettings.sUnitElevation});
+    oFitField_CountCycles =
+      oSession.createField("CountCycles",
+                           MyActivity.FITFIELD_COUNTCYCLES,
+                           FC.DATA_TYPE_UINT16,
+                           {:mesgType => FC.MESG_TYPE_LAP});
+    oFitField_TimeLanding =
+      oSession.createField("TimeLanding",
+                           MyActivity.FITFIELD_TIMELANDING,
+                           FC.DATA_TYPE_STRING,
+                           {:mesgType => FC.MESG_TYPE_LAP, :count => 9, :units => $.oMySettings.sUnitTime});
+    oFitField_AltitudeLanding =
+      oSession.createField("AltitudeLanding",
+                           MyActivity.FITFIELD_ALTITUDELANDING,
+                           FC.DATA_TYPE_FLOAT,
+                           {:mesgType => FC.MESG_TYPE_LAP, :units => $.oMySettings.sUnitElevation});
+    oFitField_TimeOnBlock =
+      oSession.createField("TimeOnBlock",
+                           MyActivity.FITFIELD_TIMEONBLOCK,
+                           FC.DATA_TYPE_STRING,
+                           {:mesgType => FC.MESG_TYPE_LAP, :count => 9, :units => $.oMySettings.sUnitTime});
+    oFitField_FlightTime =
+      oSession.createField("FlightTime",
+                           MyActivity.FITFIELD_FLIGHTTIME,
+                           FC.DATA_TYPE_STRING,
+                           {:mesgType => FC.MESG_TYPE_LAP, :count => 9});
+    oFitField_BlockTime =
+      oSession.createField("BlockTime",
+                           MyActivity.FITFIELD_BLOCKTIME,
+                           FC.DATA_TYPE_STRING,
+                           {:mesgType => FC.MESG_TYPE_LAP, :count => 9});
     self.resetLapFields();
 
     // ... session
-    self.oFitField_TotalFlightTime =
-      self.oSession.createField("TotalFlightTime",
-                                MyActivity.FITFIELD_TOTALFLIGHTTIME,
-                                FC.DATA_TYPE_STRING,
-                                {:mesgType=>FC.MESG_TYPE_SESSION, :count=>9});
-    self.oFitField_TotalBlockTime =
-      self.oSession.createField("TotalBlockTime",
-                                MyActivity.FITFIELD_TOTALBLOCKTIME,
-                                FC.DATA_TYPE_STRING,
-                                {:mesgType=>FC.MESG_TYPE_SESSION, :count=>9});
+    oFitField_TotalFlightTime =
+      oSession.createField("TotalFlightTime",
+                           MyActivity.FITFIELD_TOTALFLIGHTTIME,
+                           FC.DATA_TYPE_STRING,
+                           {:mesgType => FC.MESG_TYPE_SESSION, :count => 9});
+    oFitField_TotalBlockTime =
+      oSession.createField("TotalBlockTime",
+                           MyActivity.FITFIELD_TOTALBLOCKTIME,
+                           FC.DATA_TYPE_STRING,
+                           {:mesgType => FC.MESG_TYPE_SESSION, :count => 9});
   }
 
 
@@ -213,57 +217,57 @@ class MyActivity {
   // FUNCTIONS: self (session)
   //
 
-  function start() {
+  function start() as Void {
     //Sys.println("DEBUG: MyActivity.start()");
 
     self.oSession.start();
-    if(Attn has :playTone) {
+    if(Toybox.Attention has :playTone) {
       Attn.playTone(Attn.TONE_START);
     }
   }
 
-  function isRecording() {
+  function isRecording() as Boolean {
     //Sys.println("DEBUG: MyActivity.isRecording()");
 
     return self.oSession.isRecording();
   }
 
-  function addLap() {
+  function addLap() as Void {
     //Sys.println("DEBUG: MyActivity.lap()");
 
     self.oSession.addLap();
-    if(Attn has :playTone) {
+    if(Toybox.Attention has :playTone) {
       Attn.playTone(Attn.TONE_LAP);
     }
     self.resetLapFields();
   }
 
-  function pause() {
+  function pause() as Void {
     //Sys.println("DEBUG: MyActivity.pause()");
 
     if(!self.oSession.isRecording()) {
       return;
     }
     self.oSession.stop();
-    if(Attn has :playTone) {
+    if(Toybox.Attention has :playTone) {
       Attn.playTone(Attn.TONE_STOP);
     }
   }
 
-  function resume() {
+  function resume() as Void {
     //Sys.println("DEBUG: MyActivity.resume()");
 
     if(self.oSession.isRecording()) {
       return;
     }
     self.oSession.start();
-    if(Attn has :playTone) {
+    if(Toybox.Attention has :playTone) {
       Attn.playTone(Attn.TONE_START);
     }
   }
 
-  function stop(_bSave) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.stop($1$)", [_bSave]));
+  function stop(_bSave as Boolean) as Void {
+    //Sys.println(format("DEBUG: MyActivity.stop($1$)", [_bSave]));
 
     if(self.oSession.isRecording()) {
       self.oSession.stop();
@@ -272,13 +276,13 @@ class MyActivity {
       self.oFitField_TotalFlightTime.setData(LangUtils.formatElapsedDuration(self.oDurationFlight, true));
       self.oFitField_TotalBlockTime.setData(LangUtils.formatElapsedDuration(self.oDurationBlock, true));
       self.oSession.save();
-      if(Attn has :playTone) {
+      if(Toybox.Attention has :playTone) {
         Attn.playTone(Attn.TONE_STOP);
       }
     }
     else {
       self.oSession.discard();
-      if(Attn has :playTone) {
+      if(Toybox.Attention has :playTone) {
         Attn.playTone(Attn.TONE_RESET);
       }
     }
@@ -291,23 +295,23 @@ class MyActivity {
 
   // Record
 
-  function setBarometricAltitude(_fValue) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setBarometricAltitude($1$)", [_fValue]));
-    if(_fValue != null) {
+  function setBarometricAltitude(_fValue as Float?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setBarometricAltitude($1$)", [_fValue]));
+    if(_fValue != null and LangUtils.notNaN(_fValue)) {
       self.oFitField_BarometricAltitude.setData(_fValue * self.fUnitCoefficient_Altitude);
     }
   }
 
-  function setVerticalSpeed(_fValue) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setVerticalSpeed($1$)", [_fValue]));
-    if(_fValue != null) {
+  function setVerticalSpeed(_fValue as Float?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setVerticalSpeed($1$)", [_fValue]));
+    if(_fValue != null and LangUtils.notNaN(_fValue)) {
       self.oFitField_VerticalSpeed.setData(_fValue * self.fUnitCoefficient_VerticalSpeed);
     }
   }
 
   // Lap
 
-  function resetLapFields() {
+  function resetLapFields() as Void {
     self.setCallsignTowplane(null);
     self.setCallsignGlider(null);
     self.setTimeOffBlock(null);
@@ -323,76 +327,76 @@ class MyActivity {
     self.setBlockTime(null);
   }
 
-  function setCallsignTowplane(_sValue) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setCallsignTowplane($1$)", [_sValue]));
-    self.oFitField_CallsignTowplane.setData(_sValue != null ? _sValue.substring(0, 8) : "-");
+  function setCallsignTowplane(_sValue as String?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setCallsignTowplane($1$)", [_sValue]));
+    self.oFitField_CallsignTowplane.setData(_sValue != null ? _sValue.substring(0, 8) as String : "-");
   }
 
-  function setCallsignGlider(_sValue) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setCallsignGlider($1$)", [_sValue]));
-    self.oFitField_CallsignGlider.setData(_sValue != null ? _sValue.substring(0, 8) : "-");
+  function setCallsignGlider(_sValue as String?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setCallsignGlider($1$)", [_sValue]));
+    self.oFitField_CallsignGlider.setData(_sValue != null ? _sValue.substring(0, 8) as String : "-");
   }
 
-  function setTimeOffBlock(_oTime) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setTimeOffBlock($1$)", [_oTime.value()]));
+  function setTimeOffBlock(_oTime as Time.Moment?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setTimeOffBlock($1$)", [_oTime.value()]));
     self.oFitField_TimeOffBlock.setData(LangUtils.formatTime(_oTime, $.oMySettings.bUnitTimeUTC, true));
   }
 
-  function setTimeTakeoff(_oTime) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setTimeTakeoff($1$)", [_oTime.value()]));
+  function setTimeTakeoff(_oTime as Time.Moment?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setTimeTakeoff($1$)", [_oTime.value()]));
     self.oFitField_TimeTakeoff.setData(LangUtils.formatTime(_oTime, $.oMySettings.bUnitTimeUTC, true));
   }
 
-  function setAltitudeTakeoff(_fValue) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setAltitudeTakeoff($1$)", [_fValue]));
-    self.oFitField_AltitudeTakeoff.setData(_fValue != null ? _fValue * self.fUnitCoefficient_Altitude : 0.0f);
+  function setAltitudeTakeoff(_fValue as Float?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setAltitudeTakeoff($1$)", [_fValue]));
+    self.oFitField_AltitudeTakeoff.setData(_fValue != null and LangUtils.notNaN(_fValue) ? _fValue * self.fUnitCoefficient_Altitude : 0.0f);
   }
 
-  function setTimeTopOfClimb(_oTime) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setTimeTopOfClimb($1$)", [_oTime.value()]));
+  function setTimeTopOfClimb(_oTime as Time.Moment?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setTimeTopOfClimb($1$)", [_oTime.value()]));
     self.oFitField_TimeTopOfClimb.setData(LangUtils.formatTime(_oTime, $.oMySettings.bUnitTimeUTC, true));
   }
 
-  function setAltitudeTopOfClimb(_fValue) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setAltitudeTopOfClimb($1$)", [_fValue]));
-    if(_fValue != null) {
+  function setAltitudeTopOfClimb(_fValue as Float?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setAltitudeTopOfClimb($1$)", [_fValue]));
+    if(_fValue != null and LangUtils.notNaN(_fValue)) {
       self.oFitField_AltitudeTopOfClimb.setData(_fValue * self.fUnitCoefficient_Altitude);
     }
   }
 
-  function setCountCycles(_iValue) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setCountCycles($1$)", [_iValue]));
+  function setCountCycles(_iValue as Number?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setCountCycles($1$)", [_iValue]));
     self.oFitField_CountCycles.setData(_iValue != null ? _iValue : 0);
   }
 
-  function setTimeLanding(_oTime) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setTimeLanding($1$)", [_oTime.value()]));
+  function setTimeLanding(_oTime as Time.Moment?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setTimeLanding($1$)", [_oTime.value()]));
     self.oFitField_TimeLanding.setData(LangUtils.formatTime(_oTime, $.oMySettings.bUnitTimeUTC, true));
   }
 
-  function setAltitudeLanding(_fValue) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setAltitudeLanding($1$)", [_fValue]));
-    self.oFitField_AltitudeLanding.setData(_fValue != null ? _fValue * self.fUnitCoefficient_Altitude : 0.0f);
+  function setAltitudeLanding(_fValue as Float?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setAltitudeLanding($1$)", [_fValue]));
+    self.oFitField_AltitudeLanding.setData(_fValue != null and LangUtils.notNaN(_fValue) ? _fValue * self.fUnitCoefficient_Altitude : 0.0f);
   }
 
-  function setTimeOnBlock(_oTime) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setTimeOnBlock($1$)", [_oTime.value()]));
+  function setTimeOnBlock(_oTime as Time.Moment?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setTimeOnBlock($1$)", [_oTime.value()]));
     self.oFitField_TimeOnBlock.setData(LangUtils.formatTime(_oTime, $.oMySettings.bUnitTimeUTC, true));
   }
 
-  function setFlightTime(_oDuration) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setFlightTime($1$)", [_oDuration.value()]));
+  function setFlightTime(_oDuration as Time.Duration?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setFlightTime($1$)", [_oDuration.value()]));
     self.oFitField_FlightTime.setData(LangUtils.formatElapsedDuration(_oDuration, true));
     if(_oDuration != null) {
-      self.oDurationFlight = self.oDurationFlight.add(_oDuration);
+      self.oDurationFlight = self.oDurationFlight.add(_oDuration) as Time.Duration;
     }
   }
 
-  function setBlockTime(_oDuration) {
-    //Sys.println(Lang.format("DEBUG: MyActivity.setBlockTime($1$)", [_oDuration.value()]));
+  function setBlockTime(_oDuration as Time.Duration?) as Void {
+    //Sys.println(format("DEBUG: MyActivity.setBlockTime($1$)", [_oDuration.value()]));
     self.oFitField_BlockTime.setData(LangUtils.formatElapsedDuration(_oDuration, true));
     if(_oDuration != null) {
-      self.oDurationBlock = self.oDurationBlock.add(_oDuration);
+      self.oDurationBlock = self.oDurationBlock.add(_oDuration) as Time.Duration;
     }
   }
 

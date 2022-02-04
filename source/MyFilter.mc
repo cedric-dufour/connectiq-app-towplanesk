@@ -16,7 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
-using Toybox.Lang;
+import Toybox.Lang;
 using Toybox.System as Sys;
 
 //
@@ -49,8 +49,8 @@ class MyFilter {
   //
 
   // Filters
-  private var aoFilters;
-  private var amSort;
+  private var aaFilters as Array<Array>;
+  private var afSort as Array<Float?>;
 
 
   //
@@ -59,62 +59,62 @@ class MyFilter {
 
   function initialize() {
     // Initialize the filters container array
-    self.aoFilters = new [self.FILTERS];
-    self.amSort = new [self.SIZE];
+    aaFilters = new Array<Array>[self.FILTERS];
+    afSort = new Array<Float?>[self.SIZE];
 
     // Loop through each filter
     for(var F=0; F<self.FILTERS; F++) {
       // Create the filter array, containing:
       // [0] current value index (starting from 0)
       // [1+] values history
-      self.aoFilters[F] = new [self.SIZE+1];
+      self.aaFilters[F] = new Array[self.SIZE+1];
       self.resetFilter(F);
     }
   }
 
-  function resetFilter(_F) {
-    //Sys.println(Lang.format("DEBUG: MyFilter.resetFilter($1$)", [_F]));
+  function resetFilter(_F as Number) as Void {
+    //Sys.println(format("DEBUG: MyFilter.resetFilter($1$)", [_F]));
 
     // Reset the current value index
-    self.aoFilters[_F][0] = 0;
+    self.aaFilters[_F][0] = 0;
 
     // Reset the values history
     for(var i=0; i<self.SIZE; i++) {
-      self.aoFilters[_F][1+i] = null;
+      self.aaFilters[_F][1+i] = null;
     }
   }
 
-  function filterValue(_F, _mValue, _bStrict) {
-    //Sys.println(Lang.format("DEBUG: MyFilter.filterValue($1$, $2$, $2$)", [_F, _mValue, _bStrict]));
+  function filterValue(_F as Number, _fValue as Float, _bStrict as Boolean) as Float {
+    //Sys.println(format("DEBUG: MyFilter.filterValue($1$, $2$, $2$)", [_F, _fValue, _bStrict]));
 
     // Store the new value
-    self.aoFilters[_F][1+self.aoFilters[_F][0]] = _mValue;
+    self.aaFilters[_F][1+self.aaFilters[_F][0]] = _fValue;
 
     // Increase the current value index
-    self.aoFilters[_F][0] = (self.aoFilters[_F][0] + 1) % self.SIZE;
+    self.aaFilters[_F][0] = (self.aaFilters[_F][0] + 1) % self.SIZE;
 
     // Return the median-filtered value
     // ... sort values; NOTE: we use Jon Bentley's optimized insertion sort algorithm; https://en.wikipedia.org/wiki/Insertion_sort
     var i;
     for(i=0; i<self.SIZE; i++) {
-      self.amSort[i] = self.aoFilters[_F][1+i];
-      if(self.amSort[i] == null) {
-        return _bStrict ? null : _mValue;  // incomplete data
+      self.afSort[i] = self.aaFilters[_F][1+i];
+      if(self.afSort[i] == null) {
+        return _bStrict ? NaN : _fValue;  // incomplete data
       }
     }
     i = 1;
     while(i<self.SIZE) {
-      var mSwap = self.amSort[i];
+      var mSwap = self.afSort[i] as Float;
       var j = i - 1;
-      while(j >= 0 and self.amSort[j] > mSwap) {
-        self.amSort[j+1] = self.amSort[j];
+      while(j >= 0 and (self.afSort[j] as Float) > mSwap) {
+        self.afSort[j+1] = self.afSort[j];
         j--;
       }
-      self.amSort[j+1] = mSwap;
+      self.afSort[j+1] = mSwap;
       i++;
     }
     // ... return median
-    return self.amSort[self.INDEX];
+    return self.afSort[self.INDEX];
   }
 
 }

@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
@@ -32,63 +33,59 @@ class MyTowplane {
   //
 
   // Parameters
-  public var sCallsign;
+  public var sCallsign as String = "P18";  // short for PA18
   // ... weight
-  public var fWeightEmpty;
-  public var fWeightPayload;
-  public var fWeightTotal;
-  public var fWeightMaxTakeoff;
-  public var fWeightMaxTowing;
-  public var fWeightMaxTowed;
+  public var fWeightEmpty as Float = 525.0f;
+  public var fWeightPayload as Float = 80.0f;
+  public var fWeightTotal as Float = 702.335f;
+  public var fWeightMaxTakeoff as Float = 793.79f;  // 1750 lbs
+  public var fWeightMaxTowing as Float = 720.0f;
+  public var fWeightMaxTowed as Float = 650.0f;
   // ... fuel
-  public var fFuelQuantity;
-  public var fFuelDensity;
-  public var fFuelFlowGround;
-  public var fFuelFlowAirborne;
-  public var fFuelFlowTowing;
-  public var fFuelAlert;
+  public var fFuelQuantity as Float = 0.135f;
+  public var fFuelDensity as Float = 721.0f;
+  public var fFuelFlowGround as Float = 0.000001389f;  // 5.0 [l/h]
+  public var fFuelFlowAirborne as Float = 0.000009722f;  // 35.0 [l/h]
+  public var fFuelFlowTowing as Float = 0.000011111f;  // 40.0 [l/h]
+  public var fFuelAlert as Float = 0.055f;
   // ... speed
-  public var fSpeedOffBlock;
-  public var fSpeedTakeoff;
-  public var fSpeedLanding;
-  public var fSpeedMaxTowing;
+  public var fSpeedOffBlock as Float = 1.39f;  // 5 km/h
+  public var fSpeedTakeoff as Float = 20.92f;  // 47 mph
+  public var fSpeedLanding as Float = 19.14f;  // 43 mph
+  public var fSpeedMaxTowing as Float = 41.67f;  // 150 km/h
 
 
   //
   // FUNCTIONS: self
   //
 
-  function initialize(_dictTowplane) {
-    self.import(_dictTowplane);
-  }
-
-  function import(_dictTowplane) {
-    if(!(_dictTowplane instanceof Lang.Dictionary)) {
+  function load(_dictTowplane as Dictionary?) as Void {
+    if(_dictTowplane == null) {
       _dictTowplane = {};
     }
     // Parameters
-    self.setCallsign(_dictTowplane.get("callsign"));
+    self.setCallsign(_dictTowplane.get("callsign") as String);
     // ... weight
-    self.setWeightEmpty(_dictTowplane.get("weightEmpty"));
-    self.setWeightPayload(_dictTowplane.get("weightPayload"));
-    self.setWeightMaxTakeoff(_dictTowplane.get("weightMaxTakeoff"));
-    self.setWeightMaxTowing(_dictTowplane.get("weightMaxTowing"));
-    self.setWeightMaxTowed(_dictTowplane.get("weightMaxTowed"));
+    self.setWeightEmpty(_dictTowplane.get("weightEmpty") as Float);
+    self.setWeightPayload(_dictTowplane.get("weightPayload") as Float);
+    self.setWeightMaxTakeoff(_dictTowplane.get("weightMaxTakeoff") as Float);
+    self.setWeightMaxTowing(_dictTowplane.get("weightMaxTowing") as Float);
+    self.setWeightMaxTowed(_dictTowplane.get("weightMaxTowed") as Float);
     // ... fuel
-    self.setFuelQuantity(_dictTowplane.get("fuelQuantity"));
-    self.setFuelDensity(_dictTowplane.get("fuelDensity"));
-    self.setFuelFlowGround(_dictTowplane.get("fuelFlowGround"));
-    self.setFuelFlowAirborne(_dictTowplane.get("fuelFlowAirborne"));
-    self.setFuelFlowTowing(_dictTowplane.get("fuelFlowTowing"));
-    self.setFuelAlert(_dictTowplane.get("fuelAlert"));
+    self.setFuelQuantity(_dictTowplane.get("fuelQuantity") as Float);
+    self.setFuelDensity(_dictTowplane.get("fuelDensity") as Float);
+    self.setFuelFlowGround(_dictTowplane.get("fuelFlowGround") as Float);
+    self.setFuelFlowAirborne(_dictTowplane.get("fuelFlowAirborne") as Float);
+    self.setFuelFlowTowing(_dictTowplane.get("fuelFlowTowing") as Float);
+    self.setFuelAlert(_dictTowplane.get("fuelAlert") as Float);
     // ... speed
-    self.setSpeedOffBlock(_dictTowplane.get("speedOffBlock"));
-    self.setSpeedTakeoff(_dictTowplane.get("speedTakeoff"));
-    self.setSpeedLanding(_dictTowplane.get("speedLanding"));
-    self.setSpeedMaxTowing(_dictTowplane.get("speedMaxTowing"));
+    self.setSpeedOffBlock(_dictTowplane.get("speedOffBlock") as Float);
+    self.setSpeedTakeoff(_dictTowplane.get("speedTakeoff") as Float);
+    self.setSpeedLanding(_dictTowplane.get("speedLanding") as Float);
+    self.setSpeedMaxTowing(_dictTowplane.get("speedMaxTowing") as Float);
   }
 
-  function export() {
+  function export() as Dictionary {
     var dictTowplane = {
       "callsign" => self.sCallsign,
       "weightEmpty" => self.fWeightEmpty,
@@ -110,224 +107,217 @@ class MyTowplane {
     return dictTowplane;
   }
 
-  function setCallsign(_sCallsign) {
-    if(_sCallsign == null) {
-      _sCallsign = "P18";  // short for PA18, 180ch
+  function setCallsign(_sValue as String?) as Void {
+    if(_sValue == null) {
+      _sValue = "P18";  // short for PA18
     }
-    self.sCallsign = _sCallsign;
+    self.sCallsign = _sValue;
   }
 
-  function setWeightEmpty(_fWeightEmpty) {  // [kg]
-    if(_fWeightEmpty == null) {
-      _fWeightEmpty = 525.0f;
+  function setWeightEmpty(_fValue as Float?) as Void {  // [kg]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 525.0f;
     }
-    else if(_fWeightEmpty > 9999.0f) {
-      _fWeightEmpty = 9999.0f;
+    else if(_fValue > 9999.0f) {
+      _fValue = 9999.0f;
     }
-    else if(_fWeightEmpty < 0.0f) {
-      _fWeightEmpty = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fWeightEmpty = _fWeightEmpty;
+    self.fWeightEmpty = _fValue;
     self.updateWeightTotal();
   }
 
-  function setWeightPayload(_fWeightPayload) {  // [kg]
-    if(_fWeightPayload == null) {
-      _fWeightPayload = 80.0f;
+  function setWeightPayload(_fValue as Float?) as Void {  // [kg]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 80.0f;
     }
-    else if(_fWeightPayload > 9999.0f) {
-      _fWeightPayload = 9999.0f;
+    else if(_fValue > 9999.0f) {
+      _fValue = 9999.0f;
     }
-    else if(_fWeightPayload < 0.0f) {
-      _fWeightPayload = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fWeightPayload = _fWeightPayload;
+    self.fWeightPayload = _fValue;
     self.updateWeightTotal();
   }
 
-  function setWeightMaxTakeoff(_fWeightMaxTakeoff) {  // [kg]
-    if(_fWeightMaxTakeoff == null) {
-      _fWeightMaxTakeoff = 793.79f;  // 1750 lbs
+  function setWeightMaxTakeoff(_fValue as Float?) as Void {  // [kg]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 793.79f;  // 1750 lbs
     }
-    else if(_fWeightMaxTakeoff > 9999.0f) {
-      _fWeightMaxTakeoff = 9999.0f;
+    else if(_fValue > 9999.0f) {
+      _fValue = 9999.0f;
     }
-    else if(_fWeightMaxTakeoff < 0.0f) {
-      _fWeightMaxTakeoff = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fWeightMaxTakeoff = _fWeightMaxTakeoff;
+    self.fWeightMaxTakeoff = _fValue;
   }
 
-  function setWeightMaxTowing(_fWeightMaxTowing) {  // [kg]
-    if(_fWeightMaxTowing == null) {
-      _fWeightMaxTowing = 720.0f;
+  function setWeightMaxTowing(_fValue as Float?) as Void {  // [kg]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 720.0f;
     }
-    else if(_fWeightMaxTowing > 9999.0f) {
-      _fWeightMaxTowing = 9999.0f;
+    else if(_fValue > 9999.0f) {
+      _fValue = 9999.0f;
     }
-    else if(_fWeightMaxTowing < 0.0f) {
-      _fWeightMaxTowing = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fWeightMaxTowing = _fWeightMaxTowing;
+    self.fWeightMaxTowing = _fValue;
   }
 
-  function setWeightMaxTowed(_fWeightMaxTowed) {  // [kg]
-    if(_fWeightMaxTowed == null) {
-      _fWeightMaxTowed = 650.0f;
+  function setWeightMaxTowed(_fValue as Float?) as Void {  // [kg]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 650.0f;
     }
-    else if(_fWeightMaxTowed > 9999.0f) {
-      _fWeightMaxTowed = 9999.0f;
+    else if(_fValue > 9999.0f) {
+      _fValue = 9999.0f;
     }
-    else if(_fWeightMaxTowed < 0.0f) {
-      _fWeightMaxTowed = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fWeightMaxTowed = _fWeightMaxTowed;
+    self.fWeightMaxTowed = _fValue;
   }
 
-  function setFuelQuantity(_fFuelQuantity) {  // [m3]
-    if(_fFuelQuantity == null) {
-      _fFuelQuantity = 0.135f;
+  function setFuelQuantity(_fValue as Float?) as Void {  // [m3]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 0.135f;
     }
-    else if(_fFuelQuantity > 1.0f) {
-      _fFuelQuantity = 1.0f;
+    else if(_fValue > 1.0f) {
+      _fValue = 1.0f;
     }
-    else if(_fFuelQuantity < 0.0f) {
-      _fFuelQuantity = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fFuelQuantity = _fFuelQuantity;
+    self.fFuelQuantity = _fValue;
     self.updateWeightTotal();
   }
 
-  function setFuelDensity(_fFuelDensity) {  // [kg/m3]
-    if(_fFuelDensity == null) {
-      _fFuelDensity = 721.0f;
+  function setFuelDensity(_fValue as Float?) as Void {  // [kg/m3]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 721.0f;
     }
-    else if(_fFuelDensity > 1000.0f) {
-      _fFuelDensity = 1000.0f;
+    else if(_fValue > 1000.0f) {
+      _fValue = 1000.0f;
     }
-    else if(_fFuelDensity < 0.0f) {
-      _fFuelDensity = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fFuelDensity = _fFuelDensity;
+    self.fFuelDensity = _fValue;
     self.updateWeightTotal();
   }
 
-  function setFuelFlowGround(_fFuelFlowGround) {  // [m3/s]
-    if(_fFuelFlowGround == null) {
-      _fFuelFlowGround = 0.000001389f;  // 5.0 [l/h]
+  function setFuelFlowGround(_fValue as Float?) as Void {  // [m3/s]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 0.000001389f;  // 5.0 [l/h]
     }
-    else if(_fFuelFlowGround > 0.001f) {
-      _fFuelFlowGround = 0.001f;
+    else if(_fValue > 0.001f) {
+      _fValue = 0.001f;
     }
-    else if(_fFuelFlowGround < 0.0f) {
-      _fFuelFlowGround = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fFuelFlowGround = _fFuelFlowGround;
+    self.fFuelFlowGround = _fValue;
   }
 
-  function setFuelFlowAirborne(_fFuelFlowAirborne) {  // [m3/s]
-    if(_fFuelFlowAirborne == null) {
-      _fFuelFlowAirborne = 0.000009722f;  // 35.0 [l/h]
+  function setFuelFlowAirborne(_fValue as Float?) as Void {  // [m3/s]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 0.000009722f;  // 35.0 [l/h]
     }
-    else if(_fFuelFlowAirborne > 0.001f) {
-      _fFuelFlowAirborne = 0.001f;
+    else if(_fValue > 0.001f) {
+      _fValue = 0.001f;
     }
-    else if(_fFuelFlowAirborne < 0.0f) {
-      _fFuelFlowAirborne = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fFuelFlowAirborne = _fFuelFlowAirborne;
+    self.fFuelFlowAirborne = _fValue;
   }
 
-  function setFuelFlowTowing(_fFuelFlowTowing) {  // [m3/s]
-    if(_fFuelFlowTowing == null) {
-      _fFuelFlowTowing = 0.000011111f;  // 40.0 [l/h]
+  function setFuelFlowTowing(_fValue as Float?) as Void {  // [m3/s]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 0.000011111f;  // 40.0 [l/h]
     }
-    else if(_fFuelFlowTowing > 0.001f) {
-      _fFuelFlowTowing = 0.001f;
+    else if(_fValue > 0.001f) {
+      _fValue = 0.001f;
     }
-    else if(_fFuelFlowTowing < 0.0f) {
-      _fFuelFlowTowing = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fFuelFlowTowing = _fFuelFlowTowing;
+    self.fFuelFlowTowing = _fValue;
   }
 
-  function setFuelAlert(_fFuelAlert) {  // [m3]
-    if(_fFuelAlert == null) {
-      _fFuelAlert = 0.055f;
+  function setFuelAlert(_fValue as Float?) as Void {  // [m3]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 0.055f;
     }
-    else if(_fFuelAlert > 0.999f) {
-      _fFuelAlert = 0.999f;
+    else if(_fValue > 0.999f) {
+      _fValue = 0.999f;
     }
-    else if(_fFuelAlert < 0.0f) {
-      _fFuelAlert = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fFuelAlert = _fFuelAlert;
+    self.fFuelAlert = _fValue;
   }
 
-  function setSpeedOffBlock(_fSpeedOffBlock) {  // [m/s]
-    if(_fSpeedOffBlock == null) {
-      _fSpeedOffBlock = 1.39f;  // 5 km/h
+  function setSpeedOffBlock(_fValue as Float?) as Void {  // [m/s]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 1.39f;  // 5 km/h
     }
-    else if(_fSpeedOffBlock > 99.0f) {
-      _fSpeedOffBlock = 99.0f;
+    else if(_fValue > 99.0f) {
+      _fValue = 99.0f;
     }
-    else if(_fSpeedOffBlock < 0.0f) {
-      _fSpeedOffBlock = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fSpeedOffBlock = _fSpeedOffBlock;
+    self.fSpeedOffBlock = _fValue;
   }
 
-  function setSpeedTakeoff(_fSpeedTakeoff) {  // [m/s]
-    if(_fSpeedTakeoff == null) {
-      _fSpeedTakeoff = 20.92f;  // 47 mph
+  function setSpeedTakeoff(_fValue as Float?) as Void {  // [m/s]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 20.92f;  // 47 mph
     }
-    else if(_fSpeedTakeoff > 99.0f) {
-      _fSpeedTakeoff = 99.0f;
+    else if(_fValue > 99.0f) {
+      _fValue = 99.0f;
     }
-    else if(_fSpeedTakeoff < 0.0f) {
-      _fSpeedTakeoff = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fSpeedTakeoff = _fSpeedTakeoff;
+    self.fSpeedTakeoff = _fValue;
   }
 
-  function setSpeedLanding(_fSpeedLanding) {  // [m/s]
-    if(_fSpeedLanding == null) {
-      _fSpeedLanding = 19.14f;  // 43 mph
+  function setSpeedLanding(_fValue as Float?) as Void {  // [m/s]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 19.14f;  // 43 mph
     }
-    else if(_fSpeedLanding > 99.0f) {
-      _fSpeedLanding = 99.0f;
+    else if(_fValue > 99.0f) {
+      _fValue = 99.0f;
     }
-    else if(_fSpeedLanding < 0.0f) {
-      _fSpeedLanding = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fSpeedLanding = _fSpeedLanding;
+    self.fSpeedLanding = _fValue;
   }
 
-  function setSpeedMaxTowing(_fSpeedMaxTowing) {  // [m/s]
-    if(_fSpeedMaxTowing == null) {
-      _fSpeedMaxTowing = 41.67f;  // 150 km/h
+  function setSpeedMaxTowing(_fValue as Float?) as Void {  // [m/s]
+    if(_fValue == null or LangUtils.isNaN(_fValue)) {
+      _fValue = 41.67f;  // 150 km/h
     }
-    else if(_fSpeedMaxTowing > 99.0f) {
-      _fSpeedMaxTowing = 99.0f;
+    else if(_fValue > 99.0f) {
+      _fValue = 99.0f;
     }
-    else if(_fSpeedMaxTowing < 0.0f) {
-      _fSpeedMaxTowing = 0.0f;
+    else if(_fValue < 0.0f) {
+      _fValue = 0.0f;
     }
-    self.fSpeedMaxTowing = _fSpeedMaxTowing;
+    self.fSpeedMaxTowing = _fValue;
   }
 
-  function updateWeightTotal() {
-    var fValue = 0.0f;
-    if(self.fWeightEmpty != null) {
-      fValue += self.fWeightEmpty;
-    }
-    if(self.fWeightPayload != null) {
-      fValue += self.fWeightPayload;
-    }
-    if(self.fFuelQuantity != null and self.fFuelDensity != null) {
-      fValue += self.fFuelQuantity * self.fFuelDensity;
-    }
-    self.fWeightTotal = fValue;
+  function updateWeightTotal() as Void {
+    self.fWeightTotal =
+      self.fWeightEmpty
+      + self.fWeightPayload
+      + self.fFuelQuantity * self.fFuelDensity;
   }
 
 }

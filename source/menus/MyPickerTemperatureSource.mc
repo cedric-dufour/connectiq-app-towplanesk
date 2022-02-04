@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.Graphics as Gfx;
 using Toybox.WatchUi as Ui;
@@ -28,7 +29,7 @@ class MyPickerTemperatureAuto extends Ui.Picker {
 
   function initialize() {
     // Get property
-    var bTemperatureAuto = App.Properties.getValue("userTemperatureAuto");
+    var bTemperatureAuto = $.oMySettings.loadTemperatureAuto();
 
     // Initialize picker
     var oFactory = new PickerFactoryDictionary([true, false],
@@ -36,7 +37,7 @@ class MyPickerTemperatureAuto extends Ui.Picker {
                                                null);
     Picker.initialize({
         :title => new Ui.Text({
-            :text => Ui.loadResource(Rez.Strings.titleTemperatureAuto),
+            :text => Ui.loadResource(Rez.Strings.titleTemperatureAuto) as String,
             :font => Gfx.FONT_TINY,
             :locX => Ui.LAYOUT_HALIGN_CENTER,
             :locY => Ui.LAYOUT_VALIGN_BOTTOM,
@@ -59,13 +60,15 @@ class MyPickerTemperatureAutoDelegate extends Ui.PickerDelegate {
 
   function onAccept(_amValues) {
     // Set property and exit
-    App.Properties.setValue("userTemperatureAuto", _amValues[0]);
+    $.oMySettings.saveTemperatureAuto(_amValues[0] as Boolean);
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
   function onCancel() {
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
 }

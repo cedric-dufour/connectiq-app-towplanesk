@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.WatchUi as Ui;
 
@@ -25,28 +26,30 @@ class MyPickerGenericOnOff extends PickerGenericOnOff {
   // FUNCTIONS: PickerGenericOnOff (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     if(_context == :contextSettings) {
+
       if(_item == :itemTimerAutoLog) {
-        PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleTimerAutoLog),
-                                      App.Properties.getValue("userTimerAutoLog"));
+        PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleTimerAutoLog) as String,
+                                      $.oMySettings.loadTimerAutoLog());
       }
       else if(_item == :itemTimerAutoActivity) {
-        PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleTimerAutoActivity),
-                                      App.Properties.getValue("userTimerAutoActivity"));
+        PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleTimerAutoActivity) as String,
+                                      $.oMySettings.loadTimerAutoActivity());
       }
       else if(_item == :itemNotificationsAltimeter) {
-        PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleNotificationsAltimeter),
-                                      App.Properties.getValue("userNotificationsAltimeter"));
+        PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleNotificationsAltimeter) as String,
+                                      $.oMySettings.loadNotificationsAltimeter());
       }
       else if(_item == :itemNotificationsTemperature) {
-        PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleNotificationsTemperature),
-                                      App.Properties.getValue("userNotificationsTemperature"));
+        PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleNotificationsTemperature) as String,
+                                      $.oMySettings.loadNotificationsTemperature());
       }
       else if(_item == :itemNotificationsFuel) {
-        PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleNotificationsFuel),
-                                      App.Properties.getValue("userNotificationsFuel"));
+        PickerGenericOnOff.initialize(Ui.loadResource(Rez.Strings.titleNotificationsFuel) as String,
+                                      $.oMySettings.loadNotificationsFuel());
       }
+
     }
   }
 
@@ -58,15 +61,15 @@ class MyPickerGenericOnOffDelegate extends Ui.PickerDelegate {
   // VARIABLES
   //
 
-  private var context;
-  private var item;
+  private var context as Symbol = :contextNone;
+  private var item as Symbol = :itemNone;
 
 
   //
   // FUNCTIONS: Ui.PickerDelegate (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     PickerDelegate.initialize();
     self.context = _context;
     self.item = _item;
@@ -75,28 +78,32 @@ class MyPickerGenericOnOffDelegate extends Ui.PickerDelegate {
   function onAccept(_amValues) {
     var bValue = PickerGenericOnOff.getValue(_amValues);
     if(self.context == :contextSettings) {
+
       if(self.item == :itemTimerAutoLog) {
-        App.Properties.setValue("userTimerAutoLog", bValue);
+        $.oMySettings.saveTimerAutoLog(bValue);
       }
       else if(self.item == :itemTimerAutoActivity) {
-        App.Properties.setValue("userTimerAutoActivity", bValue);
+        $.oMySettings.saveTimerAutoActivity(bValue);
       }
       else if(self.item == :itemNotificationsAltimeter) {
-        App.Properties.setValue("userNotificationsAltimeter", bValue);
+        $.oMySettings.saveNotificationsAltimeter(bValue);
       }
       else if(self.item == :itemNotificationsTemperature) {
-        App.Properties.setValue("userNotificationsTemperature", bValue);
+        $.oMySettings.saveNotificationsTemperature(bValue);
       }
       else if(self.item == :itemNotificationsFuel) {
-        App.Properties.setValue("userNotificationsFuel", bValue);
+        $.oMySettings.saveNotificationsFuel(bValue);
       }
+
     }
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
   function onCancel() {
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
 }

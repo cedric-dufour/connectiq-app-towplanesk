@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.WatchUi as Ui;
 
 class MyPickerGenericWeight extends PickerGenericWeight {
@@ -24,66 +25,69 @@ class MyPickerGenericWeight extends PickerGenericWeight {
   // FUNCTIONS: PickerGenericWeight (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     if(_context == :contextTowplane) {
-      var oTowplane = $.oMyTowplane != null ? $.oMyTowplane : new MyTowplane({});
+
       if(_item == :itemWeightEmpty) {
-        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightEmpty),
-                                       oTowplane.fWeightEmpty,
+        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightEmpty) as String,
+                                       $.oMyTowplane.fWeightEmpty,
                                        $.oMySettings.iUnitWeight,
                                        false);
       }
       else if(_item == :itemWeightPayload) {
-        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightPayload),
-                                       oTowplane.fWeightPayload,
+        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightPayload) as String,
+                                       $.oMyTowplane.fWeightPayload,
                                        $.oMySettings.iUnitWeight,
                                        false);
       }
       else if(_item == :itemWeightMaxTakeoff) {
-        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTakeoff),
-                                       oTowplane.fWeightMaxTakeoff,
+        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTakeoff) as String,
+                                       $.oMyTowplane.fWeightMaxTakeoff,
                                        $.oMySettings.iUnitWeight,
                                        false);
       }
       else if(_item == :itemWeightMaxTowing) {
-        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowing),
-                                       oTowplane.fWeightMaxTowing,
+        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowing) as String,
+                                       $.oMyTowplane.fWeightMaxTowing,
                                        $.oMySettings.iUnitWeight,
                                        false);
       }
       else if(_item == :itemWeightMaxTowed) {
-        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowed),
-                                       oTowplane.fWeightMaxTowed,
+        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTowed) as String,
+                                       $.oMyTowplane.fWeightMaxTowed,
                                        $.oMySettings.iUnitWeight,
                                        false);
       }
+
     }
     else if(_context == :contextGlider) {
-      var oGlider = $.oMyGlider != null ? $.oMyGlider : new MyGlider({});
+
+      var oGlider = $.oMyGlider != null ? $.oMyGlider as MyGlider : new MyGlider();
       if(_item == :itemWeightEmpty) {
-        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightEmpty),
+        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightEmpty) as String,
                                        oGlider.fWeightEmpty,
                                        $.oMySettings.iUnitWeight,
                                        false);
       }
       else if(_item == :itemWeightPayload) {
-        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightPayload),
+        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightPayload) as String,
                                        oGlider.fWeightPayload,
                                        $.oMySettings.iUnitWeight,
                                        false);
       }
       else if(_item == :itemWeightBallast) {
-        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightBallast),
+        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightBallast) as String,
                                        oGlider.fWeightBallast,
                                        $.oMySettings.iUnitWeight,
                                        false);
       }
       else if(_item == :itemWeightMaxTakeoff) {
-        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTakeoff),
+        PickerGenericWeight.initialize(Ui.loadResource(Rez.Strings.titleAircraftWeightMaxTakeoff) as String,
                                        oGlider.fWeightMaxTakeoff,
                                        $.oMySettings.iUnitWeight,
                                        false);
       }
+
     }
   }
 
@@ -95,15 +99,15 @@ class MyPickerGenericWeightDelegate extends Ui.PickerDelegate {
   // VARIABLES
   //
 
-  private var context;
-  private var item;
+  private var context as Symbol = :contextNone;
+  private var item as Symbol = :itemNone;
 
 
   //
   // FUNCTIONS: Ui.PickerDelegate (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     PickerDelegate.initialize();
     self.context = _context;
     self.item = _item;
@@ -112,9 +116,7 @@ class MyPickerGenericWeightDelegate extends Ui.PickerDelegate {
   function onAccept(_amValues) {
     var fValue = PickerGenericWeight.getValue(_amValues, $.oMySettings.iUnitWeight);
     if(self.context == :contextTowplane) {
-      if($.oMyTowplane == null) {
-        $.oMyTowplane = new MyTowplane({});
-      }
+
       if(self.item == :itemWeightEmpty) {
         $.oMyTowplane.setWeightEmpty(fValue);
       }
@@ -130,30 +132,35 @@ class MyPickerGenericWeightDelegate extends Ui.PickerDelegate {
       else if(self.item == :itemWeightMaxTowed) {
         $.oMyTowplane.setWeightMaxTowed(fValue);
       }
+
     }
     else if(self.context == :contextGlider) {
+
       if($.oMyGlider == null) {
-        $.oMyGlider = new MyGlider({});
+        $.oMyGlider = new MyGlider();
       }
       if(self.item == :itemWeightEmpty) {
-        $.oMyGlider.setWeightEmpty(fValue);
+        ($.oMyGlider as MyGlider).setWeightEmpty(fValue);
       }
       else if(self.item == :itemWeightPayload) {
-        $.oMyGlider.setWeightPayload(fValue);
+        ($.oMyGlider as MyGlider).setWeightPayload(fValue);
       }
       else if(self.item == :itemWeightBallast) {
-        $.oMyGlider.setWeightBallast(fValue);
+        ($.oMyGlider as MyGlider).setWeightBallast(fValue);
       }
       else if(self.item == :itemWeightMaxTakeoff) {
-        $.oMyGlider.setWeightMaxTakeoff(fValue);
+        ($.oMyGlider as MyGlider).setWeightMaxTakeoff(fValue);
       }
+
     }
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
   function onCancel() {
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
 }

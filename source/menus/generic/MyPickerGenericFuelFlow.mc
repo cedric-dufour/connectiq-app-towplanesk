@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.WatchUi as Ui;
 
 class MyPickerGenericFuelFlow extends PickerGenericFuelFlow {
@@ -24,27 +25,28 @@ class MyPickerGenericFuelFlow extends PickerGenericFuelFlow {
   // FUNCTIONS: PickerGenericFuelFlow (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     if(_context == :contextTowplane) {
-      var oTowplane = $.oMyTowplane != null ? $.oMyTowplane : new MyTowplane({});
+
       if(_item == :itemFuelFlowGround) {
-        PickerGenericFuelFlow.initialize(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowGround),
-                                         oTowplane.fFuelFlowGround,
+        PickerGenericFuelFlow.initialize(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowGround) as String,
+                                         $.oMyTowplane.fFuelFlowGround,
                                          $.oMySettings.iUnitFuel,
                                          false);
       }
       else if(_item == :itemFuelFlowAirborne) {
-        PickerGenericFuelFlow.initialize(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowAirborne),
-                                         oTowplane.fFuelFlowAirborne,
+        PickerGenericFuelFlow.initialize(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowAirborne) as String,
+                                         $.oMyTowplane.fFuelFlowAirborne,
                                          $.oMySettings.iUnitFuel,
                                          false);
       }
       else if(_item == :itemFuelFlowTowing) {
-        PickerGenericFuelFlow.initialize(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowTowing),
-                                         oTowplane.fFuelFlowTowing,
+        PickerGenericFuelFlow.initialize(Ui.loadResource(Rez.Strings.titleAircraftFuelFlowTowing) as String,
+                                         $.oMyTowplane.fFuelFlowTowing,
                                          $.oMySettings.iUnitFuel,
                                          false);
       }
+
     }
   }
 
@@ -56,15 +58,15 @@ class MyPickerGenericFuelFlowDelegate extends Ui.PickerDelegate {
   // VARIABLES
   //
 
-  private var context;
-  private var item;
+  private var context as Symbol = :contextNone;
+  private var item as Symbol = :itemNone;
 
 
   //
   // FUNCTIONS: Ui.PickerDelegate (override/implement)
   //
 
-  function initialize(_context, _item) {
+  function initialize(_context as Symbol, _item as Symbol) {
     PickerDelegate.initialize();
     self.context = _context;
     self.item = _item;
@@ -73,9 +75,7 @@ class MyPickerGenericFuelFlowDelegate extends Ui.PickerDelegate {
   function onAccept(_amValues) {
     var fValue = PickerGenericFuelFlow.getValue(_amValues, $.oMySettings.iUnitFuel);
     if(self.context == :contextTowplane) {
-      if($.oMyTowplane == null) {
-        $.oMyTowplane = new MyTowplane({});
-      }
+
       if(self.item == :itemFuelFlowGround) {
         $.oMyTowplane.setFuelFlowGround(fValue);
       }
@@ -85,13 +85,16 @@ class MyPickerGenericFuelFlowDelegate extends Ui.PickerDelegate {
       else if(self.item == :itemFuelFlowTowing) {
         $.oMyTowplane.setFuelFlowTowing(fValue);
       }
+
     }
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
   function onCancel() {
     // Exit
     Ui.popView(Ui.SLIDE_IMMEDIATE);
+    return true;
   }
 
 }

@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Graphics as Gfx;
 using Toybox.Time;
 using Toybox.System as Sys;
@@ -25,7 +26,7 @@ using Toybox.WatchUi as Ui;
 // CLASS
 //
 
-class MyViewTimer extends MyViewGlobal {
+class MyViewTimer extends MyView {
 
   //
   // VARIABLES
@@ -33,77 +34,61 @@ class MyViewTimer extends MyViewGlobal {
 
   // Resources
   // ... strings (cache)
-  private var sLabelCallsignTowplane;
-  private var sLabelCallsignGlider;
-  private var sLabelFlightCycles;
-
-  // Internals
-  // ... fields
-  private var bTitleShow;
-  private var iFieldIndex;
-  private var iFieldEpoch;
+  private var sLabelFlightCycles as String = "Cycles";
 
 
   //
-  // FUNCTIONS: MyViewGlobal (override/implement)
+  // FUNCTIONS: MyView (override/implement)
   //
 
   function initialize() {
-    MyViewGlobal.initialize();
-
-    // Internals
-    // ... fields
-    self.bTitleShow = true;
-    self.iFieldIndex = 0;
-    self.iFieldEpoch = Time.now().value();
+    MyView.initialize();
   }
 
   function prepare() {
     //Sys.println("DEBUG: MyViewTimer.prepare()");
-    MyViewGlobal.prepare();
+    MyView.prepare();
 
     // Load resources
     // ... strings
-    self.sLabelCallsignTowplane = Ui.loadResource(Rez.Strings.labelCallsignTowplane);
-    self.sLabelCallsignGlider = Ui.loadResource(Rez.Strings.labelCallsignGlider);
-    self.sLabelFlightCycles = Ui.loadResource(Rez.Strings.labelFlightCycles);
+    self.sLabelFlightCycles = Ui.loadResource(Rez.Strings.labelFlightCycles) as String;
 
     // Set labels, units and colors
     // ... off-block time
-    View.findDrawableById("labelTopLeft").setText(Ui.loadResource(Rez.Strings.labelTimeOffBlock));
-    View.findDrawableById("unitTopLeft").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueTopLeft.setColor(self.iColorText);
+    (View.findDrawableById("labelTopLeft") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelTimeOffBlock) as String);
+    (View.findDrawableById("unitTopLeft") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueTopLeft as Ui.Text).setColor(self.iColorText);
     // ... takeoff time
-    View.findDrawableById("labelTopRight").setText(Ui.loadResource(Rez.Strings.labelTimeTakeoff));
-    View.findDrawableById("unitTopRight").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueTopRight.setColor(self.iColorText);
+    (View.findDrawableById("labelTopRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelTimeTakeoff) as String);
+    (View.findDrawableById("unitTopRight") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueTopRight as Ui.Text).setColor(self.iColorText);
     // ... block time (elapsed)
-    View.findDrawableById("labelLeft").setText(Ui.loadResource(Rez.Strings.labelElapsedBlock));
-    View.findDrawableById("unitLeft").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueLeft.setColor(self.iColorText);
+    (View.findDrawableById("labelLeft") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelElapsedBlock) as String);
+    (View.findDrawableById("unitLeft") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueLeft as Ui.Text).setColor(self.iColorText);
     // ... callsign / cycles (dynamic label)
-    self.oRezValueCenter.setColor(self.iColorText);
+    (self.oRezValueCenter as Ui.Text).setColor(self.iColorText);
     // ... flight time (elapsed)
-    View.findDrawableById("labelRight").setText(Ui.loadResource(Rez.Strings.labelElapsedFlight));
-    View.findDrawableById("unitRight").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueRight.setColor(self.iColorText);
+    (View.findDrawableById("labelRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelElapsedFlight) as String);
+    (View.findDrawableById("unitRight") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueRight as Ui.Text).setColor(self.iColorText);
     // ... on-block time
-    View.findDrawableById("labelBottomLeft").setText(Ui.loadResource(Rez.Strings.labelTimeOnBlock));
-    View.findDrawableById("unitBottomLeft").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueBottomLeft.setColor(self.iColorText);
+    (View.findDrawableById("labelBottomLeft") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelTimeOnBlock) as String);
+    (View.findDrawableById("unitBottomLeft") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueBottomLeft as Ui.Text).setColor(self.iColorText);
     // ... landing time
-    View.findDrawableById("labelBottomRight").setText(Ui.loadResource(Rez.Strings.labelTimeLanding));
-    View.findDrawableById("unitBottomRight").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueBottomRight.setColor(self.iColorText);
+    (View.findDrawableById("labelBottomRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelTimeLanding) as String);
+    (View.findDrawableById("unitBottomRight") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueBottomRight as Ui.Text).setColor(self.iColorText);
     // ... title
     self.bTitleShow = true;
-    self.oRezValueFooter.setColor(Gfx.COLOR_DK_GRAY);
-    self.oRezValueFooter.setText(Ui.loadResource(Rez.Strings.titleViewTimer));
+    (self.oRezValueFooter as Ui.Text).setColor(Gfx.COLOR_DK_GRAY);
+    (self.oRezValueFooter as Ui.Text).setText(Ui.loadResource(Rez.Strings.titleViewTimer) as String);
   }
 
-  function updateLayout() {
+  function updateLayout(_b) {
     //Sys.println("DEBUG: MyViewTimer.updateLayout()");
-    MyViewGlobal.updateLayout(!self.bTitleShow);
+    MyView.updateLayout(!self.bTitleShow);
 
     // Fields
     var oTimeNow = Time.now();
@@ -116,7 +101,7 @@ class MyViewTimer extends MyViewGlobal {
 
     // Colors
     // ... background
-    self.oRezDrawableGlobal.setColorFieldsBackground($.oMyProcessing.bAlertFuel ? Gfx.COLOR_DK_RED : Gfx.COLOR_TRANSPARENT);
+    (self.oRezDrawableGlobal as MyDrawableGlobal).setColorFieldsBackground($.oMyProcessing.bAlertFuel ? Gfx.COLOR_DK_RED : Gfx.COLOR_TRANSPARENT);
 
     // Set values
     var sValue;
@@ -127,7 +112,7 @@ class MyViewTimer extends MyViewGlobal {
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueTopLeft.setText(sValue);
+    (self.oRezValueTopLeft as Ui.Text).setText(sValue);
     // ... takeoff time
     if($.oMyTimer.oTimeTakeoff != null) {
       sValue = LangUtils.formatTime($.oMyTimer.oTimeTakeoff, $.oMySettings.bUnitTimeUTC, false);
@@ -135,7 +120,7 @@ class MyViewTimer extends MyViewGlobal {
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueTopRight.setText(sValue);
+    (self.oRezValueTopRight as Ui.Text).setText(sValue);
     // ... block time (elapsed)
     if($.oMyTimer.oTimeOffBlock != null) {
       if($.oMyTimer.oTimeOnBlock != null) {
@@ -148,21 +133,21 @@ class MyViewTimer extends MyViewGlobal {
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueLeft.setText(sValue);
+    (self.oRezValueLeft as Ui.Text).setText(sValue);
     // ... callsign / cycles
     if(self.iFieldIndex == 0) {  // ... callsign (towplane)
-      self.oRezLabelCenter.setText(self.sLabelCallsignTowplane);
+      (self.oRezLabelCenter as Ui.Text).setText(self.sLabelCallsignTowplane);
       sValue = $.oMyTowplane.sCallsign;
     }
     else if(self.iFieldIndex == 1) {  // ... callsign (glider)
-      self.oRezLabelCenter.setText(self.sLabelCallsignGlider);
-      sValue = $.oMyGlider != null ? $.oMyGlider.sCallsign : $.MY_NOVALUE_LEN2;
+      (self.oRezLabelCenter as Ui.Text).setText(self.sLabelCallsignGlider);
+      sValue = $.oMyGlider != null ? ($.oMyGlider as MyGlider).sCallsign : $.MY_NOVALUE_LEN2;
     }
     else {  // ... cycles
-      self.oRezLabelCenter.setText(self.sLabelFlightCycles);
+      (self.oRezLabelCenter as Ui.Text).setText(self.sLabelFlightCycles);
       sValue = $.oMyTimer.iCountCycles.format("%d");
     }
-    self.oRezValueCenter.setText(sValue);
+    (self.oRezValueCenter as Ui.Text).setText(sValue);
     // ... time: flight (elapsed)
     if($.oMyTimer.oTimeTakeoff != null) {
       if($.oMyTimer.oTimeLanding != null) {
@@ -175,7 +160,7 @@ class MyViewTimer extends MyViewGlobal {
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueRight.setText(sValue);
+    (self.oRezValueRight as Ui.Text).setText(sValue);
     // ... time: on-block
     if($.oMyTimer.oTimeOnBlock != null) {
       sValue = LangUtils.formatTime($.oMyTimer.oTimeOnBlock, $.oMySettings.bUnitTimeUTC, false);
@@ -183,7 +168,7 @@ class MyViewTimer extends MyViewGlobal {
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueBottomLeft.setText(sValue);
+    (self.oRezValueBottomLeft as Ui.Text).setText(sValue);
     // ... time: landing
     if($.oMyTimer.oTimeLanding != null) {
       sValue = LangUtils.formatTime($.oMyTimer.oTimeLanding, $.oMySettings.bUnitTimeUTC, false);
@@ -191,15 +176,15 @@ class MyViewTimer extends MyViewGlobal {
     else {
       sValue = $.MY_NOVALUE_LEN3;
     }
-    self.oRezValueBottomRight.setText(sValue);
+    (self.oRezValueBottomRight as Ui.Text).setText(sValue);
   }
 
 }
 
-class MyViewTimerDelegate extends MyViewGlobalDelegate {
+class MyViewTimerDelegate extends MyViewDelegate {
 
   function initialize() {
-    MyViewGlobalDelegate.initialize();
+    MyViewDelegate.initialize();
   }
 
   function onBack() {

@@ -16,9 +16,10 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
-using Toybox.Lang;
+import Toybox.Lang;
 using Toybox.Math;
 using Toybox.Position as Pos;
+using Toybox.Sensor;
 using Toybox.System as Sys;
 
 //
@@ -33,77 +34,70 @@ class MyProcessing {
 
   // Internal calculation objects
   // ... we must calculate our own vertical speed
-  private var iPreviousAltitudeEpoch;
-  private var fPreviousAltitude;
+  private var iPreviousAltitudeEpoch as Number = -1;
+  private var fPreviousAltitude as Float = 0.0f;
 
   // Public objects
   // ... sensor values (fed by Toybox.Sensor)
-  public var iSensorEpoch;
+  public var iSensorEpoch as Number = -1;
   // ... altimeter values (fed by Toybox.Activity, on Toybox.Sensor events)
-  public var fAltitude;
-  public var fTemperature;
+  public var fAltitude as Float = NaN;
+  public var fTemperature as Float = NaN;
   // ... altimeter calculated values
-  public var fVerticalSpeed;
+  public var fVerticalSpeed as Float = NaN;
   // ... position values (fed by Toybox.Position)
-  public var bPositionStateful;
-  public var iPositionEpoch;
-  public var iPositionElapsed;
-  public var iAccuracy;
-  public var fGroundSpeed;
-  public var fHeading;
+  public var bPositionStateful as Boolean = false;
+  public var iPositionEpoch as Number = -1;
+  public var iPositionElapsed as Number = -1;
+  public var iAccuracy as Number = Pos.QUALITY_NOT_AVAILABLE;
+  public var fGroundSpeed as Float = NaN;
+  public var fHeading as Float = NaN;
   // ... position calculated values
-  public var fAirSpeed;
+  public var fAirSpeed as Float = NaN;
   // ... post-processing
-  public var fFuelFlow;
-  public var bAlertAltitude;
-  public var bAlertTemperature;
-  public var bAlertFuel;
+  public var fFuelFlow as Float = NaN;
+  public var bAlertAltitude as Boolean = false;
+  public var bAlertTemperature as Boolean = false;
+  public var bAlertFuel as Boolean = false;
 
 
   //
   // FUNCTIONS: self
   //
 
-  function initialize() {
-    // Public objects
-    // ... processing values and status
-    self.resetSensorData();
-    self.resetPositionData();
-  }
-
-  function resetSensorData() {
+  function resetSensorData() as Void {
     //Sys.println("DEBUG: MyProcessing.resetSensorData()");
 
     // Reset
     // ... we must calculate our own vertical speed
-    self.iPreviousAltitudeEpoch = null;
+    self.iPreviousAltitudeEpoch = -1;
     self.fPreviousAltitude = 0.0f;
     // ... sensor values
-    self.iSensorEpoch = null;
+    self.iSensorEpoch = -1;
     // ... altimeter values
-    self.fAltitude = null;
-    self.fTemperature = null;
+    self.fAltitude = NaN;
+    self.fTemperature = NaN;
     // ... altimeter calculated values
-    self.fVerticalSpeed = null;
+    self.fVerticalSpeed = NaN;
     // ... filters
     $.oMyFilter.resetFilter(MyFilter.VERTICALSPEED);
   }
 
-  function resetPositionData() {
+  function resetPositionData() as Void {
     //Sys.println("DEBUG: MyProcessing.resetPositionData()");
 
     // Reset
     // ... position values
     self.bPositionStateful = false;
-    self.iPositionEpoch = null;
-    self.iPositionElapsed = null;
+    self.iPositionEpoch = -1;
+    self.iPositionElapsed = -1;
     self.iAccuracy = Pos.QUALITY_NOT_AVAILABLE;
-    self.fGroundSpeed = null;
-    self.fHeading = null;
+    self.fGroundSpeed = NaN;
+    self.fHeading = NaN;
     // ... position calculated values
-    self.fAirSpeed = null;
+    self.fAirSpeed = NaN;
     // ... post-processing
-    self.fFuelFlow = null;
+    self.fFuelFlow = NaN;
     self.bAlertAltitude = false;
     self.bAlertTemperature = false;
     self.bAlertFuel = false;
@@ -113,14 +107,14 @@ class MyProcessing {
     $.oMyFilter.resetFilter(MyFilter.HEADING_Y);
   }
 
-  function processSensorInfo(_oInfo, _iEpoch) {
+  function processSensorInfo(_oInfo as Sensor.Info, _iEpoch as Number) as Void {
     //Sys.println("DEBUG: MyProcessing.processSensorInfo()");
 
     // Process sensor data
     var fValue;
 
     // ... altitude
-    if($.oMyAltimeter.fAltitudeActual != null) {  // ... the closest to the device's raw barometric sensor value
+    if(LangUtils.notNaN($.oMyAltimeter.fAltitudeActual)) {  // ... the closest to the device's raw barometric sensor value
       self.fAltitude = $.oMyAltimeter.fAltitudeActual;
     }
     //else {
@@ -128,17 +122,17 @@ class MyProcessing {
     //}
 
     // ... vertical speed
-    if(self.fAltitude != null) {
-      if(self.iPreviousAltitudeEpoch != null and self.iSensorEpoch-self.iPreviousAltitudeEpoch != 0) {
+    if(LangUtils.notNaN(self.fAltitude)) {
+      if(self.iPreviousAltitudeEpoch >= 0 and self.iSensorEpoch-self.iPreviousAltitudeEpoch != 0) {
         self.fVerticalSpeed = $.oMyFilter.filterValue(MyFilter.VERTICALSPEED, (self.fAltitude-self.fPreviousAltitude) / (self.iSensorEpoch-self.iPreviousAltitudeEpoch), true);
       }
       self.iPreviousAltitudeEpoch = self.iSensorEpoch;
       self.fPreviousAltitude = self.fAltitude;
     }
-    //Sys.println(Lang.format("DEBUG: (Calculated) vertical speed = $1$", [self.fVerticalSpeed]));
+    //Sys.println(format("DEBUG: (Calculated) vertical speed = $1$", [self.fVerticalSpeed]));
 
     // ... temperature
-    if($.oMyAltimeter.fTemperatureActual != null) {  // ... computed using sensor (if available) or ISA offset (according to altitude)
+    if(LangUtils.notNaN($.oMyAltimeter.fTemperatureActual)) {  // ... computed using sensor (if available) or ISA offset (according to altitude)
       self.fTemperature = $.oMyAltimeter.fTemperatureActual;
     }
     //else {
@@ -149,7 +143,7 @@ class MyProcessing {
     self.iSensorEpoch = _iEpoch;
   }
 
-  function processPositionInfo(_oInfo, _iEpoch) {
+  function processPositionInfo(_oInfo as Pos.Info, _iEpoch as Number) as Void {
     //Sys.println("DEBUG: MyProcessing.processPositionInfo()");
 
     // Process position data
@@ -159,15 +153,15 @@ class MyProcessing {
 
     // ... accuracy
     if(_oInfo has :accuracy and _oInfo.accuracy != null) {
-      self.iAccuracy = _oInfo.accuracy;
-      //Sys.println(Lang.format("DEBUG: (Position.Info) accuracy = $1$", [self.iAccuracy]));
+      self.iAccuracy = _oInfo.accuracy as Number;
+      //Sys.println(format("DEBUG: (Position.Info) accuracy = $1$", [self.iAccuracy]));
     }
     else {
       //Sys.println("WARNING: Position data have no accuracy information (:accuracy)");
       self.iAccuracy = Pos.QUALITY_NOT_AVAILABLE;
       return;
     }
-    if(self.iAccuracy == Pos.QUALITY_NOT_AVAILABLE or (self.iAccuracy == Pos.QUALITY_LAST_KNOWN and self.iPositionEpoch == null)) {
+    if(self.iAccuracy == Pos.QUALITY_NOT_AVAILABLE or (self.iAccuracy == Pos.QUALITY_LAST_KNOWN and self.iPositionEpoch < 0)) {
       //Sys.println("WARNING: Position accuracy is not good enough to continue or start processing");
       self.iAccuracy = Pos.QUALITY_NOT_AVAILABLE;
       return;
@@ -175,33 +169,33 @@ class MyProcessing {
     self.bPositionStateful = false;
 
     // ... altitude and temperature
-    // if(self.fAltitude == null and _oInfo has :altitude and _oInfo.altitude != null) {  // ... DEBUG (when replaying FIT file in simulator)
+    // if(LangUtils.isNaN(self.fAltitude) and _oInfo has :altitude and _oInfo.altitude != null) {  // ... DEBUG (when replaying FIT file in simulator)
     //   self.fAltitude = _oInfo.altitude;
     // }
-    if(self.fAltitude == null or self.fTemperature == null) {  // ... derived by internal altimeter on sensor events
+    if(LangUtils.isNaN(self.fAltitude) or LangUtils.isNaN(self.fTemperature)) {  // ... derived by internal altimeter on sensor events
       bStateful = false;
     }
 
     // ... ground speed
     if(_oInfo has :speed and _oInfo.speed != null) {
-      self.fGroundSpeed = $.oMyFilter.filterValue(MyFilter.GROUNDSPEED, _oInfo.speed, true);
+      self.fGroundSpeed = $.oMyFilter.filterValue(MyFilter.GROUNDSPEED, _oInfo.speed as Float, true);
     }
     //else {
     //  Sys.println("WARNING: Position data have no speed information (:speed)");
     //}
-    if(self.fGroundSpeed == null) {
+    if(LangUtils.isNaN(self.fGroundSpeed)) {
       bStateful = false;
     }
-    //Sys.println(Lang.format("DEBUG: (Position.Info) ground speed = $1$", [self.fGroundSpeed]));
+    //Sys.println(format("DEBUG: (Position.Info) ground speed = $1$", [self.fGroundSpeed]));
 
     // ... heading
     // NOTE: we consider heading meaningful only if ground speed is above 1.0 m/s
-    if(self.fGroundSpeed != null and self.fGroundSpeed >= 1.0f and _oInfo has :heading and _oInfo.heading != null) {
-      fValue = $.oMyFilter.filterValue(MyFilter.HEADING_X, Math.cos(_oInfo.heading), true);
-      fValue2 = $.oMyFilter.filterValue(MyFilter.HEADING_Y, Math.sin(_oInfo.heading), true);
-      if(fValue != null and fValue2 != null) {
-        fValue = Math.atan2(fValue2, fValue);
-        if(fValue == NaN) {
+    if(self.fGroundSpeed >= 1.0f and _oInfo has :heading and _oInfo.heading != null) {
+      fValue = $.oMyFilter.filterValue(MyFilter.HEADING_X, Math.cos(_oInfo.heading as Float).toFloat(), true);
+      fValue2 = $.oMyFilter.filterValue(MyFilter.HEADING_Y, Math.sin(_oInfo.heading as Float).toFloat(), true);
+      if(LangUtils.notNaN(fValue) and LangUtils.notNaN(fValue2)) {
+        fValue = Math.atan2(fValue2, fValue).toFloat();
+        if(LangUtils.isNaN(fValue)) {
           fValue = self.fHeading;
         }
         else if(fValue < 0.0f) {
@@ -212,13 +206,13 @@ class MyProcessing {
     }
     else {
       //Sys.println("WARNING: Position data have no (meaningful) heading information (:heading)");
-      self.fHeading = null;
+      self.fHeading = NaN;
     }
-    //Sys.println(Lang.format("DEBUG: (Position.Info) heading = $1$", [self.fHeading]));
+    //Sys.println(format("DEBUG: (Position.Info) heading = $1$", [self.fHeading]));
 
     // ... air speed
-    if(self.fGroundSpeed != null and self.fHeading != null) {
-      self.fAirSpeed = self.fGroundSpeed + $.oMySettings.fWindSpeed*Math.cos(self.fHeading-$.oMySettings.fWindDirection);
+    if(LangUtils.notNaN(self.fGroundSpeed) and LangUtils.notNaN(self.fHeading)) {
+      self.fAirSpeed = self.fGroundSpeed + $.oMySettings.fWindSpeed*Math.cos(self.fHeading-$.oMySettings.fWindDirection).toFloat();
     }
     else {
       //Sys.println("WARNING: No ground speed and/or heading available");
@@ -227,19 +221,19 @@ class MyProcessing {
       // - is used only to detect take-off and landing (when the above condition is true)
       self.fAirSpeed = $.oMySettings.fWindSpeed;
     }
-    //Sys.println(Lang.format("DEBUG: (Calculated) air speed = $1$", [self.fAirSpeed]));
+    //Sys.println(format("DEBUG: (Calculated) air speed = $1$", [self.fAirSpeed]));
 
     // Finalize
     if(bStateful) {
       self.bPositionStateful = true;
       if(self.iAccuracy > Pos.QUALITY_LAST_KNOWN) {
-        self.iPositionElapsed = self.iPositionEpoch != null ? _iEpoch - self.iPositionEpoch : 0;
+        self.iPositionElapsed = self.iPositionEpoch >= 0 ? _iEpoch - self.iPositionEpoch : 0;
         self.iPositionEpoch = _iEpoch;
       }
     }
   }
 
-  function postProcessing() {
+  function postProcessing() as Void {
     //Sys.println("DEBUG: MyProcessing.postProcessing()");
     if(!self.bPositionStateful) {
       //Sys.println("ERROR: Incomplete data; cannot proceed");
@@ -265,7 +259,7 @@ class MyProcessing {
     }
     $.oMyTowplane.fFuelQuantity = fValue;
     $.oMyTowplane.updateWeightTotal();
-    //Sys.println(Lang.format("DEBUG: (Calculated) fuel quantity (flow) = $1$ ($2$)", [$.oMyTowplane.fFuelQuantity, fFuelFlow]));
+    //Sys.println(format("DEBUG: (Calculated) fuel quantity (flow) = $1$ ($2$)", [$.oMyTowplane.fFuelQuantity, fFuelFlow]));
 
     // ... alerts
     self.bAlertAltitude = (self.fAltitude > $.oMySettings.fAltimeterAlert);

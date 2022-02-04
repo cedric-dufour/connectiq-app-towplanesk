@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Activity;
 using Toybox.Application as App;
 using Toybox.Attention as Attn;
@@ -32,34 +33,34 @@ using Toybox.WatchUi as Ui;
 //
 
 // Application settings
-var oMySettings = null;
+var oMySettings as MySettings = new MySettings();
 
 // Sensors filter
-var oMyFilter = null;
+var oMyFilter as MyFilter = new MyFilter();
 
 // Internal altimeter
-var oMyAltimeter = null;
+var oMyAltimeter as MyAltimeter = new MyAltimeter();
 
 // Towplane parameters
-var oMyTowplane = null;
+var oMyTowplane as MyTowplane = new MyTowplane();
 
 // Glider parameters
-var oMyGlider = null;
+var oMyGlider as MyGlider?;
 
 // Events processing
-var oMyProcessing = null;
+var oMyProcessing as MyProcessing = new MyProcessing();
 
 // Timer
-var oMyTimer = null;
+var oMyTimer as MyTimer = new MyTimer();
 
 // Log
-var iMyLogIndex = null;
+var iMyLogIndex as Number = -1;
 
 // Activity session (recording)
-var oMyActivity = null;
+var oMyActivity as MyActivity?;
 
 // Current view
-var oMyView = null;
+var oMyView as MyView?;
 
 
 //
@@ -89,10 +90,10 @@ class MyApp extends App.AppBase {
 
   // Timers
   // ... UI update
-  private var oUpdateTimer;
-  private var iUpdateEpoch;
+  private var oUpdateTimer as Timer.Timer?;
+  private var iUpdateEpoch as Number = 0;
   // ... notifications
-  private var iNotificationsEpoch;
+  private var iNotificationsEpoch as Number = 0;
 
 
   //
@@ -102,42 +103,22 @@ class MyApp extends App.AppBase {
   function initialize() {
     AppBase.initialize();
 
-    // Application settings
-    $.oMySettings = new MySettings();
-
-    // Sensors filter
-    $.oMyFilter = new MyFilter();
-
-    // Internal altimeter
-    $.oMyAltimeter = new MyAltimeter();
-
-    // Events processing
-    $.oMyProcessing = new MyProcessing();
-
-    // Timer
-    $.oMyTimer = new MyTimer();
-
     // Log
     var iLogEpoch = 0;
     for(var n=0; n<$.MY_STORAGE_SLOTS; n++) {
       var s = n.format("%02d");
-      var dictLog = App.Storage.getValue(Lang.format("storLog$1$", [s]));
+      var dictLog = App.Storage.getValue(format("storLog$1$", [s])) as Dictionary?;
       if(dictLog == null) {
         break;
       }
-      var i = dictLog.get("timeOffBlock");
-      if(i != null and i > iLogEpoch) {
-        $.iMyLogIndex = n;
-        iLogEpoch = i;
+      else {
+        var i = dictLog.get("timeOffBlock") as Number?;
+        if(i != null and (i as Number) > iLogEpoch) {
+          $.iMyLogIndex = n;
+          iLogEpoch = i;
+        }
       }
     }
-
-    // Timers
-    // ... UI update
-    self.oUpdateTimer = null;
-    self.iUpdateEpoch = 0;
-    // ... notifications
-    self.iNotificationsEpoch = 0;
   }
 
   function onStart(state) {
@@ -146,8 +127,23 @@ class MyApp extends App.AppBase {
     // Load settings
     self.loadSettings();
 
+    // Load towplane
+    var dictTowplane = App.Storage.getValue("storTowplaneInUse") as Dictionary?;
+    if(dictTowplane != null) {
+      $.oMyTowplane.load(dictTowplane);
+    }
+
+    // Load glider
+    var dictGlider = App.Storage.getValue("storGliderInUse") as Dictionary?;
+    if(dictGlider != null) {
+      if($.oMyGlider == null) {
+        $.oMyGlider = new MyGlider();
+      }
+      ($.oMyGlider as MyGlider).load(dictGlider);
+    }
+
     // Enable sensor events
-    Sensor.setEnabledSensors([Sensor.SENSOR_TEMPERATURE]);
+    Sensor.setEnabledSensors([Sensor.SENSOR_TEMPERATURE] as Array<Sensor.SensorType>);
     Sensor.enableSensorEvents(method(:onSensorEvent));
 
     // Enable position events
@@ -158,10 +154,10 @@ class MyApp extends App.AppBase {
     self.oUpdateTimer = new Timer.Timer();
     var iUpdateTimerDelay = (60-Sys.getClockTime().sec)%5;
     if(iUpdateTimerDelay > 0) {
-      self.oUpdateTimer.start(method(:onUpdateTimer_init), 1000*iUpdateTimerDelay, false);
+      (self.oUpdateTimer as Timer.Timer).start(method(:onUpdateTimer_init), 1000*iUpdateTimerDelay, false);
     }
     else {
-      self.oUpdateTimer.start(method(:onUpdateTimer), 5000, true);
+      (self.oUpdateTimer as Timer.Timer).start(method(:onUpdateTimer), 5000, true);
     }
   }
 
@@ -171,27 +167,22 @@ class MyApp extends App.AppBase {
     // Stop timers
     // ... UI update
     if(self.oUpdateTimer != null) {
-      self.oUpdateTimer.stop();
+      (self.oUpdateTimer as Timer.Timer).stop();
       self.oUpdateTimer = null;
     }
 
     // Disable position events
-    Pos.enableLocationEvents(Pos.LOCATION_DISABLE, null);
+    Pos.enableLocationEvents(Pos.LOCATION_DISABLE, method(:onLocationEvent));
 
     // Disable sensor events
     Sensor.enableSensorEvents(null);
 
     // Store objects in use
     // ... towplane
-    if($.oMyTowplane != null) {
-      App.Storage.setValue("storTowplaneInUse", $.oMyTowplane.export());
-    }
-    else {
-      App.Storage.deleteValue("storTowplaneInUse");
-    }
+    App.Storage.setValue("storTowplaneInUse", $.oMyTowplane.export() as App.PropertyValueType);
     // ... glider
     if($.oMyGlider != null) {
-      App.Storage.setValue("storGliderInUse", $.oMyGlider.export());
+      App.Storage.setValue("storGliderInUse", ($.oMyGlider as MyGlider).export() as App.PropertyValueType);
     }
     else {
       App.Storage.deleteValue("storGliderInUse");
@@ -201,7 +192,7 @@ class MyApp extends App.AppBase {
   function getInitialView() {
     //Sys.println("DEBUG: MyApp.getInitialView()");
 
-    return [new MyViewTimer(), new MyViewTimerDelegate()];
+    return [new MyViewTimer(), new MyViewTimerDelegate()] as Array<Ui.Views or Ui.InputDelegates>;
   }
 
   function onSettingsChanged() {
@@ -215,7 +206,7 @@ class MyApp extends App.AppBase {
   // FUNCTIONS: self
   //
 
-  function loadSettings() {
+  function loadSettings() as Void {
     //Sys.println("DEBUG: MyApp.loadSettings()");
 
     // Load settings
@@ -224,21 +215,8 @@ class MyApp extends App.AppBase {
     // Apply settings
     $.oMyAltimeter.importSettings();
 
-    // ... towplane
-    if($.oMyTowplane == null) {
-      $.oMyTowplane = new MyTowplane(App.Storage.getValue("storTowplaneInUse"));
-    }
-
-    // ... glider
-    if($.oMyGlider == null) {
-      var dictGlider = App.Storage.getValue("storGliderInUse");
-      if(dictGlider != null) {
-        $.oMyGlider = new MyGlider(dictGlider);
-      }
-    }
-
     // ... log
-    // if($.iMyLogIndex == null) {  // DEBUG
+    // if($.iMyLogIndex < 0) {  // DEBUG
     //   var dictLog = {
     //     "towplane" => "P18",
     //     "glider" => "A21",
@@ -253,14 +231,14 @@ class MyApp extends App.AppBase {
     // }
   }
 
-  function onSensorEvent(_oInfo) {
+  function onSensorEvent(_oInfo as Sensor.Info) as Void {
     //Sys.println("DEBUG: MyApp.onSensorEvent()");
 
     // Process altimeter data
     // ... temperature
     if($.oMySettings.bTemperatureAuto) {
       if(_oInfo has :temperature and _oInfo.temperature != null) {
-        $.oMyAltimeter.setTemperatureActual(_oInfo.temperature+273.15f);  // ... altimeter internals are °K
+        $.oMyAltimeter.setTemperatureActual((_oInfo.temperature as Float)+273.15f);  // ... altimeter internals are °K
       }
     }
     else {
@@ -268,8 +246,10 @@ class MyApp extends App.AppBase {
     }
     // ... pressure
     var oActivityInfo = Activity.getActivityInfo();  // ... we need *raw ambient* pressure
-    if(oActivityInfo has :rawAmbientPressure and oActivityInfo.rawAmbientPressure != null) {
-      $.oMyAltimeter.setQFE(oActivityInfo.ambientPressure);
+    if(oActivityInfo != null) {
+      if(oActivityInfo has :rawAmbientPressure and oActivityInfo.rawAmbientPressure != null) {
+        $.oMyAltimeter.setQFE(oActivityInfo.ambientPressure as Float);
+      }
     }
 
     // Process sensor data
@@ -277,12 +257,12 @@ class MyApp extends App.AppBase {
 
     // Save FIT fields
     if($.oMyActivity != null) {
-      $.oMyActivity.setBarometricAltitude($.oMyProcessing.fAltitude);
-      $.oMyActivity.setVerticalSpeed($.oMyProcessing.fVerticalSpeed);
+      ($.oMyActivity as MyActivity).setBarometricAltitude($.oMyProcessing.fAltitude);
+      ($.oMyActivity as MyActivity).setVerticalSpeed($.oMyProcessing.fVerticalSpeed);
     }
   }
 
-  function onLocationEvent(_oInfo) {
+  function onLocationEvent(_oInfo as Pos.Info) as Void {
     //Sys.println("DEBUG: MyApp.onLocationEvent()");
     var iEpoch = Time.now().value();
 
@@ -298,14 +278,14 @@ class MyApp extends App.AppBase {
     self.updateUi(iEpoch);
   }
 
-  function onUpdateTimer_init() {
+  function onUpdateTimer_init() as Void {
     //Sys.println("DEBUG: MyApp.onUpdateTimer_init()");
     self.onUpdateTimer();
     self.oUpdateTimer = new Timer.Timer();
     self.oUpdateTimer.start(method(:onUpdateTimer), 5000, true);
   }
 
-  function onUpdateTimer() {
+  function onUpdateTimer() as Void {
     //Sys.println("DEBUG: MyApp.onUpdateTimer()");
     var iEpoch = Time.now().value();
 
@@ -321,10 +301,10 @@ class MyApp extends App.AppBase {
          or ($.oMyProcessing.bAlertFuel and $.oMySettings.bNotificationsFuel)) {
         if(iEpoch-self.iNotificationsEpoch >= 60) {
           //Sys.println("DEBUG: vibrate");
-          if(Attn has :vibrate) {
-            Attn.vibrate([new Attn.VibeProfile(100, 2000)]);
+          if(Toybox.Attention has :vibrate) {
+            Attn.vibrate([new Attn.VibeProfile(100, 2000)] as Array<Attn.VibeProfile>);
           }
-          if(Attn has :playTone) {
+          if(Toybox.Attention has :playTone) {
             Attn.playTone(Attn.TONE_ALARM);
           }
           self.iNotificationsEpoch = iEpoch;
@@ -333,42 +313,42 @@ class MyApp extends App.AppBase {
     }
   }
 
-  function updateUi(_iEpoch) {
+  function updateUi(_iEpoch as Number) as Void {
     //Sys.println("DEBUG: MyApp.updateUi()");
 
     // Check sensor data age
-    if($.oMyProcessing.iSensorEpoch != null and _iEpoch-$.oMyProcessing.iSensorEpoch > 10) {
+    if($.oMyProcessing.iSensorEpoch >= 0 and _iEpoch-$.oMyProcessing.iSensorEpoch > 10) {
       $.oMyProcessing.resetSensorData();
       $.oMyAltimeter.reset();
     }
 
     // Check position data age
-    if($.oMyProcessing.iPositionEpoch != null and _iEpoch-$.oMyProcessing.iPositionEpoch > 10) {
+    if($.oMyProcessing.iPositionEpoch >= 0 and _iEpoch-$.oMyProcessing.iPositionEpoch > 10) {
       $.oMyProcessing.resetPositionData();
     }
 
     // Update UI
     if($.oMyView != null) {
-      $.oMyView.updateUi();
+      ($.oMyView as MyView).updateUi();
       self.iUpdateEpoch = _iEpoch;
     }
   }
 
-  function importStorageData(_sFile) {
-    //Sys.println(Lang.format("DEBUG: MyApp.importStorageData($1$)", [_sFile]));
+  function importStorageData(_sFile as String) as Void {
+    //Sys.println(format("DEBUG: MyApp.importStorageData($1$)", [_sFile]));
 
-    Comm.makeWebRequest(Lang.format("$1$/$2$.json", [App.Properties.getValue("userStorageRepositoryURL"), _sFile]),
+    Comm.makeWebRequest(format("$1$/$2$.json", [App.Properties.getValue("userStorageRepositoryURL"), _sFile]),
                         null,
                         {:method => Comm.HTTP_REQUEST_METHOD_GET, :responseType => Comm.HTTP_RESPONSE_CONTENT_TYPE_JSON},
                         method(:onStorageDataReceive));
   }
 
-  function onStorageDataReceive(_iResponseCode, _dictData) {
-    //Sys.println(Lang.format("DEBUG: MyApp.onStorageDataReceive($1$, ...)", [_iResponseCode]));
+  function onStorageDataReceive(_iResponseCode as Number, _dictData as Dictionary?) as Void {
+    //Sys.println(format("DEBUG: MyApp.onStorageDataReceive($1$, ...)", [_iResponseCode]));
 
     // Check response code
-    if(_iResponseCode != 200) {
-      if(Attn has :playTone) {
+    if(_iResponseCode != 200 or _dictData == null) {
+      if(Toybox.Attention has :playTone) {
         Attn.playTone(Attn.TONE_FAILURE);
       }
       return;
@@ -377,36 +357,40 @@ class MyApp extends App.AppBase {
     // Validate (!) and store data
 
     // ... towplanes
-    if(_dictData.hasKey("towplanes")) {
-      var dictTowplanes = _dictData.get("towplanes");
+    var dictItems = _dictData.get("towplanes") as Dictionary?;
+    if(dictItems != null and dictItems instanceof Dictionary) {
       for(var n=0; n<$.MY_STORAGE_SLOTS; n++) {
         var s = n.format("%02d");
-        if(dictTowplanes.hasKey(s)) {
-          var oTowplane = new MyTowplane(dictTowplanes.get(s));  // <-> input validation
-          App.Storage.setValue(Lang.format("storTowplane$1$", [s]), oTowplane.export());
+        var dictItem = dictItems.get(s) as Dictionary?;
+        if(dictItem != null and dictItem instanceof Dictionary) {
+          var oTowplane = new MyTowplane();
+          oTowplane.load(dictItem);  // <-> input validation
+          App.Storage.setValue(format("storTowplane$1$", [s]), oTowplane.export() as App.PropertyValueType);
         }
       }
     }
 
     // ... gliders
-    if(_dictData.hasKey("gliders")) {
-      var dictGliders = _dictData.get("gliders");
+    dictItems = _dictData.get("gliders") as Dictionary?;
+    if(dictItems != null and dictItems instanceof Dictionary) {
       for(var n=0; n<$.MY_STORAGE_SLOTS; n++) {
         var s = n.format("%02d");
-        if(dictGliders.hasKey(s)) {
-          var oGlider = new MyGlider(dictGliders.get(s));  // <-> input validation
-          App.Storage.setValue(Lang.format("storGlider$1$", [s]), oGlider.export());
+        var dictItem = dictItems.get(s) as Dictionary?;
+        if(dictItem != null and dictItem instanceof Dictionary) {
+          var oGlider = new MyGlider();
+          oGlider.load(dictItem);  // <-> input validation
+          App.Storage.setValue(format("storGlider$1$", [s]), oGlider.export() as App.PropertyValueType);
         }
       }
     }
 
     // Done
-    if(Attn has :playTone) {
+    if(Toybox.Attention has :playTone) {
       Attn.playTone(Attn.TONE_SUCCESS);
     }
   }
 
-  function clearStorageData() {
+  function clearStorageData() as Void {
     //Sys.println("DEBUG: MyApp.clearStorageData()");
 
     // Delete all storage data
@@ -414,8 +398,8 @@ class MyApp extends App.AppBase {
     // ... towplanes and gliders (but not logs)
     for(var n=0; n<$.MY_STORAGE_SLOTS; n++) {
       var s = n.format("%02d");
-      App.Storage.deleteValue(Lang.format("storTowplane$1$", [s]));
-      App.Storage.deleteValue(Lang.format("storGlider$1$", [s]));
+      App.Storage.deleteValue(format("storTowplane$1$", [s]));
+      App.Storage.deleteValue(format("storGlider$1$", [s]));
     }
   }
 

@@ -16,6 +16,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // License-Filename: LICENSE/GPL-3.0.txt
 
+import Toybox.Lang;
 using Toybox.Application as App;
 using Toybox.Graphics as Gfx;
 using Toybox.Time;
@@ -28,14 +29,14 @@ using Toybox.WatchUi as Ui;
 //
 
 // Current view/log index
-var iMyViewLogIndex = null;
+var iMyViewLogIndex as Number = -1;
 
 
 //
 // CLASS
 //
 
-class MyViewLog extends MyViewGlobal {
+class MyViewLog extends MyView {
 
   //
   // VARIABLES
@@ -43,36 +44,24 @@ class MyViewLog extends MyViewGlobal {
 
   // Resources
   // ... strings (cache)
-  private var sTitle;
-  private var sLabelCallsignTowplane;
-  private var sLabelCallsignGlider;
-  private var sLabelFlightCycles;
+  private var sTitle as String = "Log";
+  private var sLabelFlightCycles as String = "Cycles";
 
   // Internals
-  // ... fields
-  private var bTitleShow;
-  private var iFieldIndex;
-  private var iFieldEpoch;
   // ... log
-  private var iLogIndex = null;
-  private var dictLog;
+  private var iLogIndex as Number = -1;
+  private var dictLog as Dictionary?;
 
 
   //
-  // FUNCTIONS: MyViewGlobal (override/implement)
+  // FUNCTIONS: MyView (override/implement)
   //
 
   function initialize() {
-    MyViewGlobal.initialize();
+    MyView.initialize();
 
     // Current view/log index
     $.iMyViewLogIndex = $.iMyLogIndex;
-
-    // Internals
-    // ... fields
-    self.bTitleShow = true;
-    self.iFieldIndex = 0;
-    self.iFieldEpoch = Time.now().value();
   }
 
   function onUpdate(_oDC) {
@@ -84,59 +73,54 @@ class MyViewLog extends MyViewGlobal {
     }
 
     // Done
-    return MyViewGlobal.onUpdate(_oDC);
+    MyView.onUpdate(_oDC);
   }
 
   function prepare() {
     //Sys.println("DEBUG: MyViewLog.prepare()");
-    MyViewGlobal.prepare();
+    MyView.prepare();
 
     // Load resources
     // ... strings
-    self.sTitle = Ui.loadResource(Rez.Strings.titleViewLog);
-    self.sLabelCallsignTowplane = Ui.loadResource(Rez.Strings.labelCallsignTowplane);
-    self.sLabelCallsignGlider = Ui.loadResource(Rez.Strings.labelCallsignGlider);
-    self.sLabelFlightCycles = Ui.loadResource(Rez.Strings.labelFlightCycles);
+    self.sTitle = Ui.loadResource(Rez.Strings.titleViewLog) as String;
+    self.sLabelFlightCycles = Ui.loadResource(Rez.Strings.labelFlightCycles) as String;
 
     // Set labels, units and colors
     // ... off-block time
-    View.findDrawableById("labelTopLeft").setText(Ui.loadResource(Rez.Strings.labelTimeOffBlock));
-    View.findDrawableById("unitTopLeft").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueTopLeft.setColor(self.iColorText);
+    (View.findDrawableById("labelTopLeft") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelTimeOffBlock) as String);
+    (View.findDrawableById("unitTopLeft") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueTopLeft as Ui.Text).setColor(self.iColorText);
     // ... takeoff time
-    View.findDrawableById("labelTopRight").setText(Ui.loadResource(Rez.Strings.labelTimeTakeoff));
-    View.findDrawableById("unitTopRight").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueTopRight.setColor(self.iColorText);
+    (View.findDrawableById("labelTopRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelTimeTakeoff) as String);
+    (View.findDrawableById("unitTopRight") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueTopRight as Ui.Text).setColor(self.iColorText);
     // ... block time (elapsed)
-    View.findDrawableById("labelLeft").setText(Ui.loadResource(Rez.Strings.labelElapsedBlock));
-    View.findDrawableById("unitLeft").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueLeft.setColor(self.iColorText);
+    (View.findDrawableById("labelLeft") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelElapsedBlock) as String);
+    (View.findDrawableById("unitLeft") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueLeft as Ui.Text).setColor(self.iColorText);
     // ... callsign / cycles (dynamic label)
-    self.oRezValueCenter.setColor(self.iColorText);
+    (self.oRezValueCenter as Ui.Text).setColor(self.iColorText);
     // ... flight time (elapsed)
-    View.findDrawableById("labelRight").setText(Ui.loadResource(Rez.Strings.labelElapsedFlight));
-    View.findDrawableById("unitRight").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueRight.setColor(self.iColorText);
+    (View.findDrawableById("labelRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelElapsedFlight) as String);
+    (View.findDrawableById("unitRight") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueRight as Ui.Text).setColor(self.iColorText);
     // ... on-block time
-    View.findDrawableById("labelBottomLeft").setText(Ui.loadResource(Rez.Strings.labelTimeOnBlock));
-    View.findDrawableById("unitBottomLeft").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueBottomLeft.setColor(self.iColorText);
+    (View.findDrawableById("labelBottomLeft") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelTimeOnBlock) as String);
+    (View.findDrawableById("unitBottomLeft") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueBottomLeft as Ui.Text).setColor(self.iColorText);
     // ... landing time
-    View.findDrawableById("labelBottomRight").setText(Ui.loadResource(Rez.Strings.labelTimeLanding));
-    View.findDrawableById("unitBottomRight").setText($.MY_NOVALUE_BLANK);
-    self.oRezValueBottomRight.setColor(self.iColorText);
+    (View.findDrawableById("labelBottomRight") as Ui.Text).setText(Ui.loadResource(Rez.Strings.labelTimeLanding) as String);
+    (View.findDrawableById("unitBottomRight") as Ui.Text).setText($.MY_NOVALUE_BLANK);
+    (self.oRezValueBottomRight as Ui.Text).setColor(self.iColorText);
     // ... title
     self.bTitleShow = true;
-    self.oRezValueFooter.setColor(Gfx.COLOR_DK_GRAY);
-    self.oRezValueFooter.setText(Ui.loadResource(Rez.Strings.titleViewLog));
-
-    // Done
-    return true;
+    (self.oRezValueFooter as Ui.Text).setColor(Gfx.COLOR_DK_GRAY);
+    (self.oRezValueFooter as Ui.Text).setText(Ui.loadResource(Rez.Strings.titleViewLog) as String);
   }
 
-  function updateLayout() {
+  function updateLayout(_b) {
     //Sys.println("DEBUG: MyViewLog.updateLayout()");
-    MyViewGlobal.updateLayout(false);
+    MyView.updateLayout(false);
 
     // Fields
     var iEpochNow = Time.now().value();
@@ -148,49 +132,49 @@ class MyViewLog extends MyViewGlobal {
 
     // No log ?
     if(self.dictLog == null) {
-      self.oRezValueTopLeft.setText($.MY_NOVALUE_LEN3);
-      self.oRezValueTopRight.setText($.MY_NOVALUE_LEN3);
-      self.oRezValueLeft.setText($.MY_NOVALUE_LEN3);
-      self.oRezLabelCenter.setText(self.sLabelFlightCycles);
-      self.oRezValueCenter.setText($.MY_NOVALUE_LEN2);
-      self.oRezValueRight.setText($.MY_NOVALUE_LEN3);
-      self.oRezValueBottomLeft.setText($.MY_NOVALUE_LEN3);
-      self.oRezValueBottomRight.setText($.MY_NOVALUE_LEN3);
-      self.oRezValueFooter.setColor(Gfx.COLOR_DK_GRAY);
-      self.oRezValueFooter.setText(self.sTitle);
+      (self.oRezValueTopLeft as Ui.Text).setText($.MY_NOVALUE_LEN3);
+      (self.oRezValueTopRight as Ui.Text).setText($.MY_NOVALUE_LEN3);
+      (self.oRezValueLeft as Ui.Text).setText($.MY_NOVALUE_LEN3);
+      (self.oRezLabelCenter as Ui.Text).setText(self.sLabelFlightCycles);
+      (self.oRezValueCenter as Ui.Text).setText($.MY_NOVALUE_LEN2);
+      (self.oRezValueRight as Ui.Text).setText($.MY_NOVALUE_LEN3);
+      (self.oRezValueBottomLeft as Ui.Text).setText($.MY_NOVALUE_LEN3);
+      (self.oRezValueBottomRight as Ui.Text).setText($.MY_NOVALUE_LEN3);
+      (self.oRezValueFooter as Ui.Text).setColor(Gfx.COLOR_DK_GRAY);
+      (self.oRezValueFooter as Ui.Text).setText(self.sTitle);
       return;
     }
 
     // Set values
     // ... time: off-block
-    self.oRezValueTopLeft.setText(self.dictLog["timeOffBlock"]);
+    (self.oRezValueTopLeft as Ui.Text).setText((self.dictLog as Dictionary)["timeOffBlock"] as String);
     // ... time: takeoff
-    self.oRezValueTopRight.setText(self.dictLog["timeTakeoff"]);
+    (self.oRezValueTopRight as Ui.Text).setText((self.dictLog as Dictionary)["timeTakeoff"] as String);
     // ... time: block-to-block
-    self.oRezValueLeft.setText(self.dictLog["elapsedBlock"]);
+    (self.oRezValueLeft as Ui.Text).setText((self.dictLog as Dictionary)["elapsedBlock"] as String);
     // ... callsign / cycles
     if(self.iFieldIndex == 0) {  // ... callsign (towplane)
-      self.oRezLabelCenter.setText(self.sLabelCallsignTowplane);
-      self.oRezValueCenter.setText(self.dictLog["towplane"]);
+      (self.oRezLabelCenter as Ui.Text).setText(self.sLabelCallsignTowplane);
+      (self.oRezValueCenter as Ui.Text).setText((self.dictLog as Dictionary)["towplane"] as String);
     }
     else if(self.iFieldIndex == 1) {  // ... callsign (glider)
-      self.oRezLabelCenter.setText(self.sLabelCallsignGlider);
-      self.oRezValueCenter.setText(self.dictLog["glider"]);
+      (self.oRezLabelCenter as Ui.Text).setText(self.sLabelCallsignGlider);
+      (self.oRezValueCenter as Ui.Text).setText((self.dictLog as Dictionary)["glider"] as String);
     }
     else {  // ... cycles
-      self.oRezLabelCenter.setText(self.sLabelFlightCycles);
-      self.oRezValueCenter.setText(self.dictLog["countCycles"]);
+      (self.oRezLabelCenter as Ui.Text).setText(self.sLabelFlightCycles);
+      (self.oRezValueCenter as Ui.Text).setText((self.dictLog as Dictionary)["countCycles"] as String);
     }
     // ... time: flight (elapsed)
-    self.oRezValueRight.setText(self.dictLog["elapsedFlight"]);
+    (self.oRezValueRight as Ui.Text).setText((self.dictLog as Dictionary)["elapsedFlight"] as String);
     // ... time: on-block
-    self.oRezValueBottomLeft.setText(self.dictLog["timeOnBlock"]);
+    (self.oRezValueBottomLeft as Ui.Text).setText((self.dictLog as Dictionary)["timeOnBlock"] as String);
     // ... time: landing
-    self.oRezValueBottomRight.setText(self.dictLog["timeLanding"]);
+    (self.oRezValueBottomRight as Ui.Text).setText((self.dictLog as Dictionary)["timeLanding"] as String);
     // ... footer
     if(!self.bTitleShow) {
-      self.oRezValueFooter.setColor(self.iColorText);
-      self.oRezValueFooter.setText(self.dictLog["date"]);
+      (self.oRezValueFooter as Ui.Text).setColor(self.iColorText);
+      (self.oRezValueFooter as Ui.Text).setText((self.dictLog as Dictionary)["date"] as String);
     }
   }
 
@@ -199,12 +183,12 @@ class MyViewLog extends MyViewGlobal {
   // FUNCTIONS: self
   //
 
-  function loadLog() {
+  function loadLog() as Void {
     //Sys.println("DEBUG: MyViewLog.loadLog()");
 
     // Check index
-    if($.iMyViewLogIndex == null) {
-      self.iLogIndex = null;
+    if($.iMyViewLogIndex < 0) {
+      self.iLogIndex = -1;
       self.dictLog = null;
       return;
     }
@@ -212,7 +196,7 @@ class MyViewLog extends MyViewGlobal {
     // Load log entry
     self.iLogIndex = $.iMyViewLogIndex;
     var s = self.iLogIndex.format("%02d");
-    var d = App.Storage.getValue(Lang.format("storLog$1$", [s]));
+    var d = App.Storage.getValue(format("storLog$1$", [s])) as Dictionary?;
     if(d == null) {
       self.dictLog = null;
       return;
@@ -233,37 +217,36 @@ class MyViewLog extends MyViewGlobal {
     }
     // ... off-block time (and date)
     if(d.get("timeOffBlock") != null) {
-      oTimeOffBlock = new Time.Moment(d["timeOffBlock"]);
-      var oTimeInfo = $.oMySettings.bUnitTimeUTC ? Gregorian.utcInfo(oTimeOffBlock, Time.FORMAT_MEDIUM) : Gregorian.info(oTimeOffBlock, Time.FORMAT_MEDIUM);
-      d["timeOffBlock"] = Lang.format("$1$:$2$", [oTimeInfo.hour.format("%02d"), oTimeInfo.min.format("%02d")]);
-      d["date"] = Lang.format("$1$ $2$", [oTimeInfo.month, oTimeInfo.day.format("%01d")]);
+      oTimeOffBlock = new Time.Moment(d["timeOffBlock"] as Number);
+      d["timeOffBlock"] = LangUtils.formatTime(oTimeOffBlock, $.oMySettings.bUnitTimeUTC, false);
+      d["date"] = LangUtils.formatDate(oTimeOffBlock, $.oMySettings.bUnitTimeUTC);
     } else {
       d["timeOffBlock"] = $.MY_NOVALUE_LEN3;
       d["date"] = $.MY_NOVALUE_LEN4;
     }
     // ... takeoff time
     if(d.get("timeTakeoff") != null) {
-      oTimeTakeoff = new Time.Moment(d["timeTakeoff"]);
+      oTimeTakeoff = new Time.Moment(d["timeTakeoff"] as Number);
       d["timeTakeoff"] = LangUtils.formatTime(oTimeTakeoff, $.oMySettings.bUnitTimeUTC, false);
     } else {
       d["timeTakeoff"] = $.MY_NOVALUE_LEN3;
     }
     // ... cycles
     if(d.get("countCycles") != null) {
-      d["countCycles"] = d["countCycles"].format("%d");
+      d["countCycles"] = (d["countCycles"] as Number).format("%d");
     } else {
       d["countCycles"] = $.MY_NOVALUE_LEN2;
     }
     // landing time
     if(d.get("timeLanding") != null) {
-      oTimeLanding = new Time.Moment(d["timeLanding"]);
+      oTimeLanding = new Time.Moment(d["timeLanding"] as Number);
       d["timeLanding"] = LangUtils.formatTime(oTimeLanding, $.oMySettings.bUnitTimeUTC, false);
     } else {
       d["timeLanding"] = $.MY_NOVALUE_LEN3;
     }
     // on-block time
     if(d.get("timeOnBlock") != null) {
-      oTimeOnBlock = new Time.Moment(d["timeOnBlock"]);
+      oTimeOnBlock = new Time.Moment(d["timeOnBlock"] as Number);
       d["timeOnBlock"] = LangUtils.formatTime(oTimeOnBlock, $.oMySettings.bUnitTimeUTC, false);
     } else {
       d["timeOnBlock"] = $.MY_NOVALUE_LEN3;
@@ -289,14 +272,14 @@ class MyViewLog extends MyViewGlobal {
 
 }
 
-class MyViewLogDelegate extends MyViewGlobalDelegate {
+class MyViewLogDelegate extends MyViewDelegate {
 
   function initialize() {
-    MyViewGlobalDelegate.initialize();
+    MyViewDelegate.initialize();
   }
 
   function onMenu() {
-    //Sys.println("DEBUG: MyViewGlobalDelegate.onMenu()");
+    //Sys.println("DEBUG: MyViewDelegate.onMenu()");
     Ui.pushView(new MyMenuGeneric(:menuSettings),
                 new MyMenuGenericDelegate(:menuSettings),
                 Ui.SLIDE_IMMEDIATE);
@@ -305,7 +288,7 @@ class MyViewLogDelegate extends MyViewGlobalDelegate {
 
   function onSelect() {
     //Sys.println("DEBUG: MyViewLogDelegate.onSelect()");
-    if($.iMyViewLogIndex == null) {
+    if($.iMyViewLogIndex < 0) {
       $.iMyViewLogIndex = $.iMyLogIndex;
     }
     else {
@@ -317,7 +300,7 @@ class MyViewLogDelegate extends MyViewGlobalDelegate {
 
   function onBack() {
     //Sys.println("DEBUG: MyViewLogDelegate.onBack()");
-    if($.iMyViewLogIndex == null) {
+    if($.iMyViewLogIndex < 0) {
       $.iMyViewLogIndex = $.iMyLogIndex;
     }
     else {
