@@ -118,7 +118,9 @@ class MyMenuGeneric extends Ui.Menu {
     else if(_menu == :menuStorage) {
       Menu.setTitle(Ui.loadResource(Rez.Strings.titleStorage) as String);
       Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageImportData) as String, :menuStorageImportData);
-      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageClear) as String, :menuStorageClear);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageClearTowplanes) as String, :menuStorageClearTowplanes);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageClearGliders) as String, :menuStorageClearGliders);
+      Menu.addItem(Ui.loadResource(Rez.Strings.titleStorageClearLogs) as String, :menuStorageClearLogs);
     }
 
     else if(_menu == :menuTowplane) {
@@ -491,9 +493,19 @@ class MyMenuGenericDelegate extends Ui.MenuInputDelegate {
                     new MyPickerGenericTextDelegate(:contextStorage, :itemImportData),
                     Ui.SLIDE_IMMEDIATE);
       }
-      else if(_item == :menuStorageClear) {
-        Ui.pushView(new MyMenuGenericConfirm(:contextStorage, :actionClear),
-                    new MyMenuGenericConfirmDelegate(:contextStorage, :actionClear, true),
+      else if(_item == :menuStorageClearTowplanes) {
+        Ui.pushView(new MyMenuGenericConfirm(:contextStorage, :actionClearTowplanes),
+                    new MyMenuGenericConfirmDelegate(:contextStorage, :actionClearTowplanes, false),
+                    Ui.SLIDE_IMMEDIATE);
+      }
+      else if(_item == :menuStorageClearGliders) {
+        Ui.pushView(new MyMenuGenericConfirm(:contextStorage, :actionClearGliders),
+                    new MyMenuGenericConfirmDelegate(:contextStorage, :actionClearGliders, false),
+                    Ui.SLIDE_IMMEDIATE);
+      }
+      else if(_item == :menuStorageClearLogs) {
+        Ui.pushView(new MyMenuGenericConfirm(:contextStorage, :actionClearLogs),
+                    new MyMenuGenericConfirmDelegate(:contextStorage, :actionClearLogs, false),
                     Ui.SLIDE_IMMEDIATE);
       }
     }

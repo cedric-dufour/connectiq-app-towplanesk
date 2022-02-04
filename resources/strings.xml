@@ -60,7 +60,9 @@
   <string id="titleStorageLoad">Load</string>
   <string id="titleStorageSave">Save</string>
   <string id="titleStorageDelete">Delete</string>
-  <string id="titleStorageClear">Clear</string>
+  <string id="titleStorageClearTowplanes">Clear Towp.</string>
+  <string id="titleStorageClearGliders">Clear Glid.</string>
+  <string id="titleStorageClearLogs">Clear Logs</string>
   <!-- Menu (aircraft) -->
   <string id="titleAircraftTowplane">Towplane</string>
   <string id="titleAircraftGlider">Glider</string>
