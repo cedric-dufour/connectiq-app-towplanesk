@@ -1,7 +1,7 @@
 // -*- mode:java; tab-width:2; c-basic-offset:2; intent-tabs-mode:nil; -*- ex: set tabstop=2 expandtab:
 
 // Towplane Swiss Knife (TowplaneSK)
-// Copyright (C) 2019 Cedric Dufour <http://cedric.dufour.name>
+// Copyright (C) 2019-2022 Cedric Dufour <http://cedric.dufour.name>
 //
 // Towplane Swiss Knife (TowplaneSK) is free software:
 // you can redistribute it and/or modify it under the terms of the GNU General
