@@ -111,10 +111,13 @@ class MyTimer {
         self.iState = self.STATE_ONBLOCK;
       }
       else if($.oMyProcessing.fAirSpeed > $.oMyTowplane.fSpeedTakeoff) {
+        self.iCountCycles += 1;
         if(self.oTimeTakeoff == null) {  // not a stop-'n-go
           self.oTimeTakeoff = oTimeNow;
           self.fAltitudeTakeoff = $.oMyProcessing.fAltitude;
         }
+        self.oTimeLanding = null;
+        self.fAltitudeLanding = NaN;
         self.iState = self.STATE_TAKEOFF;
         if(Toybox.Attention has :playTone) {
           Attn.playTone(Attn.TONE_KEY);
@@ -124,19 +127,20 @@ class MyTimer {
     else if(self.iState == self.STATE_TAKEOFF) {
       if($.oMyProcessing.fAirSpeed < $.oMyTowplane.fSpeedLanding) {
         if((oTimeNow as Time.Moment).value() - (self.oTimeTakeoff as Time.Moment).value() < $.oMySettings.iTimerThresholdAirborne) {  // too short a cycle; aborted takeoff ?
+          self.iCountCycles -= 1;
           self.oTimeTakeoff = null;
           self.fAltitudeTakeoff = NaN;
           self.iState = self.STATE_OFFBLOCK;
         }
         else {
+          if(self.oTimeTouchGo != null and (oTimeNow as Time.Moment).value() - (self.oTimeTouchGo as Time.Moment).value() < $.oMySettings.iTimerThresholdAirborne) {  // too short a cycle; bouncing landing ?
+            self.iCountCycles -= 1;
+          }
           self.oTimeLanding = oTimeNow;
           self.fAltitudeLanding = $.oMyProcessing.fAltitude;
           self.iState = self.STATE_LANDING;
-          if(self.oTimeTouchGo == null or (oTimeNow as Time.Moment).value() - (self.oTimeTouchGo as Time.Moment).value() > $.oMySettings.iTimerThresholdAirborne) {  // not a bouncing landing
-            self.iCountCycles += 1;
-            if(Toybox.Attention has :playTone) {
-              Attn.playTone(Attn.TONE_KEY);
-            }
+          if(Toybox.Attention has :playTone) {
+            Attn.playTone(Attn.TONE_KEY);
           }
         }
       }
@@ -149,6 +153,7 @@ class MyTimer {
     }
     else if(self.iState == self.STATE_LANDING) {
       if($.oMyProcessing.fAirSpeed > $.oMyTowplane.fSpeedTakeoff) {  // touch-'n-go
+        self.iCountCycles += 1;
         self.oTimeTouchGo = oTimeNow;
         self.oTimeLanding = null;
         self.fAltitudeLanding = NaN;

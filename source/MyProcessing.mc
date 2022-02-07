@@ -170,7 +170,7 @@ class MyProcessing {
 
     // ... altitude and temperature
     // if(LangUtils.isNaN(self.fAltitude) and _oInfo has :altitude and _oInfo.altitude != null) {  // ... DEBUG (when replaying FIT file in simulator)
-    //   self.fAltitude = _oInfo.altitude;
+    //   self.fAltitude = _oInfo.altitude as Float;
     // }
     if(LangUtils.isNaN(self.fAltitude) or LangUtils.isNaN(self.fTemperature)) {  // ... derived by internal altimeter on sensor events
       bStateful = false;
