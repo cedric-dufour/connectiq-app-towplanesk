@@ -1,0 +1,22 @@
+{
+    "towplanes": {
+        "00": {
+            "callsign": "Car",
+            "weightEmpty": 800.0,
+            "weightPayload": 80.0,
+            "weightMaxTakeoff": 1000.0,
+            "weightMaxTowing": 1550.0,
+            "weightMaxTowed": 650.0,
+            "fuelQuantity": 0.035,
+            "fuelDensity": 750.0,
+            "fuelFlowGround": 0.000001250,
+            "fuelFlowAirborne": 0.000001528,
+            "fuelFlowTowing": 0.000001806,
+            "fuelAlert": 0.005,
+            "speedOffBlock": 2.08,
+            "speedTakeoff": 11.11,
+            "speedLanding": 5.56,
+            "speedMaxTowing": 22.22
+        }
+    }
+}

@@ -13,7 +13,7 @@
             "fuelFlowAirborne": 0.000009722,
             "fuelFlowTowing": 0.000011111,
             "fuelAlert": 0.055,
-            "speedOffBlock": 1.39,
+            "speedOffBlock": 2.08,
             "speedTakeoff": 20.92,
             "speedLanding": 19.14,
             "speedMaxTowing": 41.67
