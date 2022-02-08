@@ -44,7 +44,7 @@ class MySettings {
   // ... timer
   public var bTimerAutoLog as Boolean = false;
   public var bTimerAutoActivity as Boolean = false;
-  public var iTimerThresholdGround as Number = 30;
+  public var iTimerThresholdGround as Number = 10;
   public var iTimerThresholdAirborne as Number = 60;
   // ... notifications
   public var bNotificationsAltimeter as Boolean = false;
@@ -295,7 +295,7 @@ class MySettings {
 
   function loadTimerThresholdGround() as Number {  // [s]
     var iValue = App.Properties.getValue("userTimerThresholdGround") as Number?;
-    return iValue != null ? iValue : 30;
+    return iValue != null ? iValue : 10;
   }
   function saveTimerThresholdGround(_iValue as Number) as Void {  // [s]
     App.Properties.setValue("userTimerThresholdGround", _iValue as App.PropertyValueType);

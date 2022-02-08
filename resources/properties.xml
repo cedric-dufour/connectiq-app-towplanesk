@@ -16,7 +16,7 @@
   <!-- ... timer -->
   <property id="userTimerAutoLog" type="boolean">false</property>
   <property id="userTimerAutoActivity" type="boolean">false</property>
-  <property id="userTimerThresholdGround" type="number">30</property>
+  <property id="userTimerThresholdGround" type="number">10</property>
   <property id="userTimerThresholdAirborne" type="number">60</property>
   <!-- ... notifications -->
   <property id="userNotificationsAltimeter" type="boolean">false</property>
