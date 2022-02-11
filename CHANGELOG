@@ -1,24 +1,31 @@
-* 1.1.20200722a:
+* 1.1.20220211a
+  - FIX: Faster startup
+  - FIX: Better cycles handling
+  - CHG: One less button press when loading a towplane/glider
+  - CHG: Fine-tuned ground threshold default value
+  - NEW: Allow to clear (all) log entries
+  - NEW: Support for Fenix 7 devices
+
+* 1.1.20200722a
   - CHG: Allow Back button to exit immediately when timer is idle
   - CHG: Optimize menus (order)
 
-* 1.1.20200329a:
+* 1.1.20200329a
   - CHG: Revamp Speed view (use Air Speed only for Take-off/Landing detection)
   - NEW: Support for fenix6 (pro) serie
 
-* 1.0.20191120a:
+* 1.0.20191120a
   - CHG: Remove Settings access from Towplane/Glider (sub-)menus
 
-* 1.0.20191026a:
+* 1.0.20191026a
   - CHG: Allow to change towplane/glider from all views (except Log)
 
-* 1.0.20190624a:
+* 1.0.20190624a
   - NEW: Automatic Activity recording (start/pause/resume)
 
-* 1.0.20190620a:
+* 1.0.20190620a
   - FIX: Make Activty Lap data consistent with Timer data
          (especially the final/extraneous Lap after on-block)
 
-* 1.0.20190520a:
+* 1.0.20190520a
   - Post Tenebras Lux
-
