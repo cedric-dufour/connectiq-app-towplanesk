@@ -208,7 +208,9 @@ class MyMenuGeneric extends Ui.Menu {
         else {
           Menu.addItem(Ui.loadResource(Rez.Strings.titleActivityResume) as String, :menuActivityResume);
         }
-        Menu.addItem(Ui.loadResource(Rez.Strings.titleActivitySave) as String, :menuActivitySave);
+        if($.oMyTimer.iState == MyTimer.STATE_STANDBY) {
+          Menu.addItem(Ui.loadResource(Rez.Strings.titleActivitySave) as String, :menuActivitySave);
+        }
         Menu.addItem(Ui.loadResource(Rez.Strings.titleActivityDiscard) as String, :menuActivityDiscard);
       }
     }
