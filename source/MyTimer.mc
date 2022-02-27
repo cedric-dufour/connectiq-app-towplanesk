@@ -98,7 +98,11 @@ class MyTimer {
           if($.oMyActivity == null) {
             $.oMyActivity = new MyActivity();
           }
-          ($.oMyActivity as MyActivity).resume();  // <-> Attn.playTone(Attn.TONE_START)
+          var oMyActivity = $.oMyActivity as MyActivity;
+          if(oMyActivity.hasLapData(true)) {
+            oMyActivity.addLap();  // <-> Attn.playTone(Attn.TONE_LAP)
+          }
+          oMyActivity.resume();  // <-> Attn.playTone(Attn.TONE_START)
         }
         else if(Toybox.Attention has :playTone) {
           Attn.playTone(Attn.TONE_KEY);
@@ -175,7 +179,11 @@ class MyTimer {
         self.oTimeOnBlock = null;
         self.iState = self.STATE_OFFBLOCK;
         if($.oMyActivity != null and $.oMySettings.bTimerAutoActivity) {
-          ($.oMyActivity as MyActivity).resume();  // <-> Attn.playTone(Attn.TONE_START)
+          var oMyActivity = $.oMyActivity as MyActivity;
+          if(oMyActivity.hasLapData(true)) {
+            oMyActivity.addLap();  // <-> Attn.playTone(Attn.TONE_LAP)
+          }
+          oMyActivity.resume();  // <-> Attn.playTone(Attn.TONE_START)
         }
       }
       else if((oTimeNow as Time.Moment).value() - (self.oTimeOnBlock as Time.Moment).value() > $.oMySettings.iTimerThresholdGround) {
@@ -259,13 +267,12 @@ class MyTimer {
       else {
         oMyActivity.setBlockTime(null);
       }
-      oMyActivity.addLap();  // <-> Attn.playTone(Attn.TONE_LAP)
-    }
-    else if(Toybox.Attention has :playTone) {
-      Attn.playTone(Attn.TONE_LOUD_BEEP);
     }
 
     // Done
+    if(Toybox.Attention has :playTone) {
+      Attn.playTone(Attn.TONE_LOUD_BEEP);
+    }
     self.reset();
   }
 

@@ -55,6 +55,23 @@ class MyActivity {
   public const FITFIELD_TOTALFLIGHTTIME = 90;
   public const FITFIELD_TOTALBLOCKTIME = 91;
 
+  // Data
+  // ... lap
+  public const DATA_CALLSIGNTOWPLANE = 0x0001;
+  public const DATA_CALLSIGNGLIDER = 0x0002;
+  public const DATA_TIMEOFFBLOCK = 0x0004;
+  public const DATA_TIMETAKEOFF = 0x0008;
+  public const DATA_ALTITUDETAKEOFF = 0x0010;
+  public const DATA_TIMETOPOFCLIMB = 0x0020;
+  public const DATA_ALTITUDETOPOFCLIMB = 0x0040;
+  public const DATA_COUNTCYCLES = 0x0080;
+  public const DATA_TIMELANDING = 0x0100;
+  public const DATA_ALTITUDELANDING = 0x0200;
+  public const DATA_TIMEONBLOCK = 0x0400;
+  public const DATA_FLIGHTTIME = 0x0800;
+  public const DATA_BLOCKTIME = 0x1000;
+  public const DATA_STATEFUL = 0x1D8D;
+
 
   //
   // VARIABLES
@@ -92,6 +109,9 @@ class MyActivity {
   // ... session
   private var oFitField_TotalFlightTime as FC.Field;
   private var oFitField_TotalBlockTime as FC.Field;
+
+  // Data
+  public var iDataMask as Number = 0;
 
 
   //
@@ -236,7 +256,7 @@ class MyActivity {
     //Sys.println("DEBUG: MyActivity.lap()");
 
     self.oSession.addLap();
-    if(Toybox.Attention has :playTone) {
+    if(self.oSession.isRecording() and Toybox.Attention has :playTone) {
       Attn.playTone(Attn.TONE_LAP);
     }
     self.resetLapFields();
@@ -312,6 +332,7 @@ class MyActivity {
   // Lap
 
   function resetLapFields() as Void {
+    self.iDataMask = 0;
     self.setCallsignTowplane(null);
     self.setCallsignGlider(null);
     self.setTimeOffBlock(null);
@@ -330,58 +351,89 @@ class MyActivity {
   function setCallsignTowplane(_sValue as String?) as Void {
     //Sys.println(format("DEBUG: MyActivity.setCallsignTowplane($1$)", [_sValue]));
     self.oFitField_CallsignTowplane.setData(_sValue != null ? _sValue.substring(0, 8) as String : "-");
+    if(_sValue != null) {
+      self.iDataMask |= MyActivity.DATA_CALLSIGNTOWPLANE;
+    }
   }
 
   function setCallsignGlider(_sValue as String?) as Void {
     //Sys.println(format("DEBUG: MyActivity.setCallsignGlider($1$)", [_sValue]));
     self.oFitField_CallsignGlider.setData(_sValue != null ? _sValue.substring(0, 8) as String : "-");
+    if(_sValue != null) {
+      self.iDataMask |= MyActivity.DATA_CALLSIGNGLIDER;
+    }
   }
 
   function setTimeOffBlock(_oTime as Time.Moment?) as Void {
     //Sys.println(format("DEBUG: MyActivity.setTimeOffBlock($1$)", [_oTime.value()]));
     self.oFitField_TimeOffBlock.setData(LangUtils.formatTime(_oTime, $.oMySettings.bUnitTimeUTC, true));
+    if(_oTime != null) {
+      self.iDataMask |= MyActivity.DATA_TIMEOFFBLOCK;
+    }
   }
 
   function setTimeTakeoff(_oTime as Time.Moment?) as Void {
     //Sys.println(format("DEBUG: MyActivity.setTimeTakeoff($1$)", [_oTime.value()]));
     self.oFitField_TimeTakeoff.setData(LangUtils.formatTime(_oTime, $.oMySettings.bUnitTimeUTC, true));
+    if(_oTime != null) {
+      self.iDataMask |= MyActivity.DATA_TIMETAKEOFF;
+    }
   }
 
   function setAltitudeTakeoff(_fValue as Float?) as Void {
     //Sys.println(format("DEBUG: MyActivity.setAltitudeTakeoff($1$)", [_fValue]));
     self.oFitField_AltitudeTakeoff.setData(_fValue != null and LangUtils.notNaN(_fValue) ? _fValue * self.fUnitCoefficient_Altitude : 0.0f);
+    if(LangUtils.notNaN(_fValue)) {
+      self.iDataMask |= MyActivity.DATA_ALTITUDETAKEOFF;
+    }
   }
 
   function setTimeTopOfClimb(_oTime as Time.Moment?) as Void {
     //Sys.println(format("DEBUG: MyActivity.setTimeTopOfClimb($1$)", [_oTime.value()]));
     self.oFitField_TimeTopOfClimb.setData(LangUtils.formatTime(_oTime, $.oMySettings.bUnitTimeUTC, true));
+    if(_oTime != null) {
+      self.iDataMask |= MyActivity.DATA_TIMETOPOFCLIMB;
+    }
   }
 
   function setAltitudeTopOfClimb(_fValue as Float?) as Void {
     //Sys.println(format("DEBUG: MyActivity.setAltitudeTopOfClimb($1$)", [_fValue]));
     if(_fValue != null and LangUtils.notNaN(_fValue)) {
       self.oFitField_AltitudeTopOfClimb.setData(_fValue * self.fUnitCoefficient_Altitude);
+      self.iDataMask |= MyActivity.DATA_ALTITUDETOPOFCLIMB;
     }
   }
 
   function setCountCycles(_iValue as Number?) as Void {
     //Sys.println(format("DEBUG: MyActivity.setCountCycles($1$)", [_iValue]));
     self.oFitField_CountCycles.setData(_iValue != null ? _iValue : 0);
+    if(_iValue != null) {
+      self.iDataMask |= MyActivity.DATA_COUNTCYCLES;
+    }
   }
 
   function setTimeLanding(_oTime as Time.Moment?) as Void {
     //Sys.println(format("DEBUG: MyActivity.setTimeLanding($1$)", [_oTime.value()]));
     self.oFitField_TimeLanding.setData(LangUtils.formatTime(_oTime, $.oMySettings.bUnitTimeUTC, true));
+    if(_oTime != null) {
+      self.iDataMask |= MyActivity.DATA_TIMELANDING;
+    }
   }
 
   function setAltitudeLanding(_fValue as Float?) as Void {
     //Sys.println(format("DEBUG: MyActivity.setAltitudeLanding($1$)", [_fValue]));
     self.oFitField_AltitudeLanding.setData(_fValue != null and LangUtils.notNaN(_fValue) ? _fValue * self.fUnitCoefficient_Altitude : 0.0f);
+    if(LangUtils.notNaN(_fValue)) {
+      self.iDataMask |= MyActivity.DATA_ALTITUDELANDING;
+    }
   }
 
   function setTimeOnBlock(_oTime as Time.Moment?) as Void {
     //Sys.println(format("DEBUG: MyActivity.setTimeOnBlock($1$)", [_oTime.value()]));
     self.oFitField_TimeOnBlock.setData(LangUtils.formatTime(_oTime, $.oMySettings.bUnitTimeUTC, true));
+    if(_oTime != null) {
+      self.iDataMask |= MyActivity.DATA_TIMEONBLOCK;
+    }
   }
 
   function setFlightTime(_oDuration as Time.Duration?) as Void {
@@ -389,6 +441,7 @@ class MyActivity {
     self.oFitField_FlightTime.setData(LangUtils.formatElapsedDuration(_oDuration, true));
     if(_oDuration != null) {
       self.oDurationFlight = self.oDurationFlight.add(_oDuration) as Time.Duration;
+      self.iDataMask |= MyActivity.DATA_FLIGHTTIME;
     }
   }
 
@@ -397,6 +450,18 @@ class MyActivity {
     self.oFitField_BlockTime.setData(LangUtils.formatElapsedDuration(_oDuration, true));
     if(_oDuration != null) {
       self.oDurationBlock = self.oDurationBlock.add(_oDuration) as Time.Duration;
+      self.iDataMask |= MyActivity.DATA_BLOCKTIME;
+    }
+  }
+
+  function hasLapData(_bStateful as Boolean) as Boolean {
+    if(_bStateful) {
+      //return self.iDataMask & MyActivity.DATA_STATEFUL ^ MyActivity.DATA_STATEFUL == 0;  // ERROR: Unsupported operation xor (WTF!?!)
+      var i = self.iDataMask & MyActivity.DATA_STATEFUL;
+      return i & ~MyActivity.DATA_STATEFUL | ~i & MyActivity.DATA_STATEFUL == 0;
+    }
+    else {
+      return self.iDataMask != 0;
     }
   }
 
