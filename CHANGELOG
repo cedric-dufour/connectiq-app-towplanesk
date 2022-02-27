@@ -1,3 +1,6 @@
+* 1.1.20220227a
+  - FIX: Prevent empty lap at end of activity
+
 * 1.1.20220224a
   - FIX: Prevent saving inconsistent activity
 
