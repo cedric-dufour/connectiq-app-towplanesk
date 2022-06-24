@@ -123,9 +123,12 @@ class MySettings {
     self.setUnitTimeUTC(self.loadUnitTimeUTC());
   }
 
+  // WARNING: Make sure to cast the properties values to the expected type!
+  // REF: https://forums.garmin.com/developer/connect-iq/w/wiki/4/new-developer-faq#settings-crash
+  // ACKNOWLEDGMENT: Yannick Dutertre for the heads up and pointer
+
   function loadAltimeterCalibrationQNH() as Float {  // [Pa]
-    var fValue = App.Properties.getValue("userAltimeterCalibrationQNH") as Float?;
-    return fValue != null ? fValue : 101325.0f;
+    return LangUtils.asFloat(App.Properties.getValue("userAltimeterCalibrationQNH"), 101325.0f);
   }
   function saveAltimeterCalibrationQNH(_fValue as Float) as Void {  // [Pa]
     App.Properties.setValue("userAltimeterCalibrationQNH", _fValue as App.PropertyValueType);
@@ -142,8 +145,7 @@ class MySettings {
   }
 
   function loadAltimeterCorrectionAbsolute() as Float {  // [Pa]
-    var fValue = App.Properties.getValue("userAltimeterCorrectionAbsolute") as Float?;
-    return fValue != null ? fValue : 0.0f;
+    return LangUtils.asFloat(App.Properties.getValue("userAltimeterCorrectionAbsolute"), 0.0f);
   }
   function saveAltimeterCorrectionAbsolute(_fValue as Float) as Void {  // [Pa]
     App.Properties.setValue("userAltimeterCorrectionAbsolute", _fValue as App.PropertyValueType);
@@ -159,8 +161,7 @@ class MySettings {
   }
 
   function loadAltimeterCorrectionRelative() as Float {
-    var fValue = App.Properties.getValue("userAltimeterCorrectionRelative") as Float?;
-    return fValue != null ? fValue : 1.0f;
+    return LangUtils.asFloat(App.Properties.getValue("userAltimeterCorrectionRelative"), 1.0f);
   }
   function saveAltimeterCorrectionRelative(_fValue as Float) as Void {
     App.Properties.setValue("userAltimeterCorrectionRelative", _fValue as App.PropertyValueType);
@@ -176,8 +177,7 @@ class MySettings {
   }
 
   function loadAltimeterAlert() as Float {  // [m]
-    var fValue = App.Properties.getValue("userAltimeterAlert") as Float?;
-    return fValue != null ? fValue : 1000.0f;
+    return LangUtils.asFloat(App.Properties.getValue("userAltimeterAlert"), 1000.0f);
   }
   function saveAltimeterAlert(_fValue as Float) as Void {  // [m]
     App.Properties.setValue("userAltimeterAlert", _fValue as App.PropertyValueType);
@@ -193,8 +193,7 @@ class MySettings {
   }
 
   function loadTemperatureISAOffset() as Float {  // [°K]
-    var fValue = App.Properties.getValue("userTemperatureISAOffset") as Float?;
-    return fValue != null ? fValue : 0.0f;
+    return LangUtils.asFloat(App.Properties.getValue("userTemperatureISAOffset"), 0.0f);
   }
   function saveTemperatureISAOffset(_fValue as Float) as Void {  // [°K]
     App.Properties.setValue("userTemperatureISAOffset", _fValue as App.PropertyValueType);
@@ -210,8 +209,7 @@ class MySettings {
   }
 
   function loadTemperatureAuto() as Boolean {
-    var bValue = App.Properties.getValue("userTemperatureAuto") as Boolean?;
-    return bValue != null ? bValue : false;
+    return LangUtils.asBoolean(App.Properties.getValue("userTemperatureAuto"), false);
   }
   function saveTemperatureAuto(_bValue as Boolean) as Void {
     App.Properties.setValue("userTemperatureAuto", _bValue as App.PropertyValueType);
@@ -221,8 +219,7 @@ class MySettings {
   }
 
   function loadTemperatureAlert() as Float {  // [°K]
-    var fValue = App.Properties.getValue("userTemperatureAlert") as Float?;
-    return fValue != null ? fValue : 298.15f;  // 25°C (ISA+10°C at sea level)
+    return LangUtils.asFloat(App.Properties.getValue("userTemperatureAlert"), 298.15f);  // 25°C (ISA+10°C at sea level)
   }
   function saveTemperatureAlert(_fValue as Float) as Void {  // [°K]
     App.Properties.setValue("userTemperatureAlert", _fValue as App.PropertyValueType);
@@ -238,8 +235,7 @@ class MySettings {
   }
 
   function loadWindDirection() as Float {  // [rad]
-    var fValue = App.Properties.getValue("userWindDirection") as Float?;
-    return fValue != null ? fValue : 0.0f;
+    return LangUtils.asFloat(App.Properties.getValue("userWindDirection"), 0.0f);
   }
   function saveWindDirection(_fValue as Float) as Void {  // [rad]
     App.Properties.setValue("userWindDirection", _fValue as App.PropertyValueType);
@@ -255,8 +251,7 @@ class MySettings {
   }
 
   function loadWindSpeed() as Float {  // [m/s]
-    var fValue = App.Properties.getValue("userWindSpeed") as Float?;
-    return fValue != null ? fValue : 0.0f;
+    return LangUtils.asFloat(App.Properties.getValue("userWindSpeed"), 0.0f);
   }
   function saveWindSpeed(_fValue as Float) as Void {  // [m/s]
     App.Properties.setValue("userWindSpeed", _fValue as App.PropertyValueType);
@@ -272,8 +267,7 @@ class MySettings {
   }
 
   function loadTimerAutoLog() as Boolean {
-    var bValue = App.Properties.getValue("userTimerAutoLog") as Boolean?;
-    return bValue != null ? bValue : false;
+    return LangUtils.asBoolean(App.Properties.getValue("userTimerAutoLog"), false);
   }
   function saveTimerAutoLog(_bValue as Boolean) as Void {
     App.Properties.setValue("userTimerAutoLog", _bValue as App.PropertyValueType);
@@ -283,8 +277,7 @@ class MySettings {
   }
 
   function loadTimerAutoActivity() as Boolean {
-    var bValue = App.Properties.getValue("userTimerAutoActivity") as Boolean?;
-    return bValue != null ? bValue : false;
+    return LangUtils.asBoolean(App.Properties.getValue("userTimerAutoActivity"), false);
   }
   function saveTimerAutoActivity(_bValue as Boolean) as Void {
     App.Properties.setValue("userTimerAutoActivity", _bValue as App.PropertyValueType);
@@ -294,8 +287,7 @@ class MySettings {
   }
 
   function loadTimerThresholdGround() as Number {  // [s]
-    var iValue = App.Properties.getValue("userTimerThresholdGround") as Number?;
-    return iValue != null ? iValue : 10;
+    return LangUtils.asNumber(App.Properties.getValue("userTimerThresholdGround"), 10);
   }
   function saveTimerThresholdGround(_iValue as Number) as Void {  // [s]
     App.Properties.setValue("userTimerThresholdGround", _iValue as App.PropertyValueType);
@@ -311,8 +303,7 @@ class MySettings {
   }
 
   function loadTimerThresholdAirborne() as Number {  // [s]
-    var iValue = App.Properties.getValue("userTimerThresholdAirborne") as Number?;
-    return iValue != null ? iValue : 60;
+    return LangUtils.asNumber(App.Properties.getValue("userTimerThresholdAirborne"), 60);
   }
   function saveTimerThresholdAirborne(_iValue as Number) as Void {  // [s]
     App.Properties.setValue("userTimerThresholdAirborne", _iValue as App.PropertyValueType);
@@ -328,8 +319,7 @@ class MySettings {
   }
 
   function loadNotificationsAltimeter() as Boolean {
-    var bValue = App.Properties.getValue("userNotificationsAltimeter") as Boolean?;
-    return bValue != null ? bValue : false;
+    return LangUtils.asBoolean(App.Properties.getValue("userNotificationsAltimeter"), false);
   }
   function saveNotificationsAltimeter(_bValue as Boolean) as Void {
     App.Properties.setValue("userNotificationsAltimeter", _bValue as App.PropertyValueType);
@@ -339,8 +329,7 @@ class MySettings {
   }
 
   function loadNotificationsTemperature() as Boolean {
-    var bValue = App.Properties.getValue("userNotificationsTemperature") as Boolean?;
-    return bValue != null ? bValue : false;
+    return LangUtils.asBoolean(App.Properties.getValue("userNotificationsTemperature"), false);
   }
   function saveNotificationsTemperature(_bValue as Boolean) as Void {
     App.Properties.setValue("userNotificationsTemperature", _bValue as App.PropertyValueType);
@@ -350,8 +339,7 @@ class MySettings {
   }
 
   function loadNotificationsFuel() as Boolean {
-    var bValue = App.Properties.getValue("userNotificationsFuel") as Boolean?;
-    return bValue != null ? bValue : false;
+    return LangUtils.asBoolean(App.Properties.getValue("userNotificationsFuel"), false);
   }
   function saveNotificationsFuel(_bValue as Boolean) as Void {
     App.Properties.setValue("userNotificationsFuel", _bValue as App.PropertyValueType);
@@ -361,8 +349,7 @@ class MySettings {
   }
 
   function loadGeneralBackgroundColor() as Number {
-    var iValue = App.Properties.getValue("userGeneralBackgroundColor") as Number?;
-    return iValue != null ? iValue : Gfx.COLOR_WHITE;
+    return LangUtils.asNumber(App.Properties.getValue("userGeneralBackgroundColor"), Gfx.COLOR_WHITE);
   }
   function saveGeneralBackgroundColor(_iValue as Number) as Void {
     App.Properties.setValue("userGeneralBackgroundColor", _iValue as App.PropertyValueType);
@@ -372,8 +359,7 @@ class MySettings {
   }
 
   function loadUnitDistance() as Number {
-    var iValue = App.Properties.getValue("userUnitDistance") as Number?;
-    return iValue != null ? iValue : -1;
+    return LangUtils.asNumber(App.Properties.getValue("userUnitDistance"), -1);
   }
   function saveUnitDistance(_iValue as Number) as Void {
     App.Properties.setValue("userUnitDistance", _iValue as App.PropertyValueType);
@@ -419,8 +405,7 @@ class MySettings {
   }
 
   function loadUnitElevation() as Number {
-    var iValue = App.Properties.getValue("userUnitElevation") as Number?;
-    return iValue != null ? iValue : -1;
+    return LangUtils.asNumber(App.Properties.getValue("userUnitElevation"), -1);
   }
   function saveUnitElevation(_iValue as Number) as Void {
     App.Properties.setValue("userUnitElevation", _iValue as App.PropertyValueType);
@@ -458,8 +443,7 @@ class MySettings {
   }
 
   function loadUnitWeight() as Number {
-    var iValue = App.Properties.getValue("userUnitWeight") as Number?;
-    return iValue != null ? iValue : -1;
+    return LangUtils.asNumber(App.Properties.getValue("userUnitWeight"), -1);
   }
   function saveUnitWeight(_iValue as Number) as Void {
     App.Properties.setValue("userUnitWeight", _iValue as App.PropertyValueType);
@@ -491,8 +475,7 @@ class MySettings {
   }
 
   function loadUnitFuel() as Number {
-    var iValue = App.Properties.getValue("userUnitFuel") as Number?;
-    return iValue != null ? iValue : -1;
+    return LangUtils.asNumber(App.Properties.getValue("userUnitFuel"), -1);
   }
   function saveUnitFuel(_iValue as Number) as Void {
     App.Properties.setValue("userUnitFuel", _iValue as App.PropertyValueType);
@@ -530,8 +513,7 @@ class MySettings {
   }
 
   function loadUnitPressure() as Number {
-    var iValue = App.Properties.getValue("userUnitPressure") as Number?;
-    return iValue != null ? iValue : -1;
+    return LangUtils.asNumber(App.Properties.getValue("userUnitPressure"), -1);
   }
   function saveUnitPressure(_iValue as Number) as Void {
     App.Properties.setValue("userUnitPressure", _iValue as App.PropertyValueType);
@@ -564,8 +546,7 @@ class MySettings {
   }
 
   function loadUnitTemperature() as Number {
-    var iValue = App.Properties.getValue("userUnitTemperature") as Number?;
-    return iValue != null ? iValue : -1;
+    return LangUtils.asNumber(App.Properties.getValue("userUnitTemperature"), -1);
   }
   function saveUnitTemperature(_iValue as Number) as Void {
     App.Properties.setValue("userUnitTemperature", _iValue as App.PropertyValueType);
@@ -600,8 +581,7 @@ class MySettings {
   }
 
   function loadUnitTimeUTC() as Boolean {
-    var bValue = App.Properties.getValue("userUnitTimeUTC") as Boolean?;
-    return bValue != null ? bValue : false;
+    return LangUtils.asBoolean(App.Properties.getValue("userUnitTimeUTC"), false);
   }
   function saveUnitTimeUTC(_bValue as Boolean) as Void {
     App.Properties.setValue("userUnitTimeUTC", _bValue as App.PropertyValueType);
