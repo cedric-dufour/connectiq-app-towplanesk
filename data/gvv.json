@@ -42,7 +42,7 @@
     "gliders": {
         "11": {
             "callsign": "1B",
-            "comment": "ASK21",
+            "comment": "ASK-21",
             "weightEmpty": 360.0,
             "weightPayload": 160.0,
             "weightBallast": 0.0,
@@ -51,7 +51,7 @@
         },
         "12": {
             "callsign": "2B",
-            "comment": "LS4",
+            "comment": "LS-4",
             "weightEmpty": 235.0,
             "weightPayload": 80.0,
             "weightBallast": 0.0,
@@ -60,7 +60,7 @@
         },
         "13": {
             "callsign": "3B",
-            "comment": "LS4",
+            "comment": "LS-4",
             "weightEmpty": 235.0,
             "weightPayload": 80.0,
             "weightBallast": 0.0,
@@ -69,7 +69,7 @@
         },
         "14": {
             "callsign": "4B",
-            "comment": "LS8",
+            "comment": "LS-8",
             "weightEmpty": 250.0,
             "weightPayload": 80.0,
             "weightBallast": 0.0,
@@ -78,7 +78,7 @@
         },
         "15": {
             "callsign": "5B",
-            "comment": "ASK21",
+            "comment": "ASK-21",
             "weightEmpty": 360.0,
             "weightPayload": 160.0,
             "weightBallast": 0.0,
@@ -87,7 +87,7 @@
         },
         "16": {
             "callsign": "6B",
-            "comment": "LS8",
+            "comment": "LS-8",
             "weightEmpty": 250.0,
             "weightPayload": 80.0,
             "weightBallast": 0.0,
@@ -96,7 +96,7 @@
         },
         "17": {
             "callsign": "7B",
-            "comment": "DuoDiscus",
+            "comment": "Duo Discus",
             "weightEmpty": 420.0,
             "weightPayload": 160.0,
             "weightBallast": 0.0,
@@ -105,7 +105,7 @@
         },
         "19": {
             "callsign": "9B",
-            "comment": "DuoDiscus",
+            "comment": "Duo Discus",
             "weightEmpty": 420.0,
             "weightPayload": 160.0,
             "weightBallast": 0.0,
@@ -113,27 +113,27 @@
             "speedTowing": 33.33
         },
         "21": {
-            "callsign": "A1",
-            "comment": "Ventus-2 CM",
-            "weightEmpty": 350.0,
-            "weightPayload": 80.0,
-            "weightBallast": 0.0,
-            "weightMaxTakeoff": 525.0,
-            "speedTowing": 31.94
-        },
-        "22": {
             "callsign": "CN",
-            "comment": "ASW27",
+            "comment": "ASW-27",
             "weightEmpty": 245.0,
             "weightPayload": 80.0,
             "weightBallast": 0.0,
             "weightMaxTakeoff": 500.0,
             "speedTowing": 30.55
         },
-        "23": {
-            "callsign": "EY",
-            "comment": "LS8",
+        "22": {
+            "callsign": "E5",
+            "comment": "LS-8",
             "weightEmpty": 250.0,
+            "weightPayload": 80.0,
+            "weightBallast": 0.0,
+            "weightMaxTakeoff": 525.0,
+            "speedTowing": 30.55
+        },
+        "23": {
+            "callsign": "EQ",
+            "comment": "Ventus-2a",
+            "weightEmpty": 225.0,
             "weightPayload": 80.0,
             "weightBallast": 0.0,
             "weightMaxTakeoff": 525.0,
@@ -141,7 +141,7 @@
         },
         "24": {
             "callsign": "J5",
-            "comment": "ASW20",
+            "comment": "ASW-20",
             "weightEmpty": 260.0,
             "weightPayload": 80.0,
             "weightBallast": 0.0,
@@ -159,7 +159,7 @@
         },
         "26": {
             "callsign": "MZ",
-            "comment": "Ventus-2 C(M)",
+            "comment": "Ventus-2c(M)",
             "weightEmpty": 265.0,
             "weightPayload": 80.0,
             "weightBallast": 0.0,
@@ -168,7 +168,7 @@
         },
         "27": {
             "callsign": "TS",
-            "comment": "LS3-a",
+            "comment": "LS-3a",
             "weightEmpty": 250.0,
             "weightPayload": 80.0,
             "weightBallast": 0.0,
@@ -176,26 +176,8 @@
             "speedTowing": 30.55
         },
         "28": {
-            "callsign": "TW",
-            "comment": "Ventus CM",
-            "weightEmpty": 300.0,
-            "weightPayload": 80.0,
-            "weightBallast": 0.0,
-            "weightMaxTakeoff": 430.0,
-            "speedTowing": 30.55
-        },
-        "29": {
-            "callsign": "WE",
-            "comment": "LS4",
-            "weightEmpty": 235.0,
-            "weightPayload": 80.0,
-            "weightBallast": 0.0,
-            "weightMaxTakeoff": 472.0,
-            "speedTowing": 30.55
-        },
-        "30": {
             "callsign": "ZX",
-            "comment": "ASW27",
+            "comment": "ASW-27",
             "weightEmpty": 245.0,
             "weightPayload": 80.0,
             "weightBallast": 0.0,
