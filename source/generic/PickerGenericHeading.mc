@@ -104,10 +104,12 @@ class PickerGenericHeading extends Ui.Picker {
     }
 
     // Assemble components
-    var fValue = _amValues[1]*100.0f + _amValues[2]*10.0f + _amValues[3];
-    if(_amValues[0] != null) {
-      fValue *= _amValues[0];
-    }
+    var aiValues = _amValues as Array<Number?>;
+    var fValue =
+      LangUtils.asNumber(aiValues[1], 0)*100.0f
+      + LangUtils.asNumber(aiValues[2], 0)*10.0f
+      + LangUtils.asNumber(aiValues[3], 0);
+    fValue *= LangUtils.asNumber(aiValues[0], 1);
 
     // Use user-specified heading unit (NB: radians are always used internally)
     if(iUnit == 1) {  // mil

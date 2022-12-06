@@ -114,7 +114,7 @@ class MyFilter {
       i++;
     }
     // ... return median
-    return self.afSort[self.INDEX];
+    return self.afSort[self.INDEX] as Float;
   }
 
 }
