@@ -50,7 +50,7 @@ class PickerGenericSpeed extends Ui.Picker {
     if(iUnit == 2) {
       sUnit = "kt";
       iMaxSignificant = 6;
-      fValue *= 66.672f;  // m/s -> kt (* 10)
+      fValue *= 19.4384449244f;  // m/s -> kt (* 10)
       if(fValue > 6999.0f) {
         fValue = 6999.0f;
       }
@@ -61,7 +61,7 @@ class PickerGenericSpeed extends Ui.Picker {
     else if(iUnit == Sys.UNIT_STATUTE) {
       sUnit = "mph";
       iMaxSignificant = 7;
-      fValue *= 57.936384f;  // m/s -> mph (* 10)
+      fValue *= 22.3693629205f;  // m/s -> mph (* 10)
       if(fValue > 7999.0f) {
         fValue = 7999.0f;
       }
@@ -140,10 +140,10 @@ class PickerGenericSpeed extends Ui.Picker {
 
     // Use user-specified speed unit (NB: SI units are always used internally)
     if(iUnit == 2) {
-      fValue /= 66.672f;  // kt (* 10) -> m/s
+      fValue /= 19.4384449244f;  // kt (* 10) -> m/s
     }
     else if(iUnit == Sys.UNIT_STATUTE) {
-      fValue /= 57.936384f;  // mph (* 10) -> m/s
+      fValue /= 22.3693629205f;  // mph (* 10) -> m/s
     }
     else {
       fValue /= 36.0f;  // km/h (* 10) -> m/s
